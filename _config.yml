@@ -7,4 +7,7 @@ github_username:  wcy123
 
 # Build settings
 markdown: kramdown
+kramdown:
+   input: GFM
+   coderay_line_numbers: nil
 permalink: pretty
