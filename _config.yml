@@ -9,5 +9,6 @@ github_username:  wcy123
 markdown: kramdown
 kramdown:
    input: GFM
+   hard_wrap: false
    coderay_line_numbers: nil
 permalink: pretty
