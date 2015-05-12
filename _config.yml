@@ -11,3 +11,10 @@ kramdown:
    hard_wrap: false
    coderay_line_numbers: nil
 permalink: pretty
+exclude:
+  - "**/*.bak"
+  - "**/~*"
+  - "**/*.o"
+  - "**/a.out"
+  - "workspace"
+  - "attachments"
