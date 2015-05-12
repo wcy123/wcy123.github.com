@@ -8,12 +8,14 @@ categories:
 
 [Emacs transient mark mode][] gives you much of the standard
 selection-highlighting behavior of other editors, but key binding is
-not changed when mark is active, this is quite different with other
-editors. For example, usually when mark is active and you input some
-texts, the new texts replaces the selected text.
+not changed when mark is active, for example, many letter keys are
+bound to `self-insert-command`. This is quite different with other
+editors. In other editors, usually when mark is active and you input
+some texts, the new texts replace the selected text.
 
 There is an easy way to temporarily change the key binding when mark
-is active and restore the original key bind automatically.
+is active and restore the original key bind automatically when mark is
+inactive.
 
 ```elisp
 (global-set-key (kbd "C-w") 'backward-kill-word)
@@ -29,8 +31,8 @@ is active and restore the original key bind automatically.
 
 The above example makes `C-w` have two different bindings. When mark
 is not active, it is `backward-kill-word`, similiar to the key binding
-under some shell, when mark is active, it is `kill-region`, following
-the emacs convention.
+under some shell, when mark is active, it binds to `kill-region`,
+following the emacs convention.
 
 This example just illustrates the idea how to do it, maybe you might
 have your own preferred key bindings.
