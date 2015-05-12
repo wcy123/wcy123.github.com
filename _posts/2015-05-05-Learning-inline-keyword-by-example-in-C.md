@@ -2,6 +2,7 @@
 layout: post
 title:  "Learning inline keyword by example in C"
 date:   2015/05/05 11:48:11
+comments: true
 categories: 
 ---
 

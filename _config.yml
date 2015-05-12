@@ -4,7 +4,6 @@ email: wcy123@gmail.com
 description: "my blog"
 baseurl: ""
 github_username:  wcy123
-comments: true
 # Build settings
 markdown: kramdown
 kramdown:

@@ -2,6 +2,7 @@
 layout: post
 title:  "hello world in C"
 date:   2014/11/22 09:36:33
+comments: true
 categories: 
 ---
 

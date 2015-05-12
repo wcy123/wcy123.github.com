@@ -2,6 +2,7 @@
 layout: post
 title:  "Different key binding in Emacs transient mark mode"
 date:   2015/04/30 12:24:15
+comments: true
 categories: 
 ---
 
