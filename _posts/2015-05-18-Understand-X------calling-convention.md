@@ -24,10 +24,8 @@ categories:
 > Registers RBP, RBX, and R12-R15 are callee-save registers; all others
 > must be saved by the caller if they wish to preserve their values.[15]
 
-<table>
-<tr>
-<td>
-~~~{.c}
+
+```c
 #include <stdint.h>
 typedef int64_t i64;
 i64 foo(i64 a0,i64 a1,i64 a2,i64 a3,i64 a4,
@@ -40,10 +38,9 @@ int main(int argc, char *argv[])
     foo(0,1,2,3,4,5,6,7,8,9);
     return 0;
 }
-~~~
-</td>
-<td>
-~~~{.asm}
+```
+
+```asm
    0x0000000000400526 <+15>:	pushq  $0x9
    0x0000000000400528 <+17>:	pushq  $0x8
    0x000000000040052a <+19>:	pushq  $0x7
@@ -55,8 +52,5 @@ int main(int argc, char *argv[])
    0x0000000000400544 <+45>:	mov    $0x1,%esi
    0x0000000000400549 <+50>:	mov    $0x0,%edi
    0x000000000040054e <+55>:	callq  0x4004b6 <foo>
-~~~
-</td>
-</tr>
-</table>
-
+```
+ 
