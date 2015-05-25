@@ -3,6 +3,7 @@ layout: post
 title:  "C++ virtual function"
 date:   2015/05/20 09:47:56
 categories: 
+comments: true
 ---
 
 How C++ virtual function is implemented? Compilers have their own
