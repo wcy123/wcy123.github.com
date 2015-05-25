@@ -76,7 +76,7 @@ Very good! `foo` is optmized to print `x == 0` only.
 
 Let's see c++ version.
 
-```c++
+```cpp
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
