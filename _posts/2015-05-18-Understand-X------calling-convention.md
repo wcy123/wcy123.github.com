@@ -3,6 +3,7 @@ layout: post
 title:  "Understand X86 64 calling convention"
 date:   2015/05/18 09:38:25
 categories: 
+comments: true
 ---
 
 
