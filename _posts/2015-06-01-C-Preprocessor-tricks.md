@@ -16,13 +16,13 @@ and error prone.
 I would like to use an example to illustrate the idea behind it. For
 example, I would like to implementat a set of unix command as below
 
-```c
+{% highlight c %}
 #define CMD(XX) XX(ls) XX(cp) XX(rm) XX(echo)
-```
+{% endhighlight %}
 
 Then I could be able to write a common template function as below.
 
-```c
+{% highlight c %}
 #define DEFINE_COMMON_TEMPLATE(name)            \
 void name()                                     \
 {                                               \
@@ -30,11 +30,11 @@ void name()                                     \
 }
 
 CMD(DEFINE_COMMON_TEMPLATE)
-```
+{% endhighlight %}
 
 It will expanded to
 
-```c
+{% highlight c %}
 void ls ()
 {
   printf ("ls" " is not implemented\n");
@@ -43,12 +43,12 @@ void ls ()
 void cp ()
 {
   printf ("cp" " is not implemented\n");
-} ...
-```
+} // ...
+{% endhighlight %}
 
 In the `main` function, we can use the similiar trick, as below
 
-```c
+{% highlight c %}
 #define COMMAND_SWITCH(name)                    \
     if (strcmp(argv[1], #name) == 0){           \
         name();                                 \
@@ -56,11 +56,11 @@ In the `main` function, we can use the similiar trick, as below
     CMD(COMMAND_SWITCH) {
         printf("unknown commmand %s\n", argv[1]);
     }
-```
+{% endhighlight %}
 
 And it will expanded into
 
-```c
+{% highlight c %}
   if (strcmp (argv[1], "ls") == 0)
     {
       ls ();
@@ -81,11 +81,11 @@ And it will expanded into
     {
       printf ("unknown commmand %s\n", argv[1]);
     }
-```
+{% endhighlight %}
 
 The whole program is listed here.
 
-```c
+{% highlight c %}
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -112,4 +112,4 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-```
+{% endhighlight %}
