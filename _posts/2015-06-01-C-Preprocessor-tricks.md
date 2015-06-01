@@ -113,3 +113,50 @@ int main(int argc, char *argv[])
     return 0;
 }
 {% endhighlight %}
+
+
+## get the number of varadic argument
+
+{% highlight c %}
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#define _GET_N_OF_ARGS(_0,_1,_2,_3,_4,N,...) N
+#define N_OF_ARGS(...) _GET_N_OF_ARGS(__VA_ARGS__,5,4,3,2,1,0)
+int main(int argc, char *argv[])
+{
+    printf("%d\n", N_OF_ARGS(a));
+    printf("%d\n",N_OF_ARGS(a,b));
+    printf("%d\n",N_OF_ARGS(a,b,c));
+    printf("%d\n",N_OF_ARGS(a,b,c,d));
+    printf("%d\n",N_OF_ARGS(a,b,c,d,e));
+    return 0;
+}
+{% endhighlight %}
+
+
+`N_OF_ARGS` can handle at most 5 arguments and at least 1, otherwise,
+it is unpredictable error.
+
+{% highlight c %}
+int main(int argc, char *argv[])
+{
+    printf("%d\n",1);
+    printf("%d\n",2);
+    printf("%d\n",3);
+    printf("%d\n",4);
+    printf("%d\n",5);
+    return 0;
+}
+{% endhighlight %}
+
+
+But
+{% highlight c %}
+N_OF_ARGS()
+// => _GET_N_OF_ARGS(,5,4,3,2,1)
+// => 1
+printf("%d\n",N_OF_ARGS(a,b,c,d,e,f));
+// => _GET_N_OF_ARGS(a,b,c,d,e,f)
+// => f
+{% endhighlight %}
