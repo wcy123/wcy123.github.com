@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "C++ vector<A> 与 A::A() 的关系"
+title:  "C++ `vector<A>` 与 `A::A()` 的关系"
 date:   2015/07/08 16:57:40
 categories:
 comments: true
