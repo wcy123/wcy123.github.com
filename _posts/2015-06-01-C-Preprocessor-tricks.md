@@ -160,3 +160,5 @@ printf("%d\n",N_OF_ARGS(a,b,c,d,e,f));
 // => _GET_N_OF_ARGS(a,b,c,d,e,f)
 // => f
 {% endhighlight %}
+
+## get the nth element of arguments
