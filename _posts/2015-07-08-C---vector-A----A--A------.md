@@ -142,3 +142,6 @@ main get 0x7ffffbf11a88
 {% endhighlight %}
 
 可以看到，内存被提前申请了，所以不会有多余的拷贝构造函数了。
+
+
+使用 `vector<A>::push_back` 之前，一定考虑调用 `vector<A>::reserve`
