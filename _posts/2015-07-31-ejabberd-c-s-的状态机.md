@@ -791,7 +791,7 @@ Conn 应该是 `c2s`
 session id 是怎么得到的？
 
 ```
-(a@debian)65> State = {state, {socket_state, gen_tcp, port, ejabberd_receiver_pid}, ejabberd_socket, ref, false, <<"1077953735">>, undefined,c2s, c2s_shaper,false, false,false,false, [verify_none, compression_none], true, {jid,<<"test">>, <<"localhost">>, <<"31729980831438183620933095">>, <<"test">>, <<"localhost">>, <<"31729980831438183620933095">>}, <<"test">>, <<"localhost">>, <<"31729980831438183620933095">>, {{1438,183620, 762672}, ejabberd_c2s_pid}, {0,nil}, {0,nil}, {0,nil}, undefined, undefined, {userlist,none, [],false}, unknown, ejabberd_auth_internal, {{127,0,0,1}, 56034}, [],active,[], inactive, undefined, undefined,500, undefined,300, false,0,0,<<>>}.
+(a@debian)65> State = {state, {socket_state, gen_tcp, port, ejabberd_receiver_pid}, ejabberd_socket, ref, false, <<"1077953735">>, undefined,c2s, c2s_shaper,false, false,false,false, [verify_none, compression_none], true, {jid,<<"test">>, <<"localhost">>, <<"31729980831438183620933095">>, <<"test">>, <<"localhost">>, <<"31729980831438183620933095">>}, <<"test">>, <<"localhost">>, <<"31729980831438183620933095">>, { {1438,183620, 762672}, ejabberd_c2s_pid}, {0,nil}, {0,nil}, {0,nil}, undefined, undefined, {userlist,none, [],false}, unknown, ejabberd_auth_internal, { {127,0,0,1}, 56034}, [],active,[], inactive, undefined, undefined,500, undefined,300, false,0,0,<<>>}.
 #state{socket = #socket_state{sockmod = gen_tcp,
                               socket = port,receiver = ejabberd_receiver_pid},
        sockmod = ejabberd_socket,socket_monitor = ref,
@@ -807,7 +807,7 @@ session id 是怎么得到的？
                   lresource = <<"317299808314381836209330"...>>},
        user = <<"test">>,server = <<"localhost">>,
        resource = <<"31729980831438183620933095">>,
-       sid = {{1438,183620,762672},ejabberd_c2s_pid},
+       sid = { {1438,183620,762672},ejabberd_c2s_pid},
        pres_t = {0,nil},
        pres_f = {0,nil},
        pres_a = {0,nil},
@@ -816,7 +816,7 @@ session id 是怎么得到的？
        conn = unknown,auth_module = ejabberd_auth_internal,
        ip = {...},...}
 (a@debian)66> State#state.sid.
-{{1438,183620,762672},ejabberd_c2s_pid}
+{ {1438,183620,762672},ejabberd_c2s_pid}
 ```
 
 
