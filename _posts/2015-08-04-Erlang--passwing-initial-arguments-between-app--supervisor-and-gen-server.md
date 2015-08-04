@@ -9,4 +9,4 @@ comments: true
 
 see below
 
-[img][https://www.dropbox.com/s/pwk2o8ylv9k5ol6/erlang_app_sup_srv_args.svg?dl=0]
+![img][https://www.dropbox.com/s/pwk2o8ylv9k5ol6/erlang_app_sup_srv_args.svg?dl=0]
