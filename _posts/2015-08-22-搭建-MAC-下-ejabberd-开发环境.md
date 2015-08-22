@@ -84,7 +84,7 @@ sudo cp ./rebar /usr/local/bin/
 ## 配置 emacs
 
 
-{% highlight el %}
+{% highlight elisp %}
 ;; 这个用来自动监测 erl 安装在哪里了。方便切换不同的 erlang 版本，
 ;; 如果不在乎版本的话，直接写下面的，也是可以的。
 ;;    (setq erlang-root-dir "where_your_install_erlang")
