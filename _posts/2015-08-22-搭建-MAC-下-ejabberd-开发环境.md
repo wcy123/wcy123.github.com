@@ -15,13 +15,13 @@ draft: true
 
 ## 依赖库
 
- - brew , erlang 其实不依赖这个库， 仅仅为了方便安装其他库，[参考](http://brew.sh)
+ - 安装 brew , erlang 其实不依赖这个库， 仅仅为了方便安装其他库，[参考这里](http://brew.sh)
 
  ```
  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
  ```
 
- - odbc
+ - 安装 odbc
 
  ```
  brew install unixodbc
@@ -82,6 +82,7 @@ sudo cp ./rebar /usr/local/bin/
 退栈。
 
 ## 配置 emacs
+
 
 ```el
 ;; 这个用来自动监测 erl 安装在哪里了。方便切换不同的 erlang 版本，
