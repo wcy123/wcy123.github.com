@@ -84,7 +84,7 @@ sudo cp ./rebar /usr/local/bin/
 ## 配置 emacs
 
 
-```el
+{% highlight el %}
 ;; 这个用来自动监测 erl 安装在哪里了。方便切换不同的 erlang 版本，
 ;; 如果不在乎版本的话，直接写下面的，也是可以的。
 ;;    (setq erlang-root-dir "where_your_install_erlang")
@@ -145,7 +145,10 @@ main(_) ->
           (dolist (spec distel-shell-keys)
             (define-key erlang-shell-mode-map (read-kbd-macro (car spec)) (cadr spec))))
         (add-hook 'erlang-shell-mode-hook 'erlang-shell-mode-hook-1))))
-```
+{% endhighlight %}
+
+
+
 
 ## 下载 easemob/ejabberd
 
