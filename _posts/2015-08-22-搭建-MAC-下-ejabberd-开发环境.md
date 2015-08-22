@@ -74,7 +74,7 @@ cd rebar
 sudo cp ./rebar /usr/local/bin/
 ```
 
-## 按住 distel
+## 安装 distel
 
 这个库不是必须安装，仅对 emacs 开发有帮助。官方有一个版本
 [distel](https://github.com/massemanet/distel) ， 我用我自己 fork 的一
