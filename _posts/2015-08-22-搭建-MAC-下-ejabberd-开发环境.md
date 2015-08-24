@@ -183,3 +183,41 @@ make rel
 cp ejabberd.yml.exmaple rel/etc/ejabberd/ejabberd.yml
 rel/bin/ejabberdctrl live
 ```
+
+## 错误 OpenSsl 没有加载
+
+```
+11:39:57.262 [error] Unable to load crypto library. Failed with error:
+"load, Library load-call unsuccessful."
+OpenSSL might not be installed on this system.
+```
+
+这个由于动态链接库的版本不一致导致的，检查动态链接库的
+
+```
+my:p1_tls wangchunye$ otool -L /usr/local/Cellar/erlang/R17.5/lib/erlang/lib/crypto-3.5/priv/lib/crypto.so
+/usr/local/Cellar/erlang/R17.5/lib/erlang/lib/crypto-3.5/priv/lib/crypto.so:
+/usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1213.0.0)
+
+my:p1_tls wangchunye$ otool -L priv/lib/p1_sha.so
+priv/lib/p1_sha.so:
+/usr/local/opt/openssl/lib/libssl.1.0.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+/usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1213.0.0)
+my:p1_tls wangchunye$ otool -L priv/lib/p1_tls_drv.so
+priv/lib/p1_tls_drv.so:
+/usr/local/opt/openssl/lib/libssl.1.0.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+/usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib (compatibility version 1.0.0, current version 1.0.0)
+/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1213.0.0)
+
+```
+
+erlang 系统使用了 openssl `libcrypto` , `p1_sha.so`  `p1_tls_drv.so` 需要使用相同版本的 `libcrypto` 动态链接库。
+
+在运行 `./configure` (ejabberd 目录中的) 之前，设置环境变量
+
+```
+export CFLAGS='-I/usr/local/opt/openssl/include'
+export LDFLAGS='-L/usr/local/opt/penssl/lib'
+```
