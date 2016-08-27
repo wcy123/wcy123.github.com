@@ -37,6 +37,10 @@
 (define (lambda-body exp) (cddr exp))
 (define (make-procedure parameters body env)
   (list 'procedure parameters body env))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+
 
 (define (eval-sequence exps env)
   (cond ((last-exp? exps) (my-eval (first-exp exps) env))
