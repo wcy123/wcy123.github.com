@@ -1,6 +1,6 @@
 (define true #t)
 (define false #f)
-(define (my-eval exp env)
+(define (eval exp env)
   (cond ((self-evaluating? exp) exp)
         ((quoted? exp) (text-of-quotation exp))
         ((if? exp) (eval-if exp env))
@@ -12,7 +12,7 @@
                          env))
         ((variable? exp) (lookup-variable-value exp env))
         ((application? exp)
-         (my-apply (my-eval (operator exp) env)
+         (apply (eval (operator exp) env)
                    (list-of-values (operands exp) env)))
         (else (error #f "Unknown expression type -- EVAL" exp))))
 
@@ -20,12 +20,12 @@
   (cond ((number? exp) true)
         ((string? exp) true)
         (else false)))
-(define (if? exp) (tagged-list? exp 'my-if))
+(define (if? exp) (tagged-list? exp 'if))
 
 (define (eval-if exp env)
-  (if (true? (my-eval (if-predicate exp) env))
-      (my-eval (if-consequent exp) env)
-      (my-eval (if-alternative exp) env)))
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
 
 (define (if-predicate exp) (cadr exp))
 (define (if-consequent exp) (caddr exp))
@@ -36,7 +36,7 @@
 (define (true? exp)
   (eq? exp 'true))
 
-(define (lambda? exp) (tagged-list? exp 'my-lambda))
+(define (lambda? exp) (tagged-list? exp 'lambda))
 (define (lambda-parameters exp) (cadr exp))
 (define (lambda-body exp) (cddr exp))
 (define (make-procedure parameters body env)
@@ -46,7 +46,7 @@
 (define (procedure-environment p) (cadddr p))
 
 
-(define (my-apply procedure arguments)
+(define (apply procedure arguments)
   (eval-sequence
    (procedure-body procedure)
    (extend-environment
@@ -100,22 +100,22 @@
 (define (list-of-values exps env)
   (if (no-operands? exps)
       '()
-      (cons (my-eval (first-operand exps) env)
+      (cons (eval (first-operand exps) env)
             (list-of-values (rest-operands exps) env))))
 
 (define (eval-sequence exps env)
-  (cond ((last-exp? exps) (my-eval (first-exp exps) env))
-        (else (my-eval (first-exp exps) env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
               (eval-sequence (rest-exps exps) env))))
 
-(define (begin? exp) (tagged-list? exp 'my-begin))
+(define (begin? exp) (tagged-list? exp 'begin))
 (define (begin-actions exp) (cdr exp))
 (define (last-exp? seq) (null? (cdr seq)))
 (define (first-exp seq) (car seq))
 (define (rest-exps seq) (cdr seq))
 
 (define (quoted? exp)
-  (tagged-list? exp 'my-quote))
+  (tagged-list? exp 'quote))
 (define (text-of-quotation exp) (cadr exp))
 (define (tagged-list? exp tag)
   (if (pair? exp)

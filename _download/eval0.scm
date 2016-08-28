@@ -1,6 +1,6 @@
 (define true #t)
 (define false #f)
-(define (my-eval exp env)
+(define (eval exp env)
   (cond ((self-evaluating? exp) exp)
         (else (error "Unknown expression type -- EVAL" exp))))
 

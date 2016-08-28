@@ -1,0 +1,17 @@
+***************
+*** 4,9 ****
+    (cond ((self-evaluating? exp) exp)
+          ((quoted? exp) (text-of-quotation exp))
+          ((if? exp) (eval-if exp env))
+          (else (error "Unknown expression type -- EVAL" exp))))
+  
+  (define (self-evaluating? exp)
+--- 4,11 ----
+    (cond ((self-evaluating? exp) exp)
+          ((quoted? exp) (text-of-quotation exp))
+          ((if? exp) (eval-if exp env))
++         ((begin? exp)
++          (eval-sequence (begin-actions exp) env))
+          (else (error "Unknown expression type -- EVAL" exp))))
+  
+  (define (self-evaluating? exp)

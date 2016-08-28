@@ -1,6 +1,6 @@
 (define true #t)
 (define false #f)
-(define (my-eval exp env)
+(define (eval exp env)
   (cond ((self-evaluating? exp) exp)
         ((quoted? exp) (text-of-quotation exp))
         (else (error "Unknown expression type -- EVAL" exp))))
@@ -11,7 +11,7 @@
         (else false)))
 
 (define (quoted? exp)
-  (tagged-list? exp 'my-quote))
+  (tagged-list? exp 'quote))
 (define (text-of-quotation exp) (cadr exp))
 (define (tagged-list? exp tag)
   (if (pair? exp)
