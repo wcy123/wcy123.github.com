@@ -4,7 +4,6 @@ title:  "使用 Spring Integration Framework 写入 redis 队列"
 date:   2016/09/03 19:05:30
 categories:
 comments: true
-draft: true
 ---
 
 
