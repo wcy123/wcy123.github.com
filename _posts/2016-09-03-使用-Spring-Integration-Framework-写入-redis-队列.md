@@ -65,7 +65,6 @@ comments: true
             <artifactId>spring-integration-redis</artifactId>
         </dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -74,7 +73,61 @@ comments: true
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>
+```
+
+
+```java
+// src/main/java/com/wcy123/example/spring/integration/redis/SiRedisApplication.java
+package com.wcy123.example.spring.integration.redis;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.integration.config.EnableIntegration;
+
+@SpringBootApplication
+@EnableIntegration
+@ImportResource("classpath:/META-INF/spring/si-components.xml")
+public class SiRedisApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SiRedisApplication.class, args);
+	}
+}
+```
+
+
+src/main/resources/META-INF/spring/si-components.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+	http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
+	http://www.springframework.org/schema/integration/redis  http://www.springframework.org/schema/integration/redis/spring-integration-redis.xsd"
+       xmlns:int-redis="http://www.springframework.org/schema/integration/redis">
+
+    <int-stream:stdin-channel-adapter id="producer" channel="messageChannel"/>
+
+    <int:poller id="defaultPoller" default="true"
+                max-messages-per-poll="5" fixed-rate="200"/>
+
+    <int:channel id="messageChannel"> <!--<int:queue capacity="2" />--> </int:channel>
+    <bean id="redisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="port" value="7638" />
+    </bean>
+    <int-redis:queue-outbound-channel-adapter
+            id="queue"
+            channel="messageChannel" queue="a_queue"
+            connection-factory="redisConnectionFactory"
+            left-push="false"
+    ></int-redis:queue-outbound-channel-adapter>
+</beans>
 ```
