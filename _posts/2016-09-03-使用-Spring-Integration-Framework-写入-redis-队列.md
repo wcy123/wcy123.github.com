@@ -76,6 +76,32 @@ comments: true
 </project>
 ```
 
+上面大部分是自动生成的，自己加的只有
+
+```xml
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-stream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-redis</artifactId>
+        </dependency>
+```
+
+引入 `spring-integration-stream` ，我们可以解析 xml 中的 namespace
+
+```
+xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+```
+
+`spring-integration-stream` 的引入，我们可以解析 xml 中的 namespace
+
+```
+xmlns:int-redis="http://www.springframework.org/schema/integration/redis">
+```
+
+下面的 spring boot 生成的程序框架。
 
 ```java
 // src/main/java/com/wcy123/example/spring/integration/redis/SiRedisApplication.java
@@ -98,7 +124,20 @@ public class SiRedisApplication {
 ```
 
 
-src/main/resources/META-INF/spring/si-components.xml
+`@EnableIntegration` 标注一个 Configuration 类是 Spring Integration 的配置。
+
+```
+@ImportResource("classpath:/META-INF/spring/si-components.xml")
+```
+
+用来引入 spring integration 的 beam 定义。目前 4.3.0 中 ，不是所有的
+spring integration 组件都支持 java annotation 的配置，很多还是依赖 xml
+的配置。
+
+
+
+
+src/main/resources/META-INF/spring/si-components.xml 的内容
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -118,10 +157,9 @@ src/main/resources/META-INF/spring/si-components.xml
     <int:poller id="defaultPoller" default="true"
                 max-messages-per-poll="5" fixed-rate="200"/>
 
-    <int:channel id="messageChannel"> <!--<int:queue capacity="2" />--> </int:channel>
+    <int:channel id="messageChannel"/>
     <bean id="redisConnectionFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
-        <property name="port" value="7638" />
     </bean>
     <int-redis:queue-outbound-channel-adapter
             id="queue"
@@ -131,3 +169,43 @@ src/main/resources/META-INF/spring/si-components.xml
     ></int-redis:queue-outbound-channel-adapter>
 </beans>
 ```
+
+
+```
+    <int-stream:stdin-channel-adapter id="producer" channel="messageChannel"/>
+
+    <int:poller id="defaultPoller" default="true"
+                max-messages-per-poll="5" fixed-rate="200"/>
+```
+
+创建了一个 endpoint ，每隔 200 ms ，从标准输入读取数据，然后扔到
+`messageChannel` 中。
+
+```
+<int:channel id="messageChannel"/>
+```
+
+创建了一个 `messageChannel` 的 channel。
+
+```
+    <int-redis:queue-outbound-channel-adapter
+            id="queue"
+            channel="messageChannel" queue="a_queue"
+            connection-factory="redisConnectionFactory"
+            left-push="false"
+    ></int-redis:queue-outbound-channel-adapter>
+
+```
+
+会从 `messageChannel` 中读取 Message , 然后用 `rpush` 命令，把消息压到
+消息队列 `a_queue` 中。
+
+`queue-outbound-channel-adapter` 需要一个 redis connection factory
+
+```
+    <bean id="redisConnectionFactory"
+          class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" />
+```
+
+这里创建了一个 redis connection factory ， 这个 bean 有很多属性，用于
+表明连接的主机名称，密码，端口号，是否使用连接池等等。
