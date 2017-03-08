@@ -2,12 +2,6 @@
 
 单变量的复合函数
 
-<span class="math"><script type="math/tex; mode=display">\begin{align}
-z &= f(u_1, u_2, ..., u_n) \\
-u_i &= u_i(x) \\
-\frac{dz}{dx} &= \sum_{i=1}^{n}\frac{dz}{du_i}\frac{du_i}{dx}
-\end{align}
-</script></span>
 
 
 $$

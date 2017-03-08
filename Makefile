@@ -35,10 +35,10 @@ clean:
 
 .PHONY:index.md
 index.md: scripts/generate-index.pl
-	perl scripts/generate-index.pl $(ALL_BLOG) | tee $@
+	@perl scripts/generate-index.pl $(ALL_BLOG) > $@
 
 $(addprefix $(DEPLOY_DIRECTORY),%.html): %.md template.tmp writ.min.css
-	echo Converting: $< $@
+	@echo Converting: $< $@
 	@mkdir -p $(dir $@)
 	$(MARKDOWN) $< --output $@
 
@@ -48,14 +48,16 @@ $(addprefix $(DEPLOY_DIRECTORY),%.css): %.css
 	@cp $< $@
 
 $(addprefix $(DEPLOY_DIRECTORY),%.png): %.1
-	convert $< $@
+	@convert $< $@
 
 %.1: %.mp
-	(cd `dirname $<`;mpost `basename $<`)
+	@(cd `dirname $<`;mpost `basename $<`)
 
 
 deploy: bake
 	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
 
+save:
+	git add . ; git commit -m 'save'
 t:
 	echo $(ALL_MD)  $(HTML_FROM_MD)
