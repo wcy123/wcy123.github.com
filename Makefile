@@ -58,6 +58,6 @@ deploy: bake save
 	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
 
 save:
-	git add . ; git commit -m 'save'; git push
+	git add . ; git commit -m 'save'; git push origin pandoc
 t:
 	echo $(ALL_MD)  $(HTML_FROM_MD)
