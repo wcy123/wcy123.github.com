@@ -58,6 +58,6 @@ deploy: bake
 	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
 
 save:
-	git add . ; git commit -m 'save'
+	git add . ; git commit -m 'save'; git push
 t:
 	echo $(ALL_MD)  $(HTML_FROM_MD)
