@@ -2,6 +2,7 @@
 title: 成本函数与学习速度
 ---
 
+[back propagation](2017-03-05-backpropagation.html) 里提到模型，
 我们十分关心 $\frac{\partial{C}}{\partial{w_{l-1,j,i}}}$ 和 $\frac{\partial{C}}{\partial{b_{l,j}}}$ ，因为这个是学习速度，或者叫做训练速度。这个值很大的话，就会很快收敛。训练一个神经网路需要很大的计算量，如果能提高  $\frac{\partial{C}}{\partial{w_{l-1,j,i}}}$  和 $\frac{\partial{C}}{\partial{b_{l,j}}}$，那么我们就可以很大提升训练效率。他们的含义是指 ${w_{l-1,j,i}}$ 变化一点点，导致 $C$ 变化是不是很大。我们希望越大越好。因为梯度求解过程中，我们知道 $C$ 一定会变小，奔向最低点，那么何不让他跑的快一点。
 
 # 成本函数
