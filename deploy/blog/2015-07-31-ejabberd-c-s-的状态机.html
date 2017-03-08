@@ -1,0 +1,595 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ejabberd_c2s 的状态机</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>ejabberd_c2s 的状态机</h1>
+<h3 class="date">2015/07/31 18:51:22</h3>
+</header>
+<article>
+<h1 id="从-wait_for_stream-开始">从 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L354">wait_for_stream</a> 开始。</h1>
+<p>客户的发送的第一条消息就是</p>
+<p>{% highlight xml %} <stream:stream
+    to='localhost'
+    xmlns:stream='http://etherx.jabber.org/streams'
+    xmlns='jabber:client' version='1.0'> {% endhighlight %}</p>
+<p>调用 <code>wait_for_stream</code> 的参数是</p>
+<p>{% highlight erl %} call ejabberd_c2s:wait_for_stream( {xmlstreamstart, &lt;&lt;&quot;stream:stream&quot;&gt;&gt;, [{&lt;&lt;&quot;xmlns:stream&quot;&gt;&gt;, &lt;&lt;&quot;http://etherx.jabber.org/streams&quot;&gt;&gt;}, {&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;jabber:client&quot;&gt;&gt;}, {&lt;&lt;&quot;to&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;}, {&lt;&lt;&quot;version&quot;&gt;&gt;,&lt;&lt;&quot;1.0&quot;&gt;&gt;}]}, State) {% endhighlight %}</p>
+<p>第一个参数也是 <code>ejabberd_receiver</code> 投递的消息。把 xml 转换为 erlang 的数据类型了。</p>
+<h3 id="检查-ns_stream">检查 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L357">NS_STREAM</a></h3>
+<p>这个一般都能通过。</p>
+<h2 id="解析-server-名字-server-jlibnameprep">解析 Server 名字 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L361">Server jlib:nameprep</a></h2>
+<p>这里支持 <code>nameprep</code> 的功能。</p>
+<h2 id="解析语言标识-lang-case-xmlget_attr_sxmllang-attrs-of">解析语言标识 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L364">Lang = case xml:get_attr_s(&lt;&lt;&quot;xml:lang&quot;&gt;&gt;, Attrs) of</a></h2>
+<p>这里有防止 DoS 攻击。</p>
+<h2 id="isblacklistedip-is_ip_blacklistedstatedatastate.ip-lang"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L377">IsBlacklistedIP = is_ip_blacklisted(StateData#state.ip, Lang)</a></h2>
+<p>检查 black list 运行 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2524">check_bl_c2s</a> 的钩子。</p>
+<h2 id="如果主机名称是否在配置的主机列表中">如果主机名称是否在配置的主机列表中</h2>
+<h3 id="如果不在则退出">如果不在，则退出。</h3>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L524">{stop, normal, StateData}</a> 这个好远。</p>
+<h3 id="如果在的话"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L379-L515">如果在的话</a></h3>
+<h4 id="改变-change_shaper">改变 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L380">change_shaper</a>。</h4>
+<p>参考 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/acl.erl#L261">acl:match_rule</a> ets 表格 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/acl.erl#L262">access</a></p>
+<p>对于 c2s 来说，<a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L201">change_shaper</a> 运行这里 <a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L202">is_pid(SocketData#socket_state.receiver)</a>。</p>
+<p>然后调用这里 <a href="https://github.com/wcy123/ejabberd/blob/51508a9fc34b4c048b64be8be93e1188f9f046ef/src/ejabberd_receiver.erl#L97">ejabberd_receiver:change_shaper</a></p>
+<p>然后这里 <a href="https://github.com/wcy123/ejabberd/blob/51508a9fc34b4c048b64be8be93e1188f9f046ef/src/ejabberd_receiver.erl#L224">State#state{shaper_state = NewShaperState}</a> ，<code>ejabberd_receiver</code> 就有了一个新的 <code>shaper</code></p>
+<p>BTW: shaper is <code>normal</code> 根据简单的配置文件。</p>
+<p><a href="deadlink">TODO shaper</a></p>
+<h3 id="检查-xmlget_attr_sversion-attrs">检查 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L381">xml:get_attr_s(&lt;&lt;&quot;version&quot;&gt;&gt;, Attrs)</a></h3>
+<p>这个只有一个 pattern 可以匹配，不如写成</p>
+<p>{% highlight erl %} &lt;&lt;&quot;1.0&quot;&gt;&gt; = xml:get_attr_s(&lt;&lt;&quot;version&quot;&gt;&gt;, Attrs), {% endhighlight %}</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L383">send_header</a></li>
+</ol>
+<p>发送</p>
+{% highlight xml %}
+<?xml version='1.0'?>
+<p><stream:stream xmlns='jabber:client'
+  xmlns:stream='http://etherx.jabber.org/streams'
+  id='2540400772'
+  from='localhost' version='1.0' xml:lang='en'> {% endhighlight %}</p>
+<p>这里的 stream id 在 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L265">init</a> 的时候 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L334">streamid = new_id()</a> 得到的。</p>
+<ol start="2" style="list-style-type: decimal">
+<li>看是否有 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L384">case StateData#state.authenticated</a> 过。</li>
+</ol>
+<p>第一次来的时候，还没有认证过。<a name="auth1">这里</a> 参考<a href="#wait_for_feature_request1">wait_for_feature_request</a></p>
+<ol start="3" style="list-style-type: decimal">
+<li>准备 TLS, SASL, ZLIB</li>
+</ol>
+<p>TODO， 这些 feature 单独描述。这里先集中看 PLAIN</p>
+<ol start="4" style="list-style-type: decimal">
+<li><p>创建<a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L390">SASLState = cyrsasl:server_new</a> 仅为以后使用。</p></li>
+<li><p>基本的 feature 是 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L412">cyrsasl:listmech(Server)</a></p></li>
+</ol>
+<pre><code>(a@debian)48&gt; cyrsasl:listmech(&lt;&lt;&quot;localhost&quot;&gt;&gt;).
+[&lt;&lt;&quot;PLAIN&quot;&gt;&gt;,&lt;&lt;&quot;DIGEST-MD5&quot;&gt;&gt;,&lt;&lt;&quot;SCRAM-SHA-1&quot;&gt;&gt;, &lt;&lt;&quot;ANONYMOUS&quot;&gt;&gt;]</code></pre>
+<p>查询表格 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L148">sasl_mechanism</a> <a href="../../../07/30/ejabberd-%E7%9A%84%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/index.html#table_sasl_mechanism">这里</a> 可以看到初始化的部分。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L151">ejabberd_auth:store_type(Host)</a> 返回参数配置。</p>
+<pre><code>  (a@debian)50&gt; ejabberd_auth:store_type(&lt;&lt;&quot;localhost&quot;&gt;&gt;).
+  plain</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L457">c2s_stream_features</a></li>
+</ol>
+<p>此时得到的 feature list 是 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L456">StreamFeatures1 = TLSFeature ++ CompressFeature ++ Mechs</a> 。</p>
+<p>钩子可以过滤。</p>
+<ol start="4" style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L459">send_element</a></li>
+</ol>
+<p>发送</p>
+<p>{% highlight xml %} <stream:features> <mechanisms
+  xmlns='urn:ietf:params:xml:ns:xmpp-sasl'> <mechanism>PLAIN</mechanism> <mechanism>DIGEST-MD5</mechanism> <mechanism>SCRAM-SHA-1</mechanism> <mechanism>ANONYMOUS</mechanism> </mechanisms> </stream:features>&quot; {% endhighlight %}</p>
+<h1 id="wait_for_feature_request"><a name="wait_for_request1"></a><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L733">wait_for_feature_request</a></h1>
+<p>这里先忽略管理模块 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L730">when ?IS_STREAM_MGMT_TAG(Name)</a></p>
+<p>收到消息</p>
+<p>{% highlight xml %} <auth xmlns='urn:ietf:params:xml:ns:xmpp-sasl' mechanism='PLAIN'> AHRlc3QAMTIz </auth> {% endhighlight %}</p>
+<pre><code>echo AHRlc3QAMTIz | base64 --decode | xxd
+0000000: 0074 6573 7400 3132 33                   .test.123
+</code></pre>
+<p>转换为 Erlang 的消息，调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L733">wait_for_feature_request</a></p>
+<p>{% highlight erl %} {xmlstreamelement, {xmlel,&lt;&lt;&quot;auth&quot;&gt;&gt;, [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-sasl&quot;&gt;&gt;}, {&lt;&lt;&quot;mechanism&quot;&gt;&gt;,&lt;&lt;&quot;PLAIN&quot;&gt;&gt;}], [{xmlcdata,&lt;&lt;&quot;AHRlc3QAMTIz&quot;&gt;&gt;}]}} {% endhighlight %}</p>
+<p>xml 转换为 erlang 的数据结构是 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L735">#xmlel{name = Name, attrs = Attrs, children = Els} = El</a></p>
+<p>运行 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L743">{?NS_SASL, &lt;&lt;&quot;auth&quot;&gt;&gt;}</a> 这里。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L806">{?NS_TLS, &lt;&lt;&quot;starttls&quot;&gt;&gt;}</a> 和 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L829">{?NS_COMPRESS, &lt;&lt;&quot;compress&quot;&gt;&gt;}</a> 的功能先忽略。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L746">ClientIn = jlib:decode_base64(xml:get_cdata(Els))</a> 一定是上面 shell 命令显示的，用户名和密码。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L747">cyrsasl:server_start</a> 开始验证密码。</p>
+<p>首次按 double check 认证机制，<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L171">lists:member(Mech, listmech(State#sasl_state.myname))</a></p>
+<p>查表，得到认证模块 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L176">[#sasl_mechanism{module = Module}]</a> 。</p>
+<p>创建一个认证模块的实例， <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L178">Module:mech_new</a> 。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L182">server_step(State#sasl_state{mech_mod = Module,</a> 检查密码。 <code>server_step</code> 调用虚函数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L193">Module:mech_step</a></p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L45">cyrsasl_plain:mech_step</a> 返回的是 <code>{ok, Prop}</code> 。这个返回值好难找。就是虚函数 <code>[check_password_loop](https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L159)</code> 的返回值。<code>Prop</code> 就是对应的 <code>auth</code> 模块。</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L747">cyrsasl:server_start</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L182">cyrsasl:server_step</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L193">Module:mech_step</a></li>
+<li>Module = <code>cyrsasl_plain</code></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L45">cyrsasl_plain:mech_step</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L50">{ok, [{username, User}, {authzid, AuthzId}, {auth_module, AuthModule}]}</a></li>
+<li>AuthModule 是 <a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L48">(State#state.check_password)</a> 的返回值。</li>
+<li><code>check_password</code> 是三个匿名函数中 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L397">ejabberd_auth:check_password_with_authmodule</a> 。</li>
+<li>AuthModule 是 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L146">ejabberd_auth:check_password_loop</a> 的返回值。</li>
+<li>是一个认证成功的模块，<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L161">true -&gt; {true, AuthModule}</a></li>
+</ol>
+<p>所以 Props 的返回值是一个 proplist ，其中有 <code>username</code>, <code>authzid</code>, <code>auth_module</code> 和 <code>auth_module</code>。</p>
+<h2 id="statedatastate.sockmodreset_streamstatedatastate.socket"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L751">(StateData#state.sockmod):reset_stream(StateData#state.socket)</a> 。</h2>
+<p>sockmod 是 <code>ejabberd_socket</code></p>
+<h3 id="ejabberd_receiverreset_stream"><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L172">ejabberd_receiver:reset_stream</a></h3>
+<h4 id="do_callpid-reset_stream"><a href="https://github.com/wcy123/ejabberd/blob/51508a9fc34b4c048b64be8be93e1188f9f046ef/src/ejabberd_receiver.erl#L102">do_call(Pid, reset_stream)</a></h4>
+<h5 id="handle_callreset_stream-_from"><a href="https://github.com/wcy123/ejabberd/blob/51508a9fc34b4c048b64be8be93e1188f9f046ef/src/ejabberd_receiver.erl#L195">handle_call(reset_stream, _From,</a></h5>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/processone/xml%201a46ce78e663aa9d8c1588a750303f26c46cf470/src/xml_stream.erl#L222">close(#xml_stream_state{port = Port})</a> 问题，close 之前没有发送 <code>&lt;/stream&gt;</code> ？</li>
+</ol>
+<p>问题，应该不会调用，close ，为啥呢？</p>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L751">reset_stream(StateData#state.socket)</a> 中，state.socket 的值是 <code>{socket_state,gen_tcp,#Port&lt;7424.13522&gt;,&lt;ejabberd_receiver&gt;}</code></li>
+<li>receiver 的状态隐藏了。</li>
+<li>??? 奇怪。 TODO</li>
+</ol>
+<h2 id="运行钩子-c2s_auth_result">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L760">c2s_auth_result</a></h2>
+<h2 id="send_element"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L763">send_element</a></h2>
+<p>{% highlight xml %} <success xmlns='urn:ietf:params:xml:ns:xmpp-sasl'/> {% endhighlight %}</p>
+<h2 id="下一个状态-wait_for_stream">下一个状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L767">wait_for_stream</a> ，</h2>
+<p>这个时候， <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L769">authenticated = true</a> 。</p>
+<h1 id="wait_for_stream"><code>wait_for_stream</code></h1>
+<p>收到新的消息。</p>
+<p>{% highlight xml %} <stream:stream
+   to='localhost'
+   xmlns:stream='http://etherx.jabber.org/streams'
+   xmlns='jabber:client' version='1.0'> {% endhighlight %}</p>
+<p>调用</p>
+<pre><code>ejabberd_c2s:wait_for_stream(
+ {xmlstreamstart,&lt;&lt;&quot;stream:stream&quot;&gt;&gt;,
+                [{&lt;&lt;&quot;xmlns:stream&quot;&gt;&gt;,&lt;&lt;&quot;http://etherx.jabber.org/streams&quot;&gt;&gt;},
+                 {&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;jabber:client&quot;&gt;&gt;},
+                 {&lt;&lt;&quot;to&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;},
+                 {&lt;&lt;&quot;version&quot;&gt;&gt;,&lt;&lt;&quot;1.0&quot;&gt;&gt;}]}</code></pre>
+<h2 id="和上面一样检查-ip-black-list-change-shaper-send_header">和上面一样检查 ip black list, change shaper , <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L383">send_header</a></h2>
+<h2 id="statedatastate.authenticated-的情况和上面不一样了运行-case-statedatastate.resource"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L384">StateData#state.authenticated</a> 的情况和上面不一样了，运行 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L470">case StateData#state.resource</a></h2>
+<p>问题，这里最好 double check <code>true</code> ，保证程序健壮。</p>
+<h2 id="如果没有-resource---的情况">如果没有 resource <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L471">&lt;&lt;&quot;&quot;&gt;&gt; -&gt;</a> 的情况</h2>
+<h3 id="运行钩子-roster_get_versioning_feature">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L473">roster_get_versioning_feature</a></h3>
+<h3 id="忽略-streammanagementfeature-返回-true">忽略 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L476">StreamManagementFeature</a> ，返回 <code>true</code></h3>
+<h3 id="运行钩子-c2s_stream_features">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L499">c2s_stream_features</a></h3>
+<h3 id="发送数据-ejabberd_c2ssend_element">发送数据 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L501">ejabberd_c2s:send_element</a></h3>
+<p>{% highlight erl %} [{xmlel, &lt;&lt;&quot;bind&quot;&gt;&gt;, %% name [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}], %% attrs [] %% children }, {xmlel,&lt;&lt;&quot;session&quot;&gt;&gt;, %% name [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;}], %% attris []}, {xmlel,&lt;&lt;&quot;sm&quot;&gt;&gt;,[{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:xmpp:sm:2&quot;&gt;&gt;}],[]}, {xmlel,&lt;&lt;&quot;sm&quot;&gt;&gt;,[{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:xmpp:sm:3&quot;&gt;&gt;}],[]}] {% endhighlight %}</p>
+<p>{% highlight xml %} <stream:features> <bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'/> <session xmlns='urn:ietf:params:xml:ns:xmpp-session'/> <sm xmlns='urn:xmpp:sm:2'/> <sm xmlns='urn:xmpp:sm:3'/> </stream:features> {% endhighlight %}</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L477">stream_mgmt_enabled(StateData)</a> 是 true 所以 sm2 sm3 存在。</p>
+<p>看看这些 features 是从哪里来的。 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L476">StreamManagementFeature</a> 是空的。</p>
+<pre><code>(a@debian)23&gt; Server = &lt;&lt;&quot;localhost&quot;&gt;&gt;.
+&lt;&lt;&quot;localhost&quot;&gt;&gt;
+(a@debian)24&gt;  ejabberd_hooks:run_fold(roster_get_versioning_feature, Server, [], [Server]).
+[]</code></pre>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L489">attrs = [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, ?NS_BIND}]</a> 和 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L492">attrs = [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, ?NS_SESSION}]</a> 是默认就有的。</p>
+<p>下一个状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L505">wait_for_bind</a></p>
+<h1 id="wait_for_bindxmlstreamelement-el-statedata"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1046">wait_for_bind({xmlstreamelement, El}, StateData)</a></h1>
+<p>收到消息</p>
+<p>{% highlight xml %} <iq type="set" id="1"> <bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" /> </iq> {% endhighlight %}</p>
+<p>调用</p>
+<pre><code>ejabberd_c2s:wait_for_bind(
+{xmlstreamelement,
+ {xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+        [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;1&quot;&gt;&gt;}],
+        [{xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;,
+         [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, &lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}],
+         []}]}},{state, ...})</code></pre>
+<h2 id="检查-jlibiq_query_infoel">检查 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1047">jlib:iq_query_info(El)</a> 。</h2>
+<pre><code>(a@debian)32&gt; El = {xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;, [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;1&quot;&gt;&gt;}], [{xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;, [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, &lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}], []}]}.
+{xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;1&quot;&gt;&gt;}],
+       [{xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;,
+               [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}],
+               []}]}
+(a@debian)33&gt; jlib:iq_query_info(El).
+{iq,&lt;&lt;&quot;1&quot;&gt;&gt;,set,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;,&lt;&lt;&gt;&gt;,
+    {xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;,
+           [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}],
+           []}}
+</code></pre>
+<h2 id="检查-r1-xmlget_path_s">检查 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1051">R1 = xml:get_path_s</a></h2>
+<pre><code>(a@debian)34&gt; SubEl = {xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;, [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}], []}.
+{xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}],
+       []}
+(a@debian)35&gt; xml:get_path_s(SubEl, [{elem, &lt;&lt;&quot;resource&quot;&gt;&gt;}, cdata]).
+&lt;&lt;&gt;&gt;</code></pre>
+<h2 id="根据-now-来生成一个临时的-jlibresourceprepr1">根据 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1058">now()</a> 来生成一个临时的 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1053">jlib:resourceprep(R1)</a> 。</h2>
+<pre><code>(a@debian)36&gt; iolist_to_binary([randoms:get_string()
+                                        | [jlib:integer_to_binary(X)
+                                           || X &lt;- tuple_to_list(now())]]).
+&lt;&lt;&quot;18749916231438494959141559&quot;&gt;&gt;
+(a@debian)37&gt;</code></pre>
+<p>错误处理 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1063">Err = jlib:make_error_reply</a> 忽略。</p>
+<h2 id="资源冲突检测-resource_conflict_action">资源冲突检测 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1067">resource_conflict_action</a></h2>
+<h3 id="ejabberd_smis_existing_resourceu-s-r"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1002">ejabberd_sm:is_existing_resource(U, S, R)</a></h3>
+<pre><code>(a@debian)37&gt; ejabberd_sm:is_existing_resource(&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;, &lt;&lt;&quot;18749916231438494959141559&quot;&gt;&gt;).
+false</code></pre>
+<h4 id="get_resource_sessions"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L679">get_resource_sessions</a></h4>
+<h5 id="get_sm_backend"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L750">get_sm_backend</a></h5>
+<p>有参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L751">sm_db_type</a> 控制。</p>
+<p>可行值</p>
+<ul>
+<li>internal 和 mnesia 等价</li>
+<li>mnesia</li>
+<li>odbc</li>
+<li>redi</li>
+</ul>
+<p>默认值是 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L756">mnesia</a>。</p>
+<pre><code>(a@debian)38&gt; ejabberd_config:get_option(sm_db_type, fun(V) -&gt; V end).
+undefined</code></pre>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L757">list_to_atom(&quot;ejabberd_sm_&quot; ++ atom_to_list(DBType))</a> 动态构造回调模块。</p>
+<h4 id="modget_sessions"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L686">Mod:get_sessions</a></h4>
+<p>读取表 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L77">session</a>。</p>
+<ol style="list-style-type: decimal">
+<li>启动看这里 <a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L64">ejabberd_sm:start</a>。</li>
+<li>读参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L321">Mod = get_sm_backend</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L322">Mod:init</a> 初始化对应的模块。</li>
+<li>创建 ets 表格 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L323">sm_iqtable</a></li>
+<li>注册钩子 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L326">roster_in_subscription</a></li>
+<li>注册钩子 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L328">offline_message_hook</a></li>
+<li>注册钩子 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L330">remove_user</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L333">ejabberd_commands:register_commands</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L38">ejabberd_sm_mnesia:init</a> 运行 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L39">gen_server:start_link({local, ?MODULE}, ?MODULE, [], [])</a>。这个让人费解。因为这个不符合 OTP 的设计风格。一眼看上去是有循环调用。实际上因为名字只能注册一次，所以没有问题，但这个风格不好。 错了，这里不会有循环调用，实际调用的是 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L82">init/1([])</a>。 这里又有一个风格的问题，同名函数应该是有相关的，如果不相关，<code>init/0</code> 完全应该有一个不同的名字，例如 <code>start</code>。</li>
+<li>初始化表格 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L83">update_tables</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L126">[ur, user, node] -&gt; mnesia:delete_table(session)</a> 解决后相兼容的问题。</li>
+<li>删除表格 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L137">mnesia:delete_table(presence)</a> 。</li>
+<li><p>删除表格 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L142">mnesia:delete_table(local_session)</a></p>
+<p>这里有一个风格问题，</p>
+<p><code>case lists:member(local_session, mnesia:system_info(tables)) of  true -&gt;      mnesia:delete_table(local_session);  false -&gt;      ok  end.</code></p>
+<p>完全可以写成</p>
+<p><code>mnesia:delete_table(local_session);</code></p>
+这是所谓的 defensive programming 和 let it crash 的区别。</li>
+<li><p>创建表格 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L84">session</a></p>
+<p>这里也有一个风格问题，写成 <code>ok = mnesia:create_table(...)</code> 比较好， let it crash。</p>
+<p>这里有一个关键的架构问题，是否使用分布式数据库。mnesia 数据十分不 好理解。从这里看， <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L85">node()</a> , ejabberd 似乎没有使用分布式数据库的功能。每个节点有自己独立的 session table 。mnesia 数据库集群是通过 schema 中的 <code>db_nodes</code> 和 <code>extra_db_nodes</code> 来决定的。启动 mnesia 之后，可以用 <code>mnesia:change_config(extra_db_nodes)</code> 来实现。 ejabberd 似乎想用 rpc 来实现可控的 session 查询，需要读 <code>ejabberd_route</code> 才能知道。 这个问题比较难。需要分析分布式数据库和 rpc 之间的优缺点。 mnesia 本身的复杂，导致理解上有困难，不敢用。原理是讲，是可以简化程序设 计。但是能不能和其他的 session 管理方式了，例如 odbc 等等，无缝工 作呢？性能上那一个好呢？强壮性？代码的可维护性？mnesia 分布式数据 库可以支持多少 全局 table ? 会不会有瓶颈？如果有瓶颈，是不是可以 放弃 transaction? 如果放弃 transaction ，是不是会出现一致性问题? 初步感觉，现在的设计没有大问题。也许用 rpc 是一个好办法。现在的设 计应给更好。</p>
+<p>表格格式 <a href="https://github.com/wcy123/ejabberd/blob/9574e71e8db595ce7b2fa2f8fbfc38deec2ad74b/include/ejabberd_sm.hrl#L4">-record(session, {sid, usr, us, priority, info})</a></p>
+<p><code>{sid, usr, us, priority, info}  初步猜测，session id  user  server  priority</code></p></li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L87">session_counter</a></p>
+表格格式 <a href="https://github.com/wcy123/ejabberd/blob/9574e71e8db595ce7b2fa2f8fbfc38deec2ad74b/include/ejabberd_sm.hrl#L5">-record(session_counter, {vhost, count})</a>。</li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L92">mnesia:add_table_copy(session, node(), ram_copies)</a> 这一步是不是没有用啊。</p></li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L94">mnesia:subscribe(system)</a> 这个啥意思？ 为了监控系统时间 <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L104">handle_info({mnesia_system_event, {mnesia_down, Node}}, State)</a></p>
+<p>这里奇怪，ets 函数也可以直接操作 mnesia table <a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L105">ets:select_delete</a>。</p>
+<p>还有, <code>mnesia_down</code> 的事件是不是所有连接的 node 都能收到这个事件， 而是特指 mnesia 集群里面的 nodes。不是说没有 mnesia 的集群，而是 每一个 node 有自己的表格吗？那这个事件应该永远不会发生。</p></li>
+</ol>
+<h4 id="resource_conflict_action"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1001">resource_conflict_action</a></h4>
+<p>这个简单了，根据 priority 决定是否增加新的 session。</p>
+<h3 id="重复就关闭连接-send_elementstatedata-err">重复就关闭连接 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1075">send_element(StateData, Err)</a></h3>
+<h3 id="构造新的-full-jid-jid-jlibmake_jidu-statedatastate.server-r2">构造新的 Full JID <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1078">JID = jlib:make_jid(U, StateData#state.server, R2)</a></h3>
+<p>发送 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1089">send_element(StateData, jlib:iq_to_xml(Res))</a></p>
+<pre><code>{xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+   [{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;1&quot;&gt;&gt;},{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;result&quot;&gt;&gt;}],
+    [{xmlel,&lt;&lt;&quot;bind&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-bind&quot;&gt;&gt;}],
+       [{xmlel,&lt;&lt;&quot;jid&quot;&gt;&gt;,[],
+       [{xmlcdata,&lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}]}]}]}</code></pre>
+<p>{% highlight xml %} <iq id='1' type='result'> <bind xmlns='urn:ietf:params:xml:ns:xmpp-bind'> <jid>test@localhost/31729980831438183620933095</jid> </bind> </iq> {% endhighlight %}</p>
+<p>bind 之后，用户就有自己的 resource , full JID 了。</p>
+<h3 id="下一个状态-wait_for_session">下一个状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1090">wait_for_session</a></h3>
+<h1 id="状态-wait_for_sessionxmlstreamelement-el-statedata">状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1110">wait_for_session({xmlstreamelement, El}, StateData)</a></h1>
+<p>收到 xml</p>
+<p>{% highlight xml %} &lt;iq type=&quot;set&quot; id=&quot;2&quot;&gt; <session xmlns=\"urn:ietf:params:xml:ns:xmpp-session\" /> </iq>&quot; {% endhighlight %}</p>
+<p>调用参数</p>
+<pre><code>ejabberd_c2s:wait_for_session(
+{xmlstreamelement,
+   {xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;2&quot;&gt;&gt;}],
+       [{xmlel,&lt;&lt;&quot;session&quot;&gt;&gt;,
+        [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, &lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;}],
+        []}]}})
+</code></pre>
+<h2 id="update_num_stanzas_instatedata-el"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1111">update_num_stanzas_in(StateData, El)</a></h2>
+<p>更新变量 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2815">StateData#state.mgmt_stanzas_in</a></p>
+<h2 id="jlibiq_query_infoel"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1112">jlib:iq_query_info(El)</a></h2>
+<pre><code>
+(a@debian)41&gt; El = {xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;2&quot;&gt;&gt;}],
+       [{xmlel,&lt;&lt;&quot;session&quot;&gt;&gt;,
+        [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;, &lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;}],
+        []}]}.
+{xmlel,&lt;&lt;&quot;iq&quot;&gt;&gt;,
+       [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;set&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;2&quot;&gt;&gt;}],
+       [{xmlel,&lt;&lt;&quot;session&quot;&gt;&gt;,
+               [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;}],
+               []}]}
+(a@debian)42&gt; jlib:iq_query_info(El).
+{iq,&lt;&lt;&quot;2&quot;&gt;&gt;,set,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;,
+    &lt;&lt;&gt;&gt;,
+    {xmlel,&lt;&lt;&quot;session&quot;&gt;&gt;,
+           [{&lt;&lt;&quot;xmlns&quot;&gt;&gt;,&lt;&lt;&quot;urn:ietf:params:xml:ns:xmpp-session&quot;&gt;&gt;}],
+           []}}</code></pre>
+<p>和 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1113">{type = set, xmlns = ?NS_SESSION}</a> 是一致的。</p>
+<h2 id="aclmatch_rule"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1117">acl:match_rule</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1118">NewStateData#state.access</a> 是 c2s 。为啥呢</p>
+<ol style="list-style-type: decimal">
+<li>init 中 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L266">Access = case lists:keysearch(access, 1, Opts)</a> 这里初始化。</li>
+<li>这里调用 <a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L104">Module:start({?MODULE, SocketData}, Opts)</a> 间接调用 init</li>
+<li>这里传递 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L309">CallMod:start(strip_frontend(Module), gen_tcp, Socket, Opts)</a> Opts, CallMod 是 <code>ejabberd_c2s</code> 。</li>
+<li>最终 Opts 是从参数里面读出来的 。<a href="../../../07/30/ejabberd-%E7%9A%84%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/index.html#c2s_access">参考这里</a></li>
+</ol>
+<pre><code>(a@debian)44&gt; rr(jlib).
+[iq,jid,rsm_in,rsm_out,scram,xmlel,xmlelement]
+(a@debian)45&gt; {jid,&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+            &lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}.
+{jid,&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+(a@debian)45&gt;             &lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}.
+#jid{user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     resource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+     luser = &lt;&lt;&quot;test&quot;&gt;&gt;,lserver = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     lresource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}
+(a@debian)46&gt; acl:match_rule(&lt;&lt;&quot;localhost&quot;&gt;&gt;,c2s, v(45)).
+allow
+(a@debian)47&gt; table(access).
+{atomic,[{access,{muc_create,global},[{local,allow}]},
+         {access,{register,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,allow}]},
+         {access,{s2s_shaper,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,fast}]},
+         {access,{muc_create,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+         {access,{max_user_sessions,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,10}]},
+         {access,{pubsub_createnode,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+         {access,{muc,global},[{all,allow}]},
+         {access,{max_user_offline_messages,global},
+                 [{admin,5000},{all,100}]},
+         {access,{c2s_shaper,global},[{admin,none},{all,normal}]},
+         {access,{local,global},[{local,allow}]},
+         {access,{local,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+         {access,{muc_admin,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+         {access,{muc_admin,global},[{admin,allow}]},
+         {access,{announce,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+         {access,{muc,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,allow}]},
+         {access,{c2s,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{blocked,deny},{all,allow}]},
+         {access,{configure,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+         {access,{c2s,global},[{blocked,deny},{all,allow}]},
+         {access,{announce,global},[{admin,allow}]},
+         {access,{trusted_network,global},[{loopback,allow}]},
+         {access,{configure,global},[{admin,allow}]},
+         {access,{pubsub_createnode,global},[{local,...}]},
+         {access,{max_user_offline_messages,&lt;&lt;...&gt;&gt;},[{...}|...]},
+         {access,{c2s_shaper,...},[...]},
+         {access,{...},...},
+         {access,...},
+         {...}|...]}
+(a@debian)50&gt; io:format(&quot;~p~n&quot;,[ets:tab2list(access)]).
+[{access,{muc_create,global},[{local,allow}]},
+ {access,{register,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,allow}]},
+ {access,{s2s_shaper,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,fast}]},
+ {access,{muc_create,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+ {access,{max_user_sessions,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,10}]},
+ {access,{pubsub_createnode,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+ {access,{muc,global},[{all,allow}]},
+ {access,{max_user_offline_messages,global},[{admin,5000},{all,100}]},
+ {access,{c2s_shaper,global},[{admin,none},{all,normal}]},
+ {access,{local,global},[{local,allow}]},
+ {access,{local,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{local,allow}]},
+ {access,{muc_admin,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+ {access,{muc_admin,global},[{admin,allow}]},
+ {access,{announce,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+ {access,{muc,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{all,allow}]},
+ {access,{c2s,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{blocked,deny},{all,allow}]},
+ {access,{configure,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,allow}]},
+ {access,{c2s,global},[{blocked,deny},{all,allow}]},
+ {access,{announce,global},[{admin,allow}]},
+ {access,{trusted_network,global},[{loopback,allow}]},
+ {access,{configure,global},[{admin,allow}]},
+ {access,{pubsub_createnode,global},[{local,allow}]},
+ {access,{max_user_offline_messages,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,5000},{all,100}]},
+ {access,{c2s_shaper,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{admin,none},{all,normal}]},
+ {access,{s2s_shaper,global},[{all,fast}]},
+ {access,{max_user_sessions,global},[{all,10}]},
+ {access,{trusted_network,&lt;&lt;&quot;localhost&quot;&gt;&gt;},[{loopback,allow}]},
+ {access,{register,global},[{all,allow}]}]
+ok
+(a@debian)51&gt;</code></pre>
+<p>初始化过程 <a href="../../../07/30/ejabberd-%E7%9A%84%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/index.html#acl_init">参考这里</a></p>
+<p>先忽略这个权限管理部分。</p>
+<h2 id="jlibmake_result_iq_replyelxmlelchildren"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1123">jlib:make_result_iq_reply(El#xmlel{children = []})</a></h2>
+<pre><code>(a@debian)51&gt; jlib:make_result_iq_reply(El#xmlel{children = []}).
+#xmlel{name = &lt;&lt;&quot;iq&quot;&gt;&gt;,
+       attrs = [{&lt;&lt;&quot;type&quot;&gt;&gt;,&lt;&lt;&quot;result&quot;&gt;&gt;},{&lt;&lt;&quot;id&quot;&gt;&gt;,&lt;&lt;&quot;2&quot;&gt;&gt;}],
+       children = []}
+</code></pre>
+<h2 id="send_stanzanewstatedata-res"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1124">send_stanza(NewStateData, Res)</a></h2>
+<p>最后发送的结果是</p>
+<p>{% highlight xml %} <iq type='result' id='2'/> {% endhighlight %}</p>
+<h3 id="csi_filter_stanza"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1913">csi_filter_stanza</a></h3>
+<h4 id="运行钩子-csi_filter_stanza">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L3031">csi_filter_stanza</a></h4>
+<p>得到 action 为， queue, drop, or send</p>
+<p>这里似乎看不太懂，参考 XEP-0352。</p>
+<h3 id="change_shapernewstate-jid"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1125">change_shaper(NewState, JID)</a></h3>
+<p>这个有啥用。</p>
+<h3 id="运行钩子-roster_get_subscription_lists">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1127">roster_get_subscription_lists</a> 。</h3>
+<pre><code>(a@debian)54&gt; ejabberd_hooks:run_fold(roster_get_subscription_lists, &lt;&lt;&quot;localhost&quot;&gt;&gt;, {[], []}, [&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;]).
+{[{&lt;&lt;&quot;test1&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&gt;&gt;}],
+[{&lt;&lt;&quot;test1&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&gt;&gt;}]}
+(a@debian)55&gt; ejabberd_hooks:run_fold(roster_get_subscription_lists, &lt;&lt;&quot;localhost&quot;&gt;&gt;, {[], []}, [&lt;&lt;&quot;test1&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;]).
+{[{&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&gt;&gt;}],
+ [{&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&gt;&gt;}]}
+(a@debian)57&gt; JID = {jid,&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;, &lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}.
+#jid{user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     resource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+     luser = &lt;&lt;&quot;test&quot;&gt;&gt;,lserver = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     lresource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}
+(a@debian)58&gt; jlib:jid_tolower(jlib:jid_remove_resource(JID)).
+{&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&gt;&gt;}
+</code></pre>
+<h3 id="运行钩子-privacy_get_user_list">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1136">privacy_get_user_list</a></h3>
+<pre><code>(a@debian)60&gt; rr(ejabberd_c2s).
+[iq,jid,listitem,privacy,rsm_in,rsm_out,scram,socket_state,
+ state,userlist,xmlel,xmlelement]
+(a@debian)61&gt; ejabberd_hooks:run_fold(privacy_get_user_list, &lt;&lt;&quot;localhost&quot;&gt;&gt;, #userlist{}, [&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;]).
+#userlist{name = none,list = [],needdb = false}</code></pre>
+<h3 id="get_conn_typenewstate"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1139">get_conn_type(NewState)</a></h3>
+<p>参考这里 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2018">get_conn_type(StateData)</a></p>
+<p>Conn 应该是 <code>c2s</code></p>
+<h3 id="构造-info-这就是-session-table-中的-info-那一列">构造 info ， 这就是 session table 中的 info 那一列</h3>
+<p><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1140">[{ip, NewState#state.ip}, {conn, Conn}, {auth_module, NewState#state.auth_module}]</a></p>
+<h3 id="开会-ejabberd_smopen_session">开会， <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1142">ejabberd_sm:open_session</a></h3>
+<ol style="list-style-type: decimal">
+<li>调用 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L135">open_session</a></li>
+<li>调用 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L125l">open_session(SID, User, Server, Resource, Priority, Info)</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L126">set_session(SID, User, Server, Resource, Priority, Info)</a></li>
+<li>调用对应模块的 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L419">Mod:set_session</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/a0fafc383a3088bb2a277aa127f90f16735a1569/src/ejabberd_sm_mnesia.erl#L48">mnesia:dirty_write(Session)</a></li>
+</ol>
+<p>session id 是怎么得到的？</p>
+<pre><code>(a@debian)65&gt; State = {state, {socket_state, gen_tcp, port, ejabberd_receiver_pid}, ejabberd_socket, ref, false, &lt;&lt;&quot;1077953735&quot;&gt;&gt;, undefined,c2s, c2s_shaper,false, false,false,false, [verify_none, compression_none], true, {jid,&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;, &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;, &lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;, &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}, &lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;, &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;, { {1438,183620, 762672}, ejabberd_c2s_pid}, {0,nil}, {0,nil}, {0,nil}, undefined, undefined, {userlist,none, [],false}, unknown, ejabberd_auth_internal, { {127,0,0,1}, 56034}, [],active,[], inactive, undefined, undefined,500, undefined,300, false,0,0,&lt;&lt;&gt;&gt;}.
+#state{socket = #socket_state{sockmod = gen_tcp,
+                              socket = port,receiver = ejabberd_receiver_pid},
+       sockmod = ejabberd_socket,socket_monitor = ref,
+       xml_socket = false,streamid = &lt;&lt;&quot;1077953735&quot;&gt;&gt;,
+       sasl_state = undefined,access = c2s,shaper = c2s_shaper,
+       zlib = false,tls = false,tls_required = false,
+       tls_enabled = false,
+       tls_options = [verify_none,compression_none],
+       authenticated = true,
+       jid = #jid{user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+                  resource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+                  luser = &lt;&lt;&quot;test&quot;&gt;&gt;,lserver = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+                  lresource = &lt;&lt;&quot;317299808314381836209330&quot;...&gt;&gt;},
+       user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+       resource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+       sid = { {1438,183620,762672},ejabberd_c2s_pid},
+       pres_t = {0,nil},
+       pres_f = {0,nil},
+       pres_a = {0,nil},
+       pres_last = undefined,pres_timestamp = undefined,
+       privacy_list = #userlist{name = none,list = [],...},
+       conn = unknown,auth_module = ejabberd_auth_internal,
+       ip = {...},...}
+(a@debian)66&gt; State#state.sid.
+{ {1438,183620,762672},ejabberd_c2s_pid}</code></pre>
+<p>初始化 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L265">init([{SockMod, Socket}, Opts])</a> 的时候，<a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L334">sid = {now(), self()}</a></p>
+<p>下一个状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1150">session_established</a></p>
+<h1 id="session_established"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1191">session_established</a></h1>
+<p>收到消息</p>
+<p>{% highlight xml %} <presence from="test@localhost/31729980831438183620933095" /> {% endhighlight %}</p>
+<p>调用的是</p>
+<pre><code>{xmlstreamelement,
+                                {xmlel,&lt;&lt;&quot;presence&quot;&gt;&gt;,
+                                 [{&lt;&lt;&quot;from&quot;&gt;&gt;,
+                                   &lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}],
+                                 []}}</code></pre>
+<h2 id="check_fromel-fromjid"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1194">check_from(El, FromJID)</a></h2>
+<p>这个似乎没啥用。直接跳到 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1200">session_established2</a></p>
+<h2 id="update_num_stanzas_in"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1231">update_num_stanzas_in</a></h2>
+<p>不是管理包，先忽略。</p>
+<h2 id="to-xmlget_attr_sto-attrs"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1235">To = xml:get_attr_s(&lt;&lt;&quot;to&quot;&gt;&gt;, Attrs)</a></h2>
+<pre><code>(a@debian)71&gt; xml:get_attr_s(&lt;&lt;&quot;to&quot;&gt;&gt;, [{&lt;&lt;&quot;from&quot;&gt;&gt;,
+                                   &lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}]).
+&lt;&lt;&gt;&gt;</code></pre>
+<p>没有的话，就是 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1237">jlib:make_jid(User, Server, &lt;&lt;&quot;&quot;&gt;&gt;)</a></p>
+<pre><code>(a@debian)72&gt; jlib:make_jid(&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;, &lt;&lt;&quot;&quot;&gt;&gt;)
+#jid{user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     resource = &lt;&lt;&gt;&gt;,luser = &lt;&lt;&quot;test&quot;&gt;&gt;,
+     lserver = &lt;&lt;&quot;localhost&quot;&gt;&gt;,lresource = &lt;&lt;&gt;&gt;}</code></pre>
+<h2 id="newel1-jlibremove_attrxmlns-el"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1240">NewEl1 = jlib:remove_attr(&lt;&lt;&quot;xmlns&quot;&gt;&gt;, El)</a></h2>
+<pre><code>(a@debian)76&gt; El = #xmlel{name = &lt;&lt;&quot;presence&quot;&gt;&gt;, attrs = [{&lt;&lt;&quot;from&quot;&gt;&gt;, &lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}], children = []}.
+#xmlel{name = &lt;&lt;&quot;presence&quot;&gt;&gt;,
+       attrs = [{&lt;&lt;&quot;from&quot;&gt;&gt;,
+                 &lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}],
+       children = []}
+(a@debian)77&gt; NewEl1 = jlib:remove_attr(&lt;&lt;&quot;xmlns&quot;&gt;&gt;, El).
+#xmlel{name = &lt;&lt;&quot;presence&quot;&gt;&gt;,
+       attrs = [{&lt;&lt;&quot;from&quot;&gt;&gt;,
+                 &lt;&lt;&quot;test@localhost/31729980831438183620933095&quot;&gt;&gt;}],
+       children = []}</code></pre>
+<p>不知道为啥用。</p>
+<h2 id="newel-case-xmlget_attr_sxmllang-attrs-of"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1241">NewEl = case xml:get_attr_s(&lt;&lt;&quot;xml:lang&quot;&gt;&gt;, Attrs) of</a></h2>
+<p>设置语言。</p>
+<h2 id="presence-的处理分支"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1262">&lt;&lt;&quot;presence&quot;&gt;&gt;</a> 的处理分支</h2>
+<h3 id="运行钩子-c2s_update_presence">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1264">c2s_update_presence</a></h3>
+<h3 id="运行钩子-user_send_packet">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1269">user_send_packet</a></h3>
+<h3 id="resource-为空-运行-presence_update">Resource 为空, 运行 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1276">presence_update</a>。</h3>
+<p>User updates his presence (non-directed presence packet)</p>
+<pre><code>%% FromJID =
+(a@debian)78&gt; {jid,&lt;&lt;&quot;test&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,&lt;&lt;&quot;test&quot;&gt;&gt;, &lt;&lt;&quot;localhost&quot;&gt;&gt;,&lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}.
+#jid{user = &lt;&lt;&quot;test&quot;&gt;&gt;,server = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     resource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;,
+     luser = &lt;&lt;&quot;test&quot;&gt;&gt;,lserver = &lt;&lt;&quot;localhost&quot;&gt;&gt;,
+     lresource = &lt;&lt;&quot;31729980831438183620933095&quot;&gt;&gt;}
+
+
+### [xml:get_attr_s(&lt;&lt;&quot;type&quot;&gt;&gt;, Attrs)](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2070)
+
+是空的，所以运行 [_ -&gt;](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2093)。
+
+### [get_priority_from_presence(OldPresence)](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2096)
+
+ejabberd_c2s:get_priority_from_presence/1 -&gt; 0
+
+
+### [update_priority(NewPriority, Packet, StateData)](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2099)
+
+### [ejabberd_sm:set_presence](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2327)
+
+更新数据库，奇怪，presence 的属性不在数据库中啊。
+
+
+#### 运行钩子
+[set_presence_hook](https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L228)
+。
+
+
+
+### 更新状态 [NewStateData = StateData#state{pres_last = Packet, pres_timestamp = now()}](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2102)
+
+### 运行钩子 [user_available_hook](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2105)
+
+从 unavailabe 到 avaialbe 的时候，运行这个钩子。
+
+### 发送离线消息 [resend_offline_messages](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2109)
+
+
+#### 运行钩子 [resend_offline_messages_hook](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2378)
+
+#### 隐私检查[privacy_check_packet](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2385)
+
+运行钩子 [privacy_check_packet](https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2183) 。
+
+
+风格问题，
+
+</code></pre>
+<pre><code>             Pass = case privacy_check_packet(StateData,
+                             From, To,
+                             Packet, in)
+                   of
+                 allow -&gt; true;
+                 deny -&gt; false
+                   end,
+            if Pass -&gt;
+                   ejabberd_router:route(From, To, Packet);
+               true -&gt; ok
+            end</code></pre>
+<pre><code>
+可以简化为
+
+</code></pre>
+<p>if is_privacy_allow((StateData, From, To, Packet, in) -&gt; ejabberd_router:route(From, To, Packet); end ```</p>
+<p>c2s 本身不处理离线消息的功能，留给钩子模块处理。</p>
+<h3 id="更新订阅状态-resend_subscription_requests">更新订阅状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2110">resend_subscription_requests</a></h3>
+<p>这个结构和 resend offline message 类似。</p>
+<h4 id="运行钩子-resend_subscription_requests_hook">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2403">resend_subscription_requests_hook</a></h4>
+<h4 id="这里调用-send_packet">这里调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2406">send_packet</a></h4>
+<p>而没有直接调用 ejabberd_route:route 函数。 send packet 根据消息类型 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1924">is_stanza(Packet)</a>，调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1926">send_stanza</a> 或者 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1928">send_element</a> 。 send element 不改变内部状态， send stanza 使用了 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1913">csi_filter_stanza</a> 。</p>
+<p>message, presence, iq 消息，而且带有 client, 或者 server name space 标志的 xml packet 都是 stanza。</p>
+<h3 id="presence_broadcast_first"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2113">presence_broadcast_first</a></h3>
+<h3 id="如果不是从-unavaliable-过来的">如果不是从 unavaliable 过来的，</h3>
+<h4 id="presence_broadcast_to_trusted"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2116">presence_broadcast_to_trusted</a></h4>
+<h3 id="resend_offline_messages"><a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L2121">resend_offline_messages</a></h3>
+<h2 id="运行钩子-c2s_loop_debug">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1305">c2s_loop_debug</a></h2>
+<p>下一个状态 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L1307">session_established</a>。</p>
+<p>还是自己的状态。</p>
+</article>
+</main>
+</body>
+</html>

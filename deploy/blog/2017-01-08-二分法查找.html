@@ -1,0 +1,189 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>二分法查找</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>二分法查找</h1>
+<h3 class="date">2017/01/08 11:51:57</h3>
+</header>
+<article>
+<p>写一个二分法查找的程序，也没有那么容易。我试验了一下，写了一个。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span>* search(<span class="dt">int</span> a[], <span class="dt">int</span> len, <span class="dt">int</span> v)
+{
+    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
+        <span class="kw">return</span> NULL;
+    }
+    <span class="dt">int</span> mid = len/<span class="dv">2</span>;
+    <span class="dt">int</span> c = a[mid];
+    <span class="kw">if</span>(c == v){
+        <span class="kw">return</span> a + mid;
+    }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
+        <span class="kw">return</span> search(a, mid, v);
+    }<span class="kw">else</span> {
+        <span class="kw">return</span> search(a + mid + <span class="dv">1</span>, len - mid - <span class="dv">1</span>, v);
+    }
+    <span class="kw">return</span> NULL;
+}</code></pre></div>
+<p>验证程序如下：</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
+{
+    <span class="dt">int</span> a[] = { <span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">10</span>,<span class="dv">18</span>,<span class="dv">19</span>};
+    <span class="dt">int</span> len = <span class="kw">sizeof</span>(a) / <span class="kw">sizeof</span>(<span class="dt">int</span>);
+    <span class="dt">int</span> * p = NULL;
+    <span class="dt">int</span> b[] = {<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">19</span>,<span class="dv">20</span>};
+    <span class="dt">int</span> lenb = <span class="kw">sizeof</span>(b)/<span class="kw">sizeof</span>(<span class="dt">int</span>);
+    <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; lenb; ++i){
+        p = search(a,len, b[i]);
+        <span class="kw">if</span>(p!=NULL){
+            <span class="dt">int</span> d = p - a;
+            printf(<span class="st">&quot;found %d at a[%d]</span><span class="ch">\n</span><span class="st">&quot;</span>, b[i], d);
+        }<span class="kw">else</span> {
+            printf(<span class="st">&quot;%d not found</span><span class="ch">\n</span><span class="st">&quot;</span>, b[i]);
+        }
+    }
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<p>程序输出结果如下:</p>
+<pre><code>4 not found
+found 5 at a[0]
+found 6 at a[1]
+7 not found
+9 not found
+found 10 at a[2]
+found 19 at a[4]
+20 not found</code></pre>
+<p>写程序的时候，我脑子里需要记住几个基本规则，自己不能违反这些规则。</p>
+<ol style="list-style-type: decimal">
+<li>数组的长度是 <code>len</code></li>
+<li>数组最后一个元素是 <code>a[len-1]</code></li>
+<li><code>len == 0</code> 数组为空。</li>
+<li>数组下标 <code>a[mid]</code>，那么 <code>a[mid]</code> 之前有 <code>mid</code> 个元素。不包含 <code>a[mid]</code>。</li>
+<li>数组下标 <code>a[mid]</code>，那么 <code>a[mid]</code> 后面一个元素的是 <code>a[mid+1]</code></li>
+<li>数组下标 <code>a[mid]</code>，那么从 <code>a[mid]</code> 到数组结尾，一共有 <code>len-mid</code> 个元素。包含 <code>a[mid]</code> 。</li>
+<li>特别的，当 mid = 0 的时候，从 <code>a[0]</code> 到数组结尾，一共有 <code>len</code> 个元素。包含 <code>a[0]</code>。</li>
+<li>如果数组下标 <code>a[mid+1]</code> ，那么从 <code>a[mid+1]</code> 到数组结尾，一共有 <code>len - mid - 1</code> 个元素。即，不包含 <code>a[mid]</code> 的时候，一共有多少个元素。</li>
+</ol>
+<p>这个程序有一个很有争议的风格问题。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">if</span>(c==v) {
+    <span class="kw">return</span> a + mid
+}</code></pre></div>
+<p>是否可以在程序中间返回？ 另一种风格是如下，</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span>* search(<span class="dt">int</span> a[], <span class="dt">int</span> len, <span class="dt">int</span> v)
+{
+    <span class="dt">int</span> * result = NULL;
+    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
+        result = NULL;
+    }<span class="kw">else</span> {
+        <span class="dt">int</span> mid = len/<span class="dv">2</span>;
+        <span class="dt">int</span> c = a[mid];
+        <span class="kw">if</span>(c == v){
+            result = a + mid;
+        }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
+            result = search(a, mid, v);
+        }<span class="kw">else</span> {
+            result = search(a + mid + <span class="dv">1</span>, len - mid - <span class="dv">1</span>, v);
+        }
+    }
+    <span class="kw">return</span> result;
+}</code></pre></div>
+<p>两种风格各有利弊，不做深聊了。</p>
+<p>这个程序还有一个问题，就是尾递归。c 语言的尾递归是一种优化，不是语义上支持的。也就是说，当 len 非常非常大的时候，是否 stack overflow ，全凭 c 编译器优化开关的心情。如果我们不依赖于 c 的编译器的话，可以手工写尾递归的风格。</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span>* search(<span class="dt">int</span> a[], <span class="dt">int</span> len, <span class="dt">int</span> v)
+{
+    <span class="dt">int</span> * result = NULL;
+
+TAIL_CALL:
+    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
+        result = NULL;
+    }<span class="kw">else</span> {
+        <span class="dt">int</span> mid = len/<span class="dv">2</span>;
+        <span class="dt">int</span> c = a[mid];
+        <span class="kw">if</span>(c == v){
+            result = a + mid;
+        }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
+            a = a;
+            len = mid;
+            v = v;
+            <span class="kw">goto</span> TAIL_CALL;
+        }<span class="kw">else</span> {
+            a = a + mid + <span class="dv">1</span>;
+            len = len - mid - <span class="dv">1</span>;
+            v = v;
+            <span class="kw">goto</span> TAIL_CALL;
+        }
+    }
+    <span class="kw">return</span> result;
+}</code></pre></div>
+<p>也就是说</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">result = search(&lt;V1&gt;, &lt;V2&gt;, &lt;V3&gt;);</code></pre></div>
+<p>被修改为:</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">a = &lt;V1&gt;
+len = &lt;V2&gt;
+c = &lt;V3&gt;
+<span class="kw">goto</span> TAIL_CALL;</code></pre></div>
+<p><code>v=v</code> 当然是没有必要的，这里为了强调是尾递归。</p>
+<p>这种风格的尾递归，违反了大公司定义的风格。</p>
+<ol style="list-style-type: decimal">
+<li>不允许使用 <code>goto</code>；</li>
+<li>不允许修改过输入参数；</li>
+</ol>
+<p>这里面还有一个风格的问题。就是如何写 if 语句。</p>
+<ol style="list-style-type: decimal">
+<li>if 尽量带 else</li>
+<li>if elseif else 风格的代码，最好覆盖所有的可能性。</li>
+</ol>
+<p>讨论详见 <a href="">http://wcy123.github.io/2015/07/08/C-C-if-else</a></p>
+</article>
+</main>
+</body>
+</html>

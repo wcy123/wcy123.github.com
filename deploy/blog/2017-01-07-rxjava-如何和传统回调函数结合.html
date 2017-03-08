@@ -1,0 +1,148 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>rxjava 如何和传统回调函数结合</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>rxjava 如何和传统回调函数结合</h1>
+<h3 class="date">2017/01/07 20:17:25</h3>
+</header>
+<article>
+<p>今天看到一个 Observable.fromEmitter 的函数，这里是这个函数的 javadoc</p>
+<blockquote>
+<p>Provides an API (via a cold Observable) that bridges the reactive world with the callback-style, generally non-backpressured world. Example: You should call the AsyncEmitter's onNext, onError and onCompleted methods in a serialized fashion. The rest of its methods are thread-safe.</p>
+</blockquote>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Observable.&lt;Event&gt;<span class="fu">fromEmitter</span>(emitter -&gt; {
+Callback listener = <span class="kw">new</span> Callback() {
+<span class="fu">@Override</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onEvent</span>(Event e) {
+emitter.<span class="fu">onNext</span>(e);
+<span class="kw">if</span> (e.<span class="fu">isLast</span>()) {
+emitter.<span class="fu">onCompleted</span>();
+}
+}
+
+<span class="fu">@Override</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onFailure</span>(Exception e) {
+emitter.<span class="fu">onError</span>(e);
+}
+};
+
+AutoCloseable c = api.<span class="fu">someMethod</span>(listener);
+
+emitter.<span class="fu">setCancellation</span>(c::close);
+
+}, BackpressureMode.<span class="fu">BUFFER</span>);</code></pre></div>
+<p>这是一个实验性的功能，用于和传统回调模式的程序对接。为了理解这个机制，我写了一个完整的例子。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package org.wcy123.rxjava1;</span>
+
+<span class="kw">import java.util.concurrent.CountDownLatch;</span>
+<span class="kw">import java.util.concurrent.ExecutorService;</span>
+<span class="kw">import java.util.concurrent.Executors;</span>
+<span class="kw">import java.util.stream.IntStream;</span>
+
+<span class="kw">import org.junit.Test;</span>
+
+<span class="kw">import lombok.extern.slf4j.Slf4j;</span>
+<span class="kw">import rx.AsyncEmitter;</span>
+<span class="kw">import rx.Observable;</span>
+
+<span class="fu">@Slf4j</span>
+<span class="kw">public</span> <span class="kw">class</span> FromEmitterTest {
+
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main1</span>() <span class="kw">throws</span> Exception {
+        <span class="dt">final</span> ExecutorService service = Executors.<span class="fu">newCachedThreadPool</span>();
+        <span class="dt">final</span> CountDownLatch latch = <span class="kw">new</span> CountDownLatch(<span class="dv">3</span> * <span class="dv">4</span>);
+        Observable.<span class="fu">fromEmitter</span>(
+                 emitter -&gt; IntStream.<span class="fu">range</span>(<span class="dv">0</span>, <span class="dv">3</span>).<span class="fu">boxed</span>().<span class="fu">forEach</span>(
+                        threadIndex -&gt; service.<span class="fu">submit</span>(
+                                () -&gt; {
+                                    <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; <span class="dv">4</span>; ++i) {
+                                        emitter.<span class="fu">onNext</span>(<span class="st">&quot;thread + &quot;</span> + threadIndex
+                                                + <span class="st">&quot; i = &quot;</span> + i);
+                                        Utils.<span class="fu">sleep</span>(<span class="dv">1000</span>);
+                                        latch.<span class="fu">countDown</span>();
+                                    }
+                                    <span class="kw">if</span> (threadIndex == <span class="dv">2</span>) {
+                                        emitter.<span class="fu">onCompleted</span>();
+                                    }
+                                })),
+                AsyncEmitter.<span class="fu">BackpressureMode</span>.<span class="fu">BUFFER</span>)
+                .<span class="fu">subscribe</span>(s -&gt; log.<span class="fu">info</span>(<span class="st">&quot;item {}&quot;</span>, s));
+        log.<span class="fu">info</span>(<span class="st">&quot;提前打印这里, subscribe 没有阻塞住&quot;</span>);
+        log.<span class="fu">info</span>(<span class="st">&quot;开始等待解锁&quot;</span>);
+        latch.<span class="fu">await</span>();
+        log.<span class="fu">info</span>(<span class="st">&quot;解锁完毕&quot;</span>);
+    }
+}</code></pre></div>
+<p>这个例子的执行结果是</p>
+<pre><code>02:12:24.244 [main] INFO org.wcy123.rxjava1.FromEmitterTest - 提前打印这里, subscribe 没有阻塞住
+02:12:24.244 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 0 i = 0
+02:12:24.250 [main] INFO org.wcy123.rxjava1.FromEmitterTest - 开始等待解锁
+02:12:24.251 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 1 i = 0
+02:12:24.251 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 2 i = 0
+02:12:25.245 [pool-1-thread-2] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 2 i = 1
+02:12:25.255 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 0 i = 1
+02:12:26.248 [pool-1-thread-3] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 2 i = 2
+02:12:26.249 [pool-1-thread-3] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 1 i = 2
+02:12:26.257 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 0 i = 2
+02:12:27.252 [pool-1-thread-2] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 2 i = 3
+02:12:27.258 [pool-1-thread-1] INFO org.wcy123.rxjava1.FromEmitterTest - item thread + 0 i = 3
+02:12:28.264 [main] INFO org.wcy123.rxjava1.FromEmitterTest - 解锁完毕</code></pre>
+<p>注意到 <code>log.info(&quot;item&quot;)</code> 是运行在三个不同的线程中。fromEmitter 的第一个参数是一个函数，即 f， 该函数的第一个参数是 emitter ，类型是 AsyncEmitter。fromEmitter 返回一个 Observable , 这个Obverable 被订阅的时候，就会运行函数 f 。f 运行时，创建了 3 个线程，每个线程里面，都会调用 <code>emitter</code> 来发布数据，emitter.onNext(...) ，一旦调用这个函数，会触发后面所有的 Observable 定义的行为，触发 <code>s-&gt;log.info(&quot;iterm{}&quot;, s)</code> 的执行。</p>
+<p>注意到 thread 0 并没有机会打印出来最后一个 i = 3， 因为 thread 2 提前调用了 <code>emitter.onComplet()</code></p>
+<p><code>latch.await()</code> 等待所有线程结束。</p>
+</article>
+</main>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>使用 Protobuf 设计 REST API</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>使用 Protobuf 设计 REST API</h1>
+<h3 class="date">2017/01/07 20:16:22</h3>
+</header>
+<article>
+<h1 id="概述">概述</h1>
+<p>一个设计的好的 REST API 接口，需要一个严格的接口定义。本文试图使用 Protobuf 作为接口设计语言，设计 API。</p>
+<p>创建文件，<code>main/proto/Login.proto</code></p>
+<pre class="proto"><code>syntax = &quot;proto3&quot;;
+package org.wcy123.api;
+option java_outer_classname = &quot;Protos&quot;;
+message LoginRequest {
+    string name = 1;
+    string password = 2;
+}
+message LoginResponse {
+    enum LoginResult {
+        DEFAULT = 0;
+        OK = 1;
+        FAIL = 2;
+    }
+    LoginResult result  = 1;
+}</code></pre>
+<p>然后创建一个 Bean 用于转换 JSON 到 Java 对象</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Bean</span>
+ProtobufHttpMessageConverter <span class="fu">protobufHttpMessageConverter</span>() {
+  <span class="kw">return</span> <span class="kw">new</span> <span class="fu">ProtobufHttpMessageConverter</span>();
+}</code></pre></div>
+<p>然后创建 Controller</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@RestController</span>
+<span class="fu">@Slf4j</span>
+<span class="kw">public</span> <span class="kw">class</span> MyRestController {
+    <span class="fu">@RequestMapping</span>(path = <span class="st">&quot;/login&quot;</span>, method = POST)
+    <span class="kw">public</span> ResponseEntity&lt;Protos.<span class="fu">LoginResponse</span>&gt; <span class="fu">login</span>(HttpServletRequest request,
+            HttpServletResponse response, <span class="fu">@RequestBody</span> Protos.<span class="fu">LoginRequest</span> command) {
+        log.<span class="fu">info</span>(<span class="st">&quot;input is {}&quot;</span>, <span class="kw">new</span> <span class="fu">JsonFormat</span>().<span class="fu">printToString</span>(command));
+        <span class="kw">return</span> ResponseEntity.<span class="fu">ok</span>().<span class="fu">body</span>(Protos.<span class="fu">LoginResponse</span>.<span class="fu">newBuilder</span>()
+                .<span class="fu">setResult</span>(Protos.<span class="fu">LoginResponse</span>.<span class="fu">LoginResult</span>.<span class="fu">OK</span>)
+                .<span class="fu">build</span>());
+    }
+}</code></pre></div>
+<p><code>Protos.LoginRequest</code> 和 <code>Protos.LoginResponse</code> 是自动生成的</p>
+<p>测试程序</p>
+<pre><code>curl -v -s -H &#39;Content-Type: application/json&#39; -H &#39;Accept: application/json&#39; http://127.0.0.1:8080/login -d &#39;{&quot;name&quot;:&quot;wcy123&quot;, &quot;password&quot;:&quot;123456&quot;}&#39;
+*   Trying 127.0.0.1...
+* Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
+&gt; POST /login HTTP/1.1
+&gt; Host: 127.0.0.1:8080
+&gt; User-Agent: curl/7.43.0
+&gt; Content-Type: application/json
+&gt; Accept: application/json
+&gt; Content-Length: 39
+&gt;
+* upload completely sent off: 39 out of 39 bytes
+&lt; HTTP/1.1 200
+&lt; Content-Type: application/json
+&lt; Transfer-Encoding: chunked
+&lt; Date: Tue, 22 Nov 2016 10:03:43 GMT
+&lt;
+* Connection #0 to host 127.0.0.1 left intact
+{&quot;result&quot;: &quot;OK&quot;}</code></pre>
+<p>从外部看开，请求和响应都是 JSON，PB 只是内部实现。注意要加 <code>Content-Type:application/json</code> 和 <code>Accept: application/json</code> 两个 header。</p>
+<h2 id="protobuf-支持的常用数据类型和-json之间的转换关系">Protobuf 支持的常用数据类型和 JSON之间的转换关系。</h2>
+<pre class="proto"><code>syntax = &quot;proto3&quot;;
+package org.wcy123.api;
+message Root {
+    Obj1 obj1 = 1;
+    bytes base64 = 2;
+    enum AnEnum { FOO_BAR = 0 ; GOOD = 2; BYE = 3;};
+    AnEnum anEnum = 3;
+    repeated string anArray = 4;
+    bool aBoolean = 5;
+    string aString = 6;
+    int32 aInt32 = 7;
+    uint32 aUint32 = 8;
+    fixed32 aFixed = 9;
+    int64 aInt64 = 10;
+    uint64 aUint64 = 11;
+    fixed64 aFixed64 = 12;
+    float aFloat = 13;
+    double aDouble = 14;
+    //Timestamp aTimestamp = 15;
+    //Duration aDuaration = 16;
+    oneof anOneOf {
+        string eitherString = 17;
+        int32 orAnInt = 18;
+    }
+}
+message Obj1{
+    string name = 1;
+}</code></pre>
+<p>我写了一个例子，用于实验所有的改动，具体文档，参考 https://developers.google.com/protocol-buffers/docs/proto3#json 这个转换成 JSON 是下面这个样子。</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;obj1&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;YourName&quot;</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;base64&quot;</span><span class="fu">:</span> <span class="st">&quot;abc123!?$*&amp;()&#39;-=@~&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;aBoolean&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span>
+  <span class="dt">&quot;aString&quot;</span><span class="fu">:</span> <span class="st">&quot;hello world&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;aInt32&quot;</span><span class="fu">:</span> <span class="dv">-32</span><span class="fu">,</span>
+  <span class="dt">&quot;aUint32&quot;</span><span class="fu">:</span> <span class="dv">32</span><span class="fu">,</span>
+  <span class="dt">&quot;aFixed&quot;</span><span class="fu">:</span> <span class="dv">64</span><span class="fu">,</span>
+  <span class="dt">&quot;aInt64&quot;</span><span class="fu">:</span> <span class="dv">-64</span><span class="fu">,</span>
+  <span class="dt">&quot;aUint64&quot;</span><span class="fu">:</span> <span class="dv">64</span><span class="fu">,</span>
+  <span class="dt">&quot;aFixed64&quot;</span><span class="fu">:</span> <span class="dv">128</span><span class="fu">,</span>
+  <span class="dt">&quot;aFloat&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span>
+  <span class="dt">&quot;aDouble&quot;</span><span class="fu">:</span> <span class="dv">2</span><span class="fu">,</span>
+  <span class="dt">&quot;eitherString&quot;</span><span class="fu">:</span> <span class="st">&quot;Now It is a String, not an integer&quot;</span>
+<span class="fu">}</span></code></pre></div>
+<p>注意到 <code>oneOf</code> 使用字段名称来表示哪一个字段被选择了。</p>
+<h2 id="细节">细节</h2>
+<h3 id="依赖关系">依赖关系</h3>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;dependency&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>com.google.protobuf<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>protobuf-java<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;version&gt;</span>3.0.0-beta-1<span class="kw">&lt;/version&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span></code></pre></div>
+<p>需要插件</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;plugin&gt;</span>
+  <span class="kw">&lt;groupId&gt;</span>org.xolstice.maven.plugins<span class="kw">&lt;/groupId&gt;</span>
+  <span class="kw">&lt;artifactId&gt;</span>protobuf-maven-plugin<span class="kw">&lt;/artifactId&gt;</span>
+  <span class="kw">&lt;version&gt;</span>0.5.0<span class="kw">&lt;/version&gt;</span>
+  <span class="kw">&lt;configuration&gt;</span>
+    <span class="kw">&lt;protocExecutable&gt;</span>/usr/local/bin/protoc<span class="kw">&lt;/protocExecutable&gt;</span>
+  <span class="kw">&lt;/configuration&gt;</span>
+  <span class="kw">&lt;executions&gt;</span>
+    <span class="kw">&lt;execution&gt;</span>
+      <span class="kw">&lt;goals&gt;</span>
+        <span class="kw">&lt;goal&gt;</span>compile<span class="kw">&lt;/goal&gt;</span>
+        <span class="kw">&lt;goal&gt;</span>test-compile<span class="kw">&lt;/goal&gt;</span>
+      <span class="kw">&lt;/goals&gt;</span>
+    <span class="kw">&lt;/execution&gt;</span>
+  <span class="kw">&lt;/executions&gt;</span>
+<span class="kw">&lt;/plugin&gt;</span></code></pre></div>
+<h3 id="默认值的处理">默认值的处理</h3>
+<p>注意到在 <code>OK</code> 和 <code>FAIL</code> 前面，我放了一个无用的 <code>DEFAULT</code> 值。如果没有这个值，那么 JSON 转换的时候，认为 <code>result</code> 是默认值，那么就不会包含这个字段。 * 如果要强制包含这个字段，那么填一个无用的默认值，占位，永远不用这个默认值。 * 如果想节省带宽，默认值就不传输的话，那么就保留这个行为。接收端需要判断如果字段不存在，就使用默认值。</p>
+<h3 id="不能识别的-json-字段">不能识别的 JSON 字段</h3>
+<p>PB 忽略不能识别的字段。</p>
+</article>
+</main>
+</body>
+</html>

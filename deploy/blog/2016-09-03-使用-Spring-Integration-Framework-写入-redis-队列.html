@@ -1,0 +1,206 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>使用 Spring Integration Framework 写入 redis 队列</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>使用 Spring Integration Framework 写入 redis 队列</h1>
+<h3 class="date">2016/09/03 19:05:30</h3>
+</header>
+<article>
+<p><a href="http://docs.spring.io/spring-integration/reference/html/redis.html">Spring Integration Framework</a> 提供了应用集成的一种方式。各个应用程 序，组件，通过 Channel, Message 松散耦合在一起。</p>
+<p>这个例子演示了如何从 stdin 读取用户输入，然后写入 redis 队列的。</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;?xml</span> version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;<span class="kw">?&gt;</span>
+<span class="kw">&lt;project</span><span class="ot"> xmlns=</span><span class="st">&quot;http://maven.apache.org/POM/4.0.0&quot;</span><span class="ot"> xmlns:xsi=</span><span class="st">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+<span class="ot">    xsi:schemaLocation=</span><span class="st">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;modelVersion&gt;</span>4.0.0<span class="kw">&lt;/modelVersion&gt;</span>
+
+    <span class="kw">&lt;groupId&gt;</span>com.wcy123.example.spring.integration.redis<span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span>si-redis<span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;version&gt;</span>0.0.1-SNAPSHOT<span class="kw">&lt;/version&gt;</span>
+    <span class="kw">&lt;packaging&gt;</span>jar<span class="kw">&lt;/packaging&gt;</span>
+
+    <span class="kw">&lt;name&gt;</span>si-redis<span class="kw">&lt;/name&gt;</span>
+    <span class="kw">&lt;description&gt;</span>Demo project for Spring Boot<span class="kw">&lt;/description&gt;</span>
+
+    <span class="kw">&lt;parent&gt;</span>
+        <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+        <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;version&gt;</span>1.4.0.RELEASE<span class="kw">&lt;/version&gt;</span>
+        <span class="kw">&lt;relativePath/&gt;</span> <span class="co">&lt;!-- lookup parent from repository --&gt;</span>
+    <span class="kw">&lt;/parent&gt;</span>
+
+    <span class="kw">&lt;properties&gt;</span>
+        <span class="kw">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="kw">&lt;/project.build.sourceEncoding&gt;</span>
+        <span class="kw">&lt;project.reporting.outputEncoding&gt;</span>UTF-8<span class="kw">&lt;/project.reporting.outputEncoding&gt;</span>
+        <span class="kw">&lt;java.version&gt;</span>1.8<span class="kw">&lt;/java.version&gt;</span>
+    <span class="kw">&lt;/properties&gt;</span>
+
+    <span class="kw">&lt;dependencies&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-data-redis<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-integration<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="kw">&lt;/artifactId&gt;</span>
+            <span class="kw">&lt;scope&gt;</span>test<span class="kw">&lt;/scope&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.integration<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-integration-stream<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.integration<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-integration-redis<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+    <span class="kw">&lt;/dependencies&gt;</span>
+    <span class="kw">&lt;build&gt;</span>
+        <span class="kw">&lt;plugins&gt;</span>
+            <span class="kw">&lt;plugin&gt;</span>
+                <span class="kw">&lt;groupId&gt;</span>org.springframework.boot<span class="kw">&lt;/groupId&gt;</span>
+                <span class="kw">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="kw">&lt;/artifactId&gt;</span>
+            <span class="kw">&lt;/plugin&gt;</span>
+        <span class="kw">&lt;/plugins&gt;</span>
+    <span class="kw">&lt;/build&gt;</span>
+<span class="kw">&lt;/project&gt;</span></code></pre></div>
+<p>上面大部分是自动生成的，自己加的只有</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml">        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.integration<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-integration-stream<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span>org.springframework.integration<span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span>spring-integration-redis<span class="kw">&lt;/artifactId&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span></code></pre></div>
+<p>引入 <code>spring-integration-stream</code> ，我们可以解析 xml 中的 namespace</p>
+<pre><code>xmlns:int-stream=&quot;http://www.springframework.org/schema/integration/stream&quot;</code></pre>
+<p><code>spring-integration-stream</code> 的引入，我们可以解析 xml 中的 namespace</p>
+<pre><code>xmlns:int-redis=&quot;http://www.springframework.org/schema/integration/redis&quot;&gt;</code></pre>
+<p>下面的 spring boot 生成的程序框架。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="co">// src/main/java/com/wcy123/example/spring/integration/redis/SiRedisApplication.java</span>
+<span class="kw">package com.wcy123.example.spring.integration.redis;</span>
+
+<span class="kw">import org.springframework.boot.SpringApplication;</span>
+<span class="kw">import org.springframework.boot.autoconfigure.SpringBootApplication;</span>
+<span class="kw">import org.springframework.context.annotation.ImportResource;</span>
+<span class="kw">import org.springframework.integration.config.EnableIntegration;</span>
+
+<span class="fu">@SpringBootApplication</span>
+<span class="fu">@EnableIntegration</span>
+<span class="fu">@ImportResource</span>(<span class="st">&quot;classpath:/META-INF/spring/si-components.xml&quot;</span>)
+<span class="kw">public</span> <span class="kw">class</span> SiRedisApplication {
+
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+        SpringApplication.<span class="fu">run</span>(SiRedisApplication.<span class="fu">class</span>, args);
+    }
+}</code></pre></div>
+<p><code>@EnableIntegration</code> 标注一个 Configuration 类是 Spring Integration 的配置。</p>
+<pre><code>@ImportResource(&quot;classpath:/META-INF/spring/si-components.xml&quot;)</code></pre>
+<p>用来引入 spring integration 的 beam 定义。目前 4.3.0 中 ，不是所有的 spring integration 组件都支持 java annotation 的配置，很多还是依赖 xml 的配置。</p>
+<p>src/main/resources/META-INF/spring/si-components.xml 的内容</p>
+<div class="sourceCode"><pre class="sourceCode xml"><code class="sourceCode xml"><span class="kw">&lt;?xml</span> version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;<span class="kw">?&gt;</span>
+<span class="kw">&lt;beans</span><span class="ot"> xmlns=</span><span class="st">&quot;http://www.springframework.org/schema/beans&quot;</span>
+<span class="ot">       xmlns:int=</span><span class="st">&quot;http://www.springframework.org/schema/integration&quot;</span>
+<span class="ot">       xmlns:xsi=</span><span class="st">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
+<span class="ot">       xmlns:int-stream=</span><span class="st">&quot;http://www.springframework.org/schema/integration/stream&quot;</span>
+<span class="ot">       xsi:schemaLocation=</span><span class="st">&quot;</span>
+<span class="st">    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span>
+<span class="st">    http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd</span>
+<span class="st">    http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd</span>
+<span class="st">    http://www.springframework.org/schema/integration/redis  http://www.springframework.org/schema/integration/redis/spring-integration-redis.xsd&quot;</span>
+<span class="ot">       xmlns:int-redis=</span><span class="st">&quot;http://www.springframework.org/schema/integration/redis&quot;</span><span class="kw">&gt;</span>
+
+    <span class="kw">&lt;int-stream:stdin-channel-adapter</span><span class="ot"> id=</span><span class="st">&quot;producer&quot;</span><span class="ot"> channel=</span><span class="st">&quot;messageChannel&quot;</span><span class="kw">/&gt;</span>
+
+    <span class="kw">&lt;int:poller</span><span class="ot"> id=</span><span class="st">&quot;defaultPoller&quot;</span><span class="ot"> default=</span><span class="st">&quot;true&quot;</span>
+<span class="ot">                max-messages-per-poll=</span><span class="st">&quot;5&quot;</span><span class="ot"> fixed-rate=</span><span class="st">&quot;200&quot;</span><span class="kw">/&gt;</span>
+
+    <span class="kw">&lt;int:channel</span><span class="ot"> id=</span><span class="st">&quot;messageChannel&quot;</span><span class="kw">/&gt;</span>
+    <span class="kw">&lt;bean</span><span class="ot"> id=</span><span class="st">&quot;redisConnectionFactory&quot;</span>
+<span class="ot">          class=</span><span class="st">&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;/bean&gt;</span>
+    <span class="kw">&lt;int-redis:queue-outbound-channel-adapter</span>
+<span class="ot">            id=</span><span class="st">&quot;queue&quot;</span>
+<span class="ot">            channel=</span><span class="st">&quot;messageChannel&quot;</span><span class="ot"> queue=</span><span class="st">&quot;a_queue&quot;</span>
+<span class="ot">            connection-factory=</span><span class="st">&quot;redisConnectionFactory&quot;</span>
+<span class="ot">            left-push=</span><span class="st">&quot;false&quot;</span>
+    <span class="kw">&gt;&lt;/int-redis:queue-outbound-channel-adapter&gt;</span>
+<span class="kw">&lt;/beans&gt;</span></code></pre></div>
+<pre><code>    &lt;int-stream:stdin-channel-adapter id=&quot;producer&quot; channel=&quot;messageChannel&quot;/&gt;
+
+    &lt;int:poller id=&quot;defaultPoller&quot; default=&quot;true&quot;
+                max-messages-per-poll=&quot;5&quot; fixed-rate=&quot;200&quot;/&gt;</code></pre>
+<p>创建了一个 endpoint ，每隔 200 ms ，从标准输入读取数据，然后扔到 <code>messageChannel</code> 中。</p>
+<pre><code>&lt;int:channel id=&quot;messageChannel&quot;/&gt;</code></pre>
+<p>创建了一个 <code>messageChannel</code> 的 channel。</p>
+<pre><code>    &lt;int-redis:queue-outbound-channel-adapter
+            id=&quot;queue&quot;
+            channel=&quot;messageChannel&quot; queue=&quot;a_queue&quot;
+            connection-factory=&quot;redisConnectionFactory&quot;
+            left-push=&quot;false&quot;
+    &gt;&lt;/int-redis:queue-outbound-channel-adapter&gt;
+</code></pre>
+<p>会从 <code>messageChannel</code> 中读取 Message , 然后用 <code>rpush</code> 命令，把消息压到 消息队列 <code>a_queue</code> 中。</p>
+<p><code>queue-outbound-channel-adapter</code> 需要一个 redis connection factory</p>
+<pre><code>    &lt;bean id=&quot;redisConnectionFactory&quot;
+          class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot; /&gt;</code></pre>
+<p>这里创建了一个 redis connection factory ， 这个 bean 有很多属性，用于 表明连接的主机名称，密码，端口号，是否使用连接池等等。</p>
+</article>
+</main>
+</body>
+</html>

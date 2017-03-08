@@ -1,0 +1,220 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>JAVA JSON databinding 的多态</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>JAVA JSON databinding 的多态</h1>
+<h3 class="date">2017/01/07 20:18:26</h3>
+</header>
+<article>
+<p>JSON 在 REST API 的调用中越来越多的应用，如何表达多态是经常碰到的一个问题。</p>
+<p>有三种方式解决这个问题 - <code>PROPERTY</code> ，<code>EXISTING_PROPERTY</code>， POJO 映射为 JSON Object ，某一个字段表示类型。 - <code>WRAPPER_OBJECT</code> POJO 映射为只有一个字段的 JSON Object ，字段名表示类型。 - <code>WRAPPER_ARRAY</code> POJO 映射为两个元素的数组 ，前面的表示类型，后面的表示指值。</p>
+<h1 id="背景">背景</h1>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Data</span>
+<span class="dt">static</span> <span class="kw">class</span>  Zoo {
+    <span class="kw">private</span> Animal leader;
+    <span class="kw">private</span> Animal[] followers;
+}</code></pre></div>
+<p>假设有一个 <code>Zoo</code> 类，里面包含了一个特殊的动物 <code>leader</code>，和一些动物 <code>followers</code>。下面的代码试图转换 JSON</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) <span class="kw">throws</span> IOException {
+    Zoo zoo = <span class="kw">new</span> <span class="fu">Zoo</span>();
+    zoo.<span class="fu">setLeader</span>(<span class="kw">new</span> <span class="fu">Dog</span>());
+    zoo.<span class="fu">setFollowers</span>(<span class="kw">new</span> Animal[]{<span class="kw">new</span> <span class="fu">Dog</span>(), <span class="kw">new</span> <span class="fu">Cat</span>()});
+    <span class="dt">final</span> ObjectMapper mapper = <span class="kw">new</span> <span class="fu">ObjectMapper</span>();
+    <span class="dt">final</span> String json = mapper.<span class="fu">writeValueAsString</span>(zoo);
+    System.<span class="fu">out</span>.<span class="fu">println</span>(json);
+    <span class="dt">final</span> Zoo zoo2 = mapper.<span class="fu">readValue</span>(json, Zoo.<span class="fu">class</span>);
+    System.<span class="fu">out</span>.<span class="fu">println</span>(zoo2);
+}</code></pre></div>
+<p>例子 <code>Dog</code> 和 <code>Cat</code> 类</p>
+<pre><code>static class Dog implements Animal {
+    private String name = &quot;wangwang&quot;;
+    @Override
+    public String getAnimalType() {
+        return &quot;dog&quot;;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+static class Cat implements Animal {
+    private String name = &quot;miao&quot;;
+
+    @Override
+    public String getAnimalType() {
+        return &quot;cat&quot;;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+}</code></pre>
+<h1 id="把-pojo-映射称为-json-object-include-jsontypeinfo.as.existing_property">把 POJO 映射称为 JSON Object , <code>include = JsonTypeInfo.As.EXISTING_PROPERTY</code></h1>
+<p><code>include = JsonTypeInfo.As.PROPERTY</code> 也类似，区别不大。</p>
+<p>用字段 <code>animalType</code> 来表示类型信息。</p>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;leader&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+    <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="ot">[</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+      <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+    <span class="fu">}</span><span class="ot">,</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;miao&quot;</span><span class="fu">,</span>
+      <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;cat&quot;</span>
+    <span class="fu">}</span>
+  <span class="ot">]</span>
+<span class="fu">}</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@JsonTypeInfo</span>(use = JsonTypeInfo.<span class="fu">Id</span>.<span class="fu">NAME</span>, include = JsonTypeInfo.<span class="fu">As</span>.<span class="fu">EXISTING_PROPERTY</span>,
+        property = <span class="st">&quot;animalType&quot;</span>)
+<span class="fu">@JsonSubTypes</span>({
+        <span class="fu">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Dog.<span class="fu">class</span>, name = <span class="st">&quot;dog&quot;</span>),
+        <span class="fu">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Cat.<span class="fu">class</span>, name = <span class="st">&quot;cat&quot;</span>)})
+<span class="fu">@JsonIgnoreProperties</span>(ignoreUnknown = <span class="kw">true</span>)
+<span class="kw">public</span> <span class="kw">interface</span> Animal {
+    String <span class="fu">getAnimalType</span>();
+    String <span class="fu">getName</span>();
+    <span class="dt">void</span> <span class="fu">setName</span>(String name);
+}</code></pre></div>
+<p>这种类型还有很多变种。例如 <code>use</code> 可以选择 <code>JsonTypeInfo.Id.CLASS</code> 之类的。</p>
+<h1 id="把-pojo-映射称为数组-include-jsontypeinfo.as.wrapper_array">把 POJO 映射称为数组 , <code>include = JsonTypeInfo.As.WRAPPER_ARRAY</code></h1>
+<pre><code>{
+  &quot;leader&quot;: [
+    &quot;dog&quot;,
+    {
+      &quot;name&quot;: &quot;wangwang&quot;,
+      &quot;animalType&quot;: &quot;dog&quot;
+    }
+  ],
+  &quot;followers&quot;: [
+    [
+      &quot;dog&quot;,
+      {
+        &quot;name&quot;: &quot;wangwang&quot;,
+        &quot;animalType&quot;: &quot;dog&quot;
+      }
+    ],
+    [
+      &quot;cat&quot;,
+      {
+        &quot;name&quot;: &quot;miao&quot;,
+        &quot;animalType&quot;: &quot;cat&quot;
+      }
+    ]
+  ]
+}</code></pre>
+<p>每个POJO 映射为一个两个元素的 JSON 数组，第一个元素表示类型，第二个元素表示真正的内容。</p>
+<h1 id="把-pojo-映射称为包装对象-nclude-jsontypeinfo.as.wrapper_object">把 POJO 映射称为包装对象 <code>nclude = JsonTypeInfo.As.WRAPPER_OBJECT</code></h1>
+<div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;leader&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;dog&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+      <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+    <span class="fu">}</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="ot">[</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;dog&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+        <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+        <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+      <span class="fu">}</span>
+    <span class="fu">}</span><span class="ot">,</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;cat&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+        <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;miao&quot;</span><span class="fu">,</span>
+        <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;cat&quot;</span>
+      <span class="fu">}</span>
+    <span class="fu">}</span>
+  <span class="ot">]</span>
+<span class="fu">}</span>
+<span class="fu">{</span>
+  <span class="dt">&quot;leader&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;dog&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+      <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+    <span class="fu">}</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="ot">[</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;dog&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+        <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;wangwang&quot;</span><span class="fu">,</span>
+        <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;dog&quot;</span>
+      <span class="fu">}</span>
+    <span class="fu">}</span><span class="ot">,</span>
+    <span class="fu">{</span>
+      <span class="dt">&quot;cat&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+        <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;miao&quot;</span><span class="fu">,</span>
+        <span class="dt">&quot;animalType&quot;</span><span class="fu">:</span> <span class="st">&quot;cat&quot;</span>
+      <span class="fu">}</span>
+    <span class="fu">}</span>
+  <span class="ot">]</span>
+<span class="fu">}</span></code></pre></div>
+<p>每个 POJO 映射为一个 只有一个 property 的 POJO Object ，这个 property name 表示类型信息。 property value 是 POJO 真正的内容。</p>
+</article>
+</main>
+</body>
+</html>

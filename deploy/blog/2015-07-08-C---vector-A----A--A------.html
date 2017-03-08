@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>C++ vector 调用多少次元素的构造函数</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>C++ vector 调用多少次元素的构造函数</h1>
+<h3 class="date">2015/07/08 16:57:40</h3>
+</header>
+<article>
+<p>使用 <code>vector&lt;A&gt;</code> 到底要调多少次构造函数<code>A::A()</code>呢？</p>
+<p>{% highlight c++ %} #include <iostream> #include <vector> using namespace std;</p>
+<p>class A { public: explicit A(int v); explicit A(const A&amp; other); ~A(); public: int value; }; A::A(int v):value(v) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void<em>)this &lt;&lt; endl; } A::A(const A&amp; other):value(other.value) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; endl; }</p>
+<p>vector<A> foo(int i) { vector<A> x; for(int i = 0; i &lt; 3; ++i){ x.push_back(A(i)); } cout &lt;&lt; &quot;foo return &quot; &lt;&lt; (void<em>) &amp;x&lt;&lt; endl; return x; } int main(int argc, char </em>argv[]) { vector<A> x = foo(10); cout &lt;&lt; &quot;main get &quot; &lt;&lt; (void*) &amp;x &lt;&lt; endl; return 0; } {% endhighlight %}</p>
+<p>运行结果 # 号后面的是我写的注释</p>
+<p>{% highlight bash %} clang++ -Wall -Werror -std=c++11 rvalue.cpp &amp;&amp; ./a.out # 构造临时对象 A(i), i = 0 ，地址是栈(stack)上的地址 A 0 0x7fff06edb8e0 # x.push_back(A(i)) 调用拷贝构造函数，other 的地址是刚刚创建的 A(i) # 新对象x[0]的地址是 0x2528010，是在堆(heap)上的地址 A 0 0x2528010 0x7fff06edb8e0 # 调用析构函数，析构栈上的临时对象 x[0] ~A 0 0x7fff06edb8e0 # 和i=0类似 构造临时对象 A(i), i = 1， # 因为是在栈上，自然重用刚刚 A(0),i=0 用过的地址。 A 1 0x7fff06edb8e0 # 和i=0类似 调用拷贝构造函数，准备 push_back # x[1] 的地址是 0x2526034 A 1 0x2528034 0x7fff06edb8e0 # 糟糕，vector 发现内存不够了，动态扩展内存 # 用拷贝构造函数，把 x[0] 拷贝的新的位置上 # x[0] 的地址是 0x2528030，和 x[1] 是连续分配的，因为 sizeof(A) == 4 A 0 0x2528030 0x2528010 # 析构刚刚的 x[0] ~A 0 0x2528010 # 析构掉刚刚栈上的临时对象 ~A 1 0x7fff06edb8e0 # 和 i=0 类似 构造临时对象 A(i), i = 2 A 2 0x7fff06edb8e0 # 和 i=0 类似 调用拷贝构造函数，准备 push_back A 2 0x2528018 0x7fff06edb8e0 # 糟糕，内存又不够了，动态扩展内存 # 移动(move) x[0] 到新地址 A 0 0x2528010 0x2528030 # 移动(move) x[1] 到新地址 A 1 0x2528014 0x2528034 # 析构掉旧的 x[0] ~A 0 0x2528030 # 析构掉旧的 x[1] ~A 1 0x2528034 # 析构掉临时对象 ~A 2 0x7fff06edb8e0 # foo() 返回 vector<A> 对象 foo return 0x7fffe5026248 # 因为有返回值优化，main 中x地址和 foo中x的地址是同一个地址。 main get 0x7fffe5026248 # main 函数返回，析构掉 vector 中的三个对象。 ~A 0 0x2528010 ~A 1 0x2528014 ~A 2 0x2528018 {% endhighlight %}</p>
+<p>如何避免多余的调用构造函数呢？提前申请内存！</p>
+<p>{% highlight c++ %} vector<A> x; x.reserve(10); {% endhighlight %}</p>
+<p>{% highlight c++ %} clang++ -Wall -Werror -std=c++11 vector_a.cpp &amp;&amp; ./a.out A 0 0x7ffffbf11a30 A 0 0x1044010 0x7ffffbf11a30 ~A 0 0x7ffffbf11a30 A 1 0x7ffffbf11a30 A 1 0x1044014 0x7ffffbf11a30 ~A 1 0x7ffffbf11a30 A 2 0x7ffffbf11a30 A 2 0x1044018 0x7ffffbf11a30 ~A 2 0x7ffffbf11a30 foo return 0x7ffffbf11a88 main get 0x7ffffbf11a88 ~A 0 0x1044010 ~A 1 0x1044014 ~A 2 0x1044018 {% endhighlight %}</p>
+<p>可以看到，内存被提前申请了，所以不会有多余的拷贝构造函数了。</p>
+<p>使用 <code>vector&lt;A&gt;::push_back</code> 之前，一定考虑调用 <code>vector&lt;A&gt;::reserve</code></p>
+</article>
+</main>
+</body>
+</html>

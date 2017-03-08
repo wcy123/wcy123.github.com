@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>阅读 Subscriber 的实现中关于 backpressure 的部分</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>阅读 Subscriber 的实现中关于 backpressure 的部分</h1>
+<h3 class="date">2017/01/07 20:18:01</h3>
+</header>
+<article>
+<p>rxjava 中最具有挑战性的设计就是 backpresure 。例如 <code>zip</code> 操作符，合并两个 <code>Observable</code> A 和 B 。如果 B 的产生速度比 A 快，那么就需要不停的缓存 B 多余生成出来的数据，这样内存就无限增长了。 backpressure 的机制就是让 B 生成慢一点。</p>
+<p>目前为止，我看到 rxjava 的设计是很丑陋的。这种机制是没有强制性的。更糟糕的是， rxjava 暴露了 <code>Observable.create(OnSubscribe&lt;?&gt; onSubscribe)</code> 这个函数，如果不了解这个机制，上来&quot;想当然&quot; 的实现一个 <code>OnSubscribe</code> ，而不管 backpressure 机制，很容易产生 <code>MissingBackpressureException</code> 。</p>
+<p>“想当然” 不是使用者的错，而是库的设计者的错误。可惜的是，太多用户重度使用这个 <code>Observable.create(OnSubscribe&lt;?&gt; onSubscribe)</code> 函数，为了保证现有程序能够继续运行，就不能隐藏这个函数。于是，我们在注释中，可以看到下面一段话</p>
+<blockquote>
+<p><strong>This method requires advanced knowledge about building operators and data sources; please consider other standard methods first; </strong></p>
+</blockquote>
+<p>本文试图得到 “advanced knowledge” 。</p>
+<p>下面是 backpressure 的协议是如何建立的。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">someObservable.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onStart</span>() {
+      <span class="fu">request</span>(<span class="dv">1</span>);
+    }
+
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onCompleted</span>() {
+      <span class="co">// gracefully handle sequence-complete</span>
+    }
+
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(Throwable e) {
+      <span class="co">// gracefully handle error</span>
+    }
+
+    <span class="fu">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(T n) {
+      <span class="co">// do something with the emitted item &quot;n&quot;</span>
+      <span class="co">// request another item:</span>
+      <span class="fu">request</span>(<span class="dv">1</span>);
+    }
+});</code></pre></div>
+<p>可见底层 <code>subscriber</code> 在刚刚启动的时候，发起流控请求 <code>onStart</code> , <code>request(1)</code> 。告诉楼上的，哥们，别整太多，一个数据就够了，多了处理不了。 <code>onNext</code> 中，先处理数据，处理完了，告诉楼上的，接着往下放数据，别多，就一个。</p>
+<p>这里需要注意的是，不能再 <code>request(n)</code> 函数里面产生数据，否则递归调用 <code>onNext</code> ，可能导致爆栈了。</p>
+<p>我们看看 <code>Subscriber</code> 是如何实现这个协议的。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Subscriber&lt;T&gt; <span class="kw">implements</span> Observer&lt;T&gt;, Subscription {
+<span class="co">// represents requested not set yet</span>
+<span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="dt">long</span> NOT_SET = Long.<span class="fu">MIN_VALUE</span>;
+<span class="kw">private</span> <span class="dt">final</span> SubscriptionList subscriptions;
+<span class="kw">private</span> <span class="dt">final</span> Subscriber&lt;?&gt; subscriber;
+<span class="kw">private</span> Producer producer;
+<span class="kw">private</span> <span class="dt">long</span> requested = NOT_SET; <span class="co">// default to not set</span>
+}</code></pre></div>
+<p>本文重点关注 backpressure ，只看和这个相关的变量 * <code>NOT_SET</code> 表示无效的请求数据量。或者说，还 <code>Subscriber</code> 没有提供请求的数据量时的状态。 * <code>subscriber</code> ，如果这个值不为 <code>null</code>，那么把 backpressure 相关的处理，交给这个 <code>subscriber</code> 处理。有大多数很多操作符，自己并不能很好的处理这种过载，需要一层层向上传递，一直到数据源，只有产生数据的地方，才能比较好的处理，因为在那里，可以很容易的少产生一些数据。 * <code>producer</code> 如果本 <code>subscriber</code> 可以处理，那么代理给 <code>producer</code> 来处理。 * <code>requested</code> ，计数器，记录楼下的请求多少数据。 * 如果是 <code>NOT_SET</code> ，就是说楼下还不知道请求多少。 * 如果是 <code>MAX_LONG</code> ，就是说楼下来者不拒，不怕 overload * 如果是其他值，就是说楼下的最多能处理多少数据。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> <span class="kw">protected</span> <span class="dt">final</span> <span class="dt">void</span> <span class="fu">request</span>(<span class="dt">long</span> n) {
+       <span class="co">// if producer is set then we will request from it</span>
+       <span class="co">// otherwise we increase the requested count by n</span>
+       <span class="kw">if</span> (producer != <span class="kw">null</span>) {
+            producer.<span class="fu">request</span>(n);
+       } <span class="kw">else</span> {
+            requested = requested + n;
+       }
+}</code></pre></div>
+<p>这个函数被我简化了，去掉了关于线程安全的部分。这样代码的可读性好多了。 * 就是说如果有 <code>producer</code> ，那么计数的功能就交给 <code>producer</code> 了。 * 如果没有，那么 <code>requested</code> 用来计数。</p>
+<p>这里简化了代码，去掉了 <code>requested</code> 溢出的处理，就是说当 <code>requested + n</code> 比 <code>LONG_MAX</code> 还要大的时候，会防止其变成负数。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">void</span> <span class="fu">setProducer</span>(Producer p) {
+    <span class="dt">boolean</span> passToSubscriber = subscriber != <span class="kw">null</span> &amp;&amp; requested == NOT_SET;
+    producer = p;
+    <span class="kw">if</span> (passToSubscriber) {
+        subscriber.<span class="fu">setProducer</span>(producer);
+    } <span class="kw">else</span> {
+        <span class="kw">if</span> (requested == NOT_SET) {
+            producer.<span class="fu">request</span>(Long.<span class="fu">MAX_VALUE</span>);
+        } <span class="kw">else</span> {
+            producer.<span class="fu">request</span>(requested);
+        }
+    }
+}</code></pre></div>
+<p>同样，这里去掉了关于线程安全的代码。</p>
+<p>个人认为，<code>setProducer</code> 这个函数名字起的不好，因为这个函数除了设置 <code>producer</code> 成员变量之外，还会调用 <code>produce.request</code> 函数。</p>
+<p>再来分析一下这个 <code>setProducer</code> 函数 * 底层是否掉用过本层的 <code>request(n)</code> 。 * 如果调用过，<code>requested != NOT_SET</code>，意味着底层出发了流控请求。 * 如果没有调用过，<code>requested == NOT_SET</code>，意味着底层没有出发了流控请求。 * <code>producer</code> 是真正处理流控的逻辑。<code>subscriber</code> 把流控逻辑交给 <code>producer</code>处理。如果没有 <code>producer</code> , <code>subscriber</code> 也就只能简单的计数，根本处理不了流控。 * 如果在触发流控请求之前，<code>setProducer</code> 函数被调用，那么要看本层是否愿意处理这个流控请求。 * 如果成员变量 <code>subscriber</code> 不是空，那么表示本层 Subscriber 不愿意，或者不能够处理好这个 backpressure ，交个上层处理 <code>subscriber.setProducer(producer)</code>。 * 上层如果不产生数据，本层的 <code>OnNext</code> 也不会触发。从而达到了流控的目的。这样一层一层往上传，一直要交给数据源那一层才好处理。换句话说，如果你需要创建了一个 Observable，例如你写了一个新的 operator ，但是不能很好地处理 backpressure ，那么最好往上传递。在 <code>OnSubscribe</code> 的时候，把本层 <code>subscriber</code>和上层 <code>subscriber</code> 串起来。 * 如果本层愿意处理 backpressure 请求，那么就调用 <code>procuder.request</code> 处理请求。 * 如果是在触发流控请求之后， <code>setProducer</code> 被调用，那么无论本层是否愿意，都要处理这个请求。</p>
+<p>代码虽短，这个逻辑太复杂了。</p>
+<h1 id="小结">小结</h1>
+<p>这里刚刚是一个皮毛，真正的 producer 处理流控逻辑还没有提到。下次有时间，专门分析一个真正的流控逻辑。</p>
+<p>同时，我们也看到，最好不要自己写 operator 和 OnSubscribe ，而是调用现成的 <code>from</code> 系列函数， <code>createSync</code> 之类的提供流控的工厂方法，构造 Observable。</p>
+</article>
+</main>
+</body>
+</html>

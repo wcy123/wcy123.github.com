@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ejabberdctrl register a new user</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>ejabberdctrl register a new user</h1>
+<h3 class="date">2015/08/01 23:20:54</h3>
+</header>
+<article>
+<p>运行命令</p>
+<pre><code>% ejabberdctl --node a@debian register test localhost 123
+User test@localhost successfully registered
+% ejabberdctl --node a@debian registered_users localhost
+test</code></pre>
+<h1 id="admin-的命令机制">admin 的命令机制。</h1>
+<pre><code>     #ejabberd_commands{name = register, tags = [accounts],
+            desc = &quot;Register a user&quot;,
+            module = ?MODULE, function = register,
+            args = [{user, binary}, {host, binary}, {password, binary}],
+            result = {res, restuple}},</code></pre>
+<p>注册命令 <a href="https://github.com/wcy123/ejabberd/blob/19aad464da3079af02b891ea7c4abd164526c51c/src/ejabberd_admin.erl#L117">ejabberd_commands</a></p>
+<h1 id="运行的最后命令是">运行的最后命令是</h1>
+<pre><code>sh -c &#39;/usr/local/bin/erl       -sname ejabberdctl-1       -noinput       -hidden       -pa /usr/local/ejabberd/lib/ejabberd/ebin              -s ejabberd_ctl -extra a@debian registered_users localhost&#39;</code></pre>
+<p>当然，设置了好多环境变量之类的东西。</p>
+<h1 id="从这里开始-ejabberd_ctlstart">从这里开始 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L65">ejabberd_ctl:start</a></h1>
+<h2 id="得到命令行参数-initget_plain_arguments">得到命令行参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L66">init:get_plain_arguments</a></h2>
+<h2 id="调用-rpccallnode-module-process-args">调用 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L83">rpc:call(Node, ?MODULE, process, [Args])</a></h2>
+<h2 id="ejabberd_ctlprocessargs"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L200">ejabberd_ctl:process(Args)</a></h2>
+<p>因为是 rpc ， 也可以在 erlang shell 中执行这个命令。</p>
+<pre><code>(a@debian)9&gt; ejabberd_ctl:process([&quot;registered_users&quot;,&quot;localhost&quot;]).
+test
+test
+23:31:11.271 [debug] Executing command ejabberd_admin:registered_users with Args=[&lt;&lt;&quot;localhost&quot;&gt;&gt;]
+0</code></pre>
+<h2 id="get_accesscommands-读取参数-ejabberdctl_access_commands-这个参数我没有设置"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L201">get_accesscommands</a> 读取参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L238">ejabberdctl_access_commands</a> ， 这个参数我没有设置。 <code>[]</code></h2>
+<h2 id="process2args-accesscommands"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L213">process2(Args, AccessCommands)</a></h2>
+<h2 id="process2args-auth-accesscommands"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L216">process2(Args, Auth, AccessCommands)</a></h2>
+<h3 id="try_run_ctpargs-auth-accesscommands"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L217">try_run_ctp(Args, Auth, AccessCommands)</a></h3>
+<h4 id="运行钩子-ejabberd_ctl_process">运行钩子 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L247">ejabberd_ctl_process</a></h4>
+<h4 id="try_call_command"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L249">try_call_command</a></h4>
+<h4 id="call_command"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L268">call_command</a></h4>
+<h5 id="command-list_to_atombinary_to_listcmdstringu"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L285">Command = list_to_atom(binary_to_list(CmdStringU))</a></h5>
+<p>这里产生内存泄漏，不过如果在一个安全的网络环境中，可以忍</p>
+<h5 id="ejabberd_commandsget_command_format"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L286">ejabberd_commands:get_command_format</a></h5>
+<pre><code>(a@debian)14&gt; ejabberd_commands:get_command_format(register)
+(a@debian)14&gt; .
+{[{user,binary},{host,binary},{password,binary}],
+ {res,restuple}}
+(a@debian)15&gt; ejabberd_commands:get_command_format(registered_users).
+{[{host,binary}],{users,{list,{username,string}}}}</code></pre>
+<h5 id="解释参数-format_argsargs-argsformat">解释参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L290">format_args(Args, ArgsFormat)</a></h5>
+<pre><code>(a@debian)23&gt; ejabberd_ctl:format_args([&quot;localhost&quot;], element(1,ejabberd_commands:get_command_format(registered_users))).
+[&lt;&lt;&quot;localhost&quot;&gt;&gt;]</code></pre>
+<p>可以看到 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L321">format_arg(Arg, integer)</a> ，这里只支持 integer, binary , string 三种类型。</p>
+<h6 id="ejabberd_commandsexecute_command"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_ctl.erl#L292">ejabberd_commands:execute_command</a></h6>
+<h6 id="execute_commandaccesscommands-auth-name-arguments"><a href="https://github.com/wcy123/ejabberd/blob/7ab6c4b4fd65d75e670152c38551d4311e1b481b/src/ejabberd_commands.erl#L305">execute_command(AccessCommands, Auth, Name, Arguments)</a></h6>
+<p id="check_access_commands"><a href="https://github.com/wcy123/ejabberd/blob/7ab6c4b4fd65d75e670152c38551d4311e1b481b/src/ejabberd_commands.erl#L308">check_access_commands</a></p>
+<h1 id="会运行命令-ejabberd_admregister">会运行命令 <a href="https://github.com/wcy123/ejabberd/blob/19aad464da3079af02b891ea7c4abd164526c51c/src/ejabberd_admin.erl#L338">ejabberd_adm:register</a></h1>
+</article>
+</main>
+</body>
+</html>

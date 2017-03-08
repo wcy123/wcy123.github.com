@@ -1,0 +1,265 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Java 8 函数式编程例子</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>Java 8 函数式编程例子</h1>
+<h3 class="date">2017/01/14 10:31:51</h3>
+</header>
+<article>
+<p>Java8 提供了函数式编程的能力，<a href="http://wcy123.github.io/2017/01/07/JAVA-中的高阶函数/">这里介绍过 java8 的高阶函数</a>，这篇文章通过一个实际的例子，展示函数式编程的思维。</p>
+<p>需求是这样的，有一个 log 文件，文件格式类似下面</p>
+<pre><code>2017/01/14 10:39:05 user &quot;Peter&quot; login
+2017/01/14 11:49:05 user &quot;John&quot; login
+2017/01/14 12:39:05 user &quot;Peter&quot; login
+2017/01/14 12:39:12 user &quot;Peter&quot; login
+2017/01/14 12:39:16 user &quot;Emma&quot; login
+2017/01/14 12:39:17 user &quot;Tom&quot; login
+2017/01/14 12:41:18 user &quot;Emma&quot; login
+2017/01/14 12:42:25 user &quot;Tom&quot; login
+2017/01/14 12:44:45 user &quot;Peter&quot; login
+2017/01/14 12:45:55 user &quot;Peter&quot; login</code></pre>
+<p>输入是这样一个文件，希望输出一个统计结果，按照登录次数排序，如果登录次数相同，按照登录时间倒序排序。</p>
+<p>类似</p>
+<pre><code>ExLogAnalyzerTest.LogEntry(timestamp=2017-01-14T04:45:55Z, user=Peter, count=5)
+ExLogAnalyzerTest.LogEntry(timestamp=2017-01-14T04:42:25Z, user=Tom, count=2)
+ExLogAnalyzerTest.LogEntry(timestamp=2017-01-14T04:41:18Z, user=Emma, count=2)
+ExLogAnalyzerTest.LogEntry(timestamp=2017-01-14T03:49:05Z, user=John, count=1)</code></pre>
+<p>首先，我们需要从输入文件得到一个 stream ，每一个元素是输入文件中的一行文字。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Stream&lt;String&gt; stream = Files.<span class="fu">lines</span>(Paths.<span class="fu">get</span>(fileName))</code></pre></div>
+<p>然后，每一行转换成为一个 Pojo 。这里使用了 lombok ，类似</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Value</span>
+<span class="fu">@Builder</span>
+<span class="dt">static</span> <span class="kw">class</span> LogEntry {
+    Instant timestamp;
+    String user;
+    Integer count;
+}</code></pre></div>
+<p>解析一行日志，找到我们感兴趣的登录日志。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Pattern p = Pattern.<span class="fu">compile</span>(
+           <span class="st">&quot;^([0-9]{4}/[0-9]{2}/[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}) *.*</span><span class="ch">\&quot;</span><span class="st">([a-zA-Z]*)</span><span class="ch">\&quot;</span><span class="st">.*login&quot;</span>);
+<span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> SimpleDateFormat simpleDateFormat= <span class="kw">new</span> SimpleDateFormat(<span class="st">&quot;yyyy/MM/dd HH:mm:ss&quot;</span>);
+<span class="kw">public</span> <span class="dt">static</span> LogEntry <span class="fu">parse</span>(String line) {
+       <span class="dt">final</span> Matcher matcher = p.<span class="fu">matcher</span>(line);
+       <span class="kw">if</span> (matcher.<span class="fu">find</span>()) {
+           <span class="kw">try</span> {
+               <span class="dt">final</span> String dateString = matcher.<span class="fu">group</span>(<span class="dv">1</span>);
+               <span class="kw">return</span> LogEntry.<span class="fu">builder</span>()
+                       .<span class="fu">timestamp</span>(simpleDateFormat.<span class="fu">parse</span>(dateString).<span class="fu">toInstant</span>())
+                       .<span class="fu">user</span>(matcher.<span class="fu">group</span>(<span class="dv">2</span>))
+                       .<span class="fu">count</span>(<span class="dv">1</span>) <span class="co">// 登录次数默认为一次</span>
+                       .<span class="fu">build</span>();
+           } <span class="kw">catch</span> (ParseException e) {
+               e.<span class="fu">printStackTrace</span>();
+               <span class="kw">return</span> <span class="kw">null</span>;
+           }
+       } <span class="kw">else</span> {
+           <span class="kw">return</span> <span class="kw">null</span>;
+       }
+   }
+}</code></pre></div>
+<p>这样我们就可以得到一组 log entry 了。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">stream.<span class="fu">map</span>(LogEntry::parse)</code></pre></div>
+<p>log 文件中，可能有其他的 log，我们无法解析为 LogEntry ，那么就忽略这些记录</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">.<span class="fu">filter</span>(e -&gt; e != <span class="kw">null</span>)</code></pre></div>
+<p>然后，我们要对分组，根据统计登录次数。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">.<span class="fu">collect</span>(Collectors.<span class="fu">groupingBy</span>(LogEntry::getUser))</code></pre></div>
+<p>分组之后，返回的是一个 hashMap ，Key 是 String, 用户名， Value 是 List ，一组日志。list.size 就是登录次数。那么我们转换为登录次数和最后一次登录时间。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> Function&lt;Map.<span class="fu">Entry</span>&lt;String, List&lt;LogEntry&gt;&gt;, List&lt;LogEntry&gt;&gt; getValue
+     = Map.<span class="fu">Entry</span>::getValue;
+<span class="dt">final</span> Function&lt;Map.<span class="fu">Entry</span>&lt;String, List&lt;LogEntry&gt;&gt;, LogEntry&gt; mergeLoginEntry
+     = getValue.<span class="fu">andThen</span>(list -&gt; LogEntry.<span class="fu">builder</span>()
+                    .<span class="fu">count</span>(loginCount.<span class="fu">apply</span>(list))
+                    .<span class="fu">timestamp</span>(getLastLoginTime.<span class="fu">apply</span>(list))
+                    .<span class="fu">user</span>(list.<span class="fu">get</span>(<span class="dv">0</span>).<span class="fu">getUser</span>())
+                    .<span class="fu">build</span>());
+.<span class="fu">entrySet</span>().<span class="fu">stream</span>().<span class="fu">map</span>(mergeLoginEntry)</code></pre></div>
+<p>对应的登录次数和最后一次登录时间的函数如下</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> Function&lt;List, Instant&gt; getLastLoginTime =
+    list -&gt;
+        Collections.<span class="fu">max</span>((List&lt;LogEntry&gt;) list, Comparator.<span class="fu">comparing</span>(LogEntry::getTimestamp))
+             .<span class="fu">getTimestamp</span>();
+<span class="dt">final</span> Function&lt;List, Integer&gt; loginCount = List::size;</code></pre></div>
+<p>然后按照登录次数排序，倒序，如果登录次数一样，就应该按照最后一次登录时间排序。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">.<span class="fu">sorted</span>(Comparator.<span class="fu">comparing</span>(LogEntry::getCount)
+                            .<span class="fu">thenComparing</span>(LogEntry::getTimestamp)</code></pre></div>
+<p>最后，我们输出结果</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">.<span class="fu">collect</span>(Collectors.<span class="fu">toList</span>())
+.<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>结论，我们可以看到高阶函数很好的表达能力，高阶函数，就是指一个函数的参数或者返回值，还是一个函数。这个例子大量使用了高阶函数。</p>
+<ul>
+<li>Comparator.comparing</li>
+<li>Comparator::thenComparing</li>
+<li>Collections::max</li>
+<li>Stream::map</li>
+<li>Stream::filter</li>
+<li>Function::andThen</li>
+<li>Stream::sorted</li>
+<li>Collectors::groupingBy</li>
+<li>List::forEach</li>
+</ul>
+<p>延伸思考， Collector::groupingBy 需要创建一个全新的 list ，但是我们只需要统计 list 的长度和 list 中最大的登录时间，这里如果进一步优化，可以让 groupingBy 直接返回一个新的登录记录。用来减少空间复杂度，降低内存使用量。同时也可以减少后面排序的操作，降低了时间复杂度。</p>
+<p>这里我们可以考虑使用 Collector::reduce ，函数式编程里面的万能妖刀。这个函数是很底层的函数，如果有其他函数能完成类似的功能，尽量不要使用这个函数。</p>
+<p>在这个例子中，使用 Collector::reduce 可以让核心代码可以更加简洁了。</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> BinaryOperator&lt;LogEntry&gt; reducer = (acc, a) -&gt; LogEntry.<span class="fu">builder</span>()
+         .<span class="fu">count</span>(acc.<span class="fu">getCount</span>() + <span class="dv">1</span>)
+         .<span class="fu">timestamp</span>(Collections.<span class="fu">max</span>(Arrays.<span class="fu">asList</span>(a.<span class="fu">getTimestamp</span>(), acc.<span class="fu">getTimestamp</span>())))
+         .<span class="fu">user</span>(a.<span class="fu">getUser</span>())
+         .<span class="fu">build</span>();
+stream.<span class="fu">map</span>(LogEntry::parse)
+         .<span class="fu">filter</span>(e -&gt; e != <span class="kw">null</span>)
+         .<span class="fu">collect</span>(Collectors.<span class="fu">groupingBy</span>(LogEntry::getUser, Collectors.<span class="fu">reducing</span>(reducer)))
+         .<span class="fu">entrySet</span>().<span class="fu">stream</span>()
+         .<span class="fu">map</span>(Map.<span class="fu">Entry</span>::getValue)
+         .<span class="fu">filter</span>(Optional::isPresent)
+         .<span class="fu">map</span>(Optional::get)
+         .<span class="fu">sorted</span>(Comparator.<span class="fu">comparing</span>(LogEntry::getCount)
+                 .<span class="fu">reversed</span>()
+                 .<span class="fu">thenComparing</span>(LogEntry::getTimestamp)
+                 .<span class="fu">reversed</span>())
+         .<span class="fu">collect</span>(Collectors.<span class="fu">toList</span>())
+         .<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);</code></pre></div>
+<p>附录：完整的代码</p>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package org.wcy123.fp.imp;</span>
+
+<span class="kw">import java.io.IOException;</span>
+<span class="kw">import java.nio.file.Files;</span>
+<span class="kw">import java.nio.file.Paths;</span>
+<span class="kw">import java.text.ParseException;</span>
+<span class="kw">import java.text.SimpleDateFormat;</span>
+<span class="kw">import java.time.Instant;</span>
+<span class="kw">import java.util.Collections;</span>
+<span class="kw">import java.util.Comparator;</span>
+<span class="kw">import java.util.List;</span>
+<span class="kw">import java.util.Map;</span>
+<span class="kw">import java.util.function.Function;</span>
+<span class="kw">import java.util.regex.Matcher;</span>
+<span class="kw">import java.util.regex.Pattern;</span>
+<span class="kw">import java.util.stream.Collectors;</span>
+<span class="kw">import java.util.stream.Stream;</span>
+
+<span class="kw">import org.junit.Test;</span>
+
+<span class="kw">import lombok.Builder;</span>
+<span class="kw">import lombok.Value;</span>
+
+<span class="kw">public</span> <span class="kw">class</span> ExLogAnalyzerTest {
+    <span class="fu">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main</span>() <span class="kw">throws</span> Exception {
+
+        String fileName = <span class="st">&quot;log.txt&quot;</span>;
+
+        <span class="kw">try</span> (Stream&lt;String&gt; stream = Files.<span class="fu">lines</span>(Paths.<span class="fu">get</span>(fileName))) {
+            <span class="dt">final</span> Function&lt;List, Instant&gt; getLastLoginTime = list -&gt;
+                    Collections.<span class="fu">max</span>((List&lt;LogEntry&gt;) list, Comparator.<span class="fu">comparing</span>(LogEntry::getTimestamp)).<span class="fu">getTimestamp</span>();
+            <span class="dt">final</span> Function&lt;List, Integer&gt; loginCount = List::size;
+            <span class="dt">final</span> Function&lt;Map.<span class="fu">Entry</span>&lt;String, List&lt;LogEntry&gt;&gt;, List&lt;LogEntry&gt;&gt; getValue = Map.<span class="fu">Entry</span>::getValue;
+
+            <span class="dt">final</span> Function&lt;Map.<span class="fu">Entry</span>&lt;String, List&lt;LogEntry&gt;&gt;, LogEntry&gt; mergeLoginEntry = getValue.<span class="fu">andThen</span>(list -&gt; LogEntry.<span class="fu">builder</span>()
+                    .<span class="fu">count</span>(loginCount.<span class="fu">apply</span>(list))
+                    .<span class="fu">timestamp</span>(getLastLoginTime.<span class="fu">apply</span>(list))
+                    .<span class="fu">user</span>(list.<span class="fu">get</span>(<span class="dv">0</span>).<span class="fu">getUser</span>())
+                    .<span class="fu">build</span>());
+            stream.<span class="fu">map</span>(LogEntry::parse)
+                    .<span class="fu">filter</span>(e -&gt; e != <span class="kw">null</span>)
+                    .<span class="fu">collect</span>(Collectors.<span class="fu">groupingBy</span>(LogEntry::getUser))
+                    .<span class="fu">entrySet</span>().<span class="fu">stream</span>()
+                    .<span class="fu">map</span>(mergeLoginEntry)
+                    .<span class="fu">sorted</span>(Comparator.<span class="fu">comparing</span>(LogEntry::getCount)
+                            .<span class="fu">reversed</span>()
+                            .<span class="fu">thenComparing</span>(LogEntry::getTimestamp)
+                            .<span class="fu">reversed</span>())
+                    .<span class="fu">collect</span>(Collectors.<span class="fu">toList</span>())
+                    .<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);
+
+
+        } <span class="kw">catch</span> (IOException e) {
+            e.<span class="fu">printStackTrace</span>();
+        }
+    }
+
+    <span class="fu">@Value</span>
+    <span class="fu">@Builder</span>
+    <span class="dt">static</span> <span class="kw">class</span> LogEntry {
+        <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> Pattern p = Pattern.<span class="fu">compile</span>(
+                <span class="st">&quot;^([0-9]{4}/[0-9]{2}/[0-9]{2} *[0-9]{2}:[0-9]{2}:[0-9]{2}) *.*</span><span class="ch">\&quot;</span><span class="st">([a-zA-Z]*)</span><span class="ch">\&quot;</span><span class="st">.*login&quot;</span>);
+        <span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> SimpleDateFormat simpleDateFormat =
+                <span class="kw">new</span> SimpleDateFormat(<span class="st">&quot;yyyy/MM/dd HH:mm:ss&quot;</span>);
+        Instant timestamp;
+        String user;
+        Integer count;
+
+        <span class="kw">public</span> <span class="dt">static</span> LogEntry <span class="fu">parse</span>(String line) {
+            <span class="dt">final</span> Matcher matcher = p.<span class="fu">matcher</span>(line);
+            <span class="kw">if</span> (matcher.<span class="fu">find</span>()) {
+                <span class="kw">try</span> {
+                    <span class="dt">final</span> String dateString = matcher.<span class="fu">group</span>(<span class="dv">1</span>);
+                    <span class="kw">return</span> LogEntry.<span class="fu">builder</span>()
+                            .<span class="fu">timestamp</span>(simpleDateFormat.<span class="fu">parse</span>(dateString).<span class="fu">toInstant</span>())
+                            .<span class="fu">user</span>(matcher.<span class="fu">group</span>(<span class="dv">2</span>))
+                            .<span class="fu">count</span>(<span class="dv">1</span>) <span class="co">// 登陆次数默认为一次</span>
+                            .<span class="fu">build</span>();
+                } <span class="kw">catch</span> (ParseException e) {
+                    e.<span class="fu">printStackTrace</span>();
+                    <span class="kw">return</span> <span class="kw">null</span>;
+                }
+            } <span class="kw">else</span> {
+                <span class="kw">return</span> <span class="kw">null</span>;
+            }
+        }
+    }
+}</code></pre></div>
+</article>
+</main>
+</body>
+</html>

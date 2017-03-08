@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ejabberd crysasl plain 的认证</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>ejabberd crysasl plain 的认证</h1>
+<h3 class="date">2015/07/31 20:48:14</h3>
+</header>
+<article>
+<h1 id="启动时的时候注入表格">启动时的时候注入表格</h1>
+<p>注入表格 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L148">sasl_mechanism</a> <a href="../../../07/30/ejabberd-%E7%9A%84%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/index.html#table_sasl_mechanism">这里</a> 可以看到初始化的部分。</p>
+<h2 id="调用-cyrsaslregister_mechanismplain-module-plain">调用 <a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L37">cyrsasl:register_mechanism(&lt;&lt;&quot;PLAIN&quot;&gt;&gt;, ?MODULE, plain)</a></h2>
+<h3 id="register_mechanism"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L98">register_mechanism</a></h3>
+<h4 id="检查是否已经禁止-is_disabledmechanism">检查是否已经禁止 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L99">is_disabled(Mechanism)</a></h4>
+<p>有参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L236">disable_sasl_mechanisms</a> 控制。参数名称不分大小写。参见 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L238">str:to_upper</a> 。</p>
+<p>注意，这里不支持 per host 的配置。</p>
+<p>例如 <code>(a@debian)52&gt; ejabberd_config:get_option(disable_sasl_mechanisms, fun(V)-&gt;V end).   undefined</code></p>
+<pre><code>#sasl_mechanism{mechanism=&lt;&lt;&quot;PLAIN&quot;&gt;&gt;, module=crysasl_plain, password_type=plain}</code></pre>
+<h1 id="mech_new"><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L42">mech_new</a></h1>
+<p>有三个输出函数 <code>get_password</code>, <code>check_passwd</code> 和 <code>check_passord_digest</code>。 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L392-L403">参考这里</a></p>
+<p>对于 plain 来讲，只有 <a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L42">CheckPassword</a> 是有意义的。这个 state 会存储在 c2s 的状态里面。</p>
+<h1 id="parse"><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L72">parse</a></h1>
+<pre><code>(a@debian)61&gt; cyrsasl_plain:parse(&lt;&lt;&quot;user@domain\0user\0passwd&quot;&gt;&gt;).
+[&lt;&lt;&quot;user@domain&quot;&gt;&gt;,&lt;&lt;&quot;user&quot;&gt;&gt;,&lt;&lt;&quot;passwd&quot;&gt;&gt;]
+(a@debian)55&gt; cyrsasl_plain:parse(&lt;&lt;&quot;\0user\0passwd&quot;&gt;&gt;).
+[&lt;&lt;&gt;&gt;,&lt;&lt;&quot;user&quot;&gt;&gt;,&lt;&lt;&quot;passwd&quot;&gt;&gt;]</code></pre>
+<p><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L60">[&lt;&lt;&quot;&quot;&gt;&gt;, UserMaybeDomain, Password]</a> 可以得到 UserMaybeDomain 和 Password。</p>
+<h1 id="parse_domainusermaybedomain"><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L61">parse_domain(UserMaybeDomain)</a></h1>
+<pre><code>(a@debian)59&gt; cyrsasl_plain:parse_domain(&lt;&lt;&quot;user@domain&quot;&gt;&gt;).
+[&lt;&lt;&quot;user&quot;&gt;&gt;,&lt;&lt;&quot;domain&quot;&gt;&gt;]
+(a@debian)60&gt; cyrsasl_plain:parse_domain(&lt;&lt;&quot;user&quot;&gt;&gt;).
+[&lt;&lt;&quot;user&quot;&gt;&gt;]</code></pre>
+<h1 id="plain-不关心-_domain-部分">plain 不关心 <a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/cyrsasl_plain.erl#L63">_Domain</a> 部分。</h1>
+<h1 id="问题">问题</h1>
+<ol style="list-style-type: decimal">
+<li><p>似乎没有必要使用那三个匿名函数。不如直接调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L401">ejabberd_auth:check_password_with_authmodule</a> 我们得到了灵活性，失去了可读性。多余绕这么一个弯弯。</p></li>
+<li><p>plain 折腾了半天，似乎也没有干啥。还是要调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L401">ejabberd_auth:check_password_with_authmodule</a> 来检查密码。</p></li>
+</ol>
+<h1 id="对于-plain-只用check_password_with_authmodule3-来检查用户密码-又调用回来了">对于 plain 只用，<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L144">check_password_with_authmodule/3</a> 来检查用户密码。 又调用回来了。</h1>
+<p>plain 模块的作用，就是解析用户名和密码，并不做真正的验证。验证由 auth modules 来完成。</p>
+<ul>
+<li>internal</li>
+<li>external</li>
+<li>anonymous</li>
+<li>ldap</li>
+<li>odbc</li>
+<li>pam</li>
+<li>riak</li>
+<li>etc</li>
+</ul>
+<h1 id="check_password_with_authmodule"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L153">check_password_with_authmodule</a></h1>
+<h2 id="auth_modulesserver"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L146">auth_modules(Server)</a></h2>
+<h2 id="查询参数-gen_moddefault_db">查询参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L430">gen_mod:default_db</a></h2>
+<p>有参数 <a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L288">{default_db, Host}</a> 来控制。</p>
+<pre><code>(a@debian)64&gt; ejabberd_config:get_option({default_db, &lt;&lt;&quot;localhost&quot;&gt;&gt;}, fun (A)-&gt;A end, mnesia).
+mnesia</code></pre>
+<p>默认是 mnesia 。</p>
+<p>可用参数是</p>
+<ul>
+<li><a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L268">odbc</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L269">internal</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L270">mnesia</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L271">riak</a></li>
+</ul>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L431">mnesia 和 internal</a> 是等价的。</p>
+<p>参数<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L435">auth_method</a> 控制认证方式。</p>
+<pre><code>(a@debian)65&gt; ejabberd_config:get_option({auth_method,&lt;&lt;&quot;localhost&quot;&gt;&gt;}, fun (A)-&gt;A end).
+[internal,anonymous]</code></pre>
+<p>然后返回一大堆认证模块。</p>
+<pre><code>(a@debian)69&gt; ejabberd_auth:auth_modules(&lt;&lt;&quot;localhost&quot;&gt;&gt;).
+[ejabberd_auth_internal,ejabberd_auth_anonymous]</code></pre>
+<h1 id="check_password_loop"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L146">check_password_loop</a></h1>
+<p>[没有配置 auth 模块的话，不接收任何用户] -&gt; false](https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L158)</p>
+<p>调用虚函数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L160">check_password/3</a> 检查密码是否正确。这个虚函数是可变参数。plain 的时候，用 <code>U,S,P</code> 来检 查。</p>
+<h1 id="applyauthmodule-check_password-args-一个一个模块调用-check_password"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth.erl#L160">apply(AuthModule, check_password, Args)</a> 一个一个模块调用 <code>check_password)</code>。</h1>
+<h1 id="ejabberd_auth_internalcheck_password3-的实现最简单的"><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth_internal.erl#L89">ejabberd_auth_internal:check_password/3</a> 的实现，最简单的。</h1>
+<p>有两种方式，scram or not</p>
+<p>如果是 non-scram 的模式，就很简单， <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth_internal.erl#L95">when is_binary(Password)</a> 直接比较就行了。</p>
+<p>如果是 scram 的模式，<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth_internal.erl#L98">when is_record(Scram, scram)</a> 就调用 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_auth_internal.erl#L99">is_password_scram_valid</a> 来检查密码。</p>
+</article>
+</main>
+</body>
+</html>

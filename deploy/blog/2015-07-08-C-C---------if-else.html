@@ -1,0 +1,54 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>C/C++ 编程风格: if-else</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>C/C++ 编程风格: if-else</h1>
+<h3 class="date">2015/07/08 10:50:45</h3>
+</header>
+<article>
+<p>我的习惯是直接写成下面这样的逻辑。</p>
+<p>{% highlight c++ %} if(a==0 &amp;&amp; b == 0){ }else if(a!=0 &amp;&amp; b == 0){ }else if (a== 0 &amp;&amp; b!=0){ }else if(a!=0 &amp;&amp; b!=0) { }else{ assert(0 &amp;&amp; &quot;never goes here&quot;); } {% endhighlight %}</p>
+<p>原则</p>
+<ol start="0" style="list-style-type: decimal">
+<li>尽量少使用 if 语句</li>
+<li>尽量减少 then, else 中的语句。</li>
+<li>如果使用，条件尽量简单，尽量不适用复合条件判断。</li>
+<li>如果必须使用复合条件判断，一定包含所有可能性。</li>
+<li>if 语句一定要有 else 语句相随，就算 else 里面啥也没有，也要写一个空 的括号。</li>
+</ol>
+<p>有一种常用技巧可以减少 if 语句的使用，例如</p>
+<p>{% highlight c++ %} if(cmd == 0){ ret = do_cmd_0(); }else if(cmd == 1){ ret = do_cmd_1() } .... else { asset(0 &amp;&amp; &quot;never goes here&quot;); }</p>
+<p>or</p>
+<p>switch(cmd){ case 0: ret = do_cmd_0(); break; case 1: ret = do_cmd_0(); break; default: assert(0 &amp;&amp; &quot;never goes here&quot;); } return ret; {% endhighlight %}</p>
+<p>可以写成</p>
+<p>{% highlight c++ %} cmd_table[] = { do_cmd_0, do_cmd_1, ... };</p>
+<p>ret = cmd_table<a href="">cmd</a>; {% endhighlight %}</p>
+<p>如果是</p>
+<p>{% highlight c++ %} if (a == 0){ do_something_with(1,2,&quot;good&quot;); }else{ do_something_with(1,2,&quot;bad&quot;); } {% endhighlight %}</p>
+<p>就可以写成</p>
+<p>{% highlight c++ %} do_something_with(1,2,a==0?&quot;good&quot;:&quot;bad&quot;); {% endhighlight %}</p>
+<p>以尽量缩小 if 语句的控制范围。</p>
+<p>真实的代码里面，</p>
+<p>{% highlight c++ %} if(a==0){ do_something_xxx(1,2,3); do_other(); }else{ do_something_yyy(4,5,6); do_other(); } {% endhighlight %}</p>
+<p>如果是</p>
+<p>{% highlight c++ %} if(a==0) { blbbnalla very very long }else { yalayalaya very very long } {% endhighlight %}</p>
+<p>一定要把 then 和 else 的内容提各自取成一个函数，不要让 then else 太长。</p>
+<p>if else 看似很简单，实际上对代码的可读性有很大的影响。这些改进都是很简 单的改进，小小的改进，积累多了，就清爽多了。如果看不起这些小小的改进， 臭代码积累多了，以后再改就难了。</p>
+</article>
+</main>
+</body>
+</html>

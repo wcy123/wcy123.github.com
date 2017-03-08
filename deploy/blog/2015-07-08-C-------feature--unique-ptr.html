@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>C++11 的 feature, unique_ptr</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>C++11 的 feature, unique_ptr</h1>
+<h3 class="date">2015/07/08 16:39:21</h3>
+</header>
+<article>
+<p>参考链接</p>
+<ol style="list-style-type: decimal">
+<li><a href="http://www.cplusplus.com/reference/memory/unique_ptr/" title="unique_ptr">unique_ptr</a></li>
+<li><a href="http://www.drdobbs.com/cpp/c11-uniqueptr/240002708" title="C++11: unique_ptr">C++11: unique_ptr</a></li>
+</ol>
+<p><code>unique_ptr</code> 的语义</p>
+<ol style="list-style-type: decimal">
+<li><code>unique_ptr &lt;T&gt;</code> 看起来和指针 T* 很像</li>
+<li>自动调用析构函数，释放所指对象的资源，不产生资源泄漏。</li>
+<li><code>unique_ptr&lt;T&gt;</code> 保证只有一个对象拥有 (own) 某一个指针。</li>
+</ol>
+<p>做到第一点很容易，重载 <code>operator*</code>，<code>operator-&gt;</code> 和 <code>operator []</code>即可。 很多人都会写。为了简单，<code>unique_ptr&lt;T&gt;</code> 不支持指针算数操作，<code>++</code>, <code>--</code> 之类的。因为 <code>unique_ptr&lt;T&gt; + 1</code> 之后，他不能保证语义 2， 既他无法确定 他是 <code>T* +1</code> 的唯一拥有者。</p>
+<p>{% highlight c++ %} #include <iostream> #include <memory> using namespace std; struct A { A() { cerr &lt;&lt; <strong>FILE</strong> &lt;&lt; &quot;:&quot; &lt;&lt; <strong>LINE</strong> &lt;&lt; &quot;: [&quot; &lt;&lt; <strong>FUNCTION</strong>&lt;&lt; &quot;] &quot; &lt;&lt; endl; } ~A() { cerr &lt;&lt; <strong>FILE</strong> &lt;&lt; &quot;:&quot; &lt;&lt; <strong>LINE</strong> &lt;&lt; &quot;: [&quot; &lt;&lt; <strong>FUNCTION</strong>&lt;&lt; &quot;] &quot; &lt;&lt; endl; } }; void test1() { unique_ptr<A> ptr(new A()); } int main(int argc, char *argv[]) { cerr &lt;&lt; <strong>FILE</strong> &lt;&lt; &quot;:&quot; &lt;&lt; <strong>LINE</strong> &lt;&lt; &quot;: [&quot; &lt;&lt; <strong>FUNCTION</strong>&lt;&lt; &quot;] &quot; &lt;&lt; &quot;begin call test1&quot; &lt;&lt; endl; test1(); cerr &lt;&lt; <strong>FILE</strong> &lt;&lt; &quot;:&quot; &lt;&lt; <strong>LINE</strong> &lt;&lt; &quot;: [&quot; &lt;&lt; <strong>FUNCTION</strong>&lt;&lt; &quot;] &quot; &lt;&lt; &quot;done&quot; &lt;&lt; endl; return 0; } {% endhighlight %}</p>
+<p>程序输出</p>
+<p>{% highlight bash %} clang++ -std=c++11 -Wall -Werror unique_ptr.cpp &amp;&amp; ./a.out unique_ptr.cpp:20: [main] begin call test1 unique_ptr.cpp:6: [A] unique_ptr.cpp:10: [~A] unique_ptr.cpp:24: [main] done {% endhighlight %}</p>
+<p>第二点就有点麻烦，需要借用 C++11 的其他特性才能实现，最重要的就是右值 引用和 <code>std::move</code> 。</p>
+<h2 id="禁止拷贝构造函数">禁止拷贝构造函数</h2>
+<p>{% highlight c++ %} void test2_1(unique_ptr<A> x) { } void test1() { unique_ptr<A> ptr(new A()); test2_1(ptr); } {% endhighlight %}</p>
+<p>这样会产生编译错误</p>
+<p>{% highlight bash %} clang++ -std=c++11 -Wall -Werror unique_ptr.cpp &amp;&amp; ./a.out unique_ptr.cpp:20:13: error: call to deleted constructor of 'unique_ptr<A>' test2_1(ptr); ^~~ /usr/bin/../lib/gcc/x86_64-linux-gnu/4.9/../../../../include/c++/4.9/bits/unique_ptr.h:356:7: note: 'unique_ptr' has been explicitly marked deleted here unique_ptr(const unique_ptr&amp;) = delete; ^ unique_ptr.cpp:14:28: note: passing argument to parameter 'x' here void test2_1(unique_ptr<A> x) ^ 1 error generated. {% endhighlight %}</p>
+<h2 id="禁止赋值操作符重载">禁止赋值操作符重载</h2>
+<p>{% highlight c++ %} void test1() { unique_ptr<A> ptr(new A()); unique_ptr<A> ptr2; ptr2 = ptr; } {% endhighlight %}</p>
+<p>产生编译错误</p>
+<p>{% highlight bash %} clang++ -std=c++11 -Wall -Werror unique_ptr.cpp &amp;&amp; ./a.out unique_ptr.cpp:18:10: error: overload resolution selected deleted operator '=' ptr2 = ptr; {% endhighlight %}</p>
+<h2 id="那他有啥用">那他有啥用</h2>
+<p>不能复制，不能赋值，怎么用呢？我们经常用到传递指针的操作啊。</p>
+<p>传递指针给另一个函数的时候，有两种情况</p>
+<ol style="list-style-type: decimal">
+<li>调用者保留指针的所有权</li>
+<li>调用者放弃指针所有权</li>
+</ol>
+<h3 id="放弃所有权">放弃所有权</h3>
+<p>{% highlight c++ %} #include <iostream> #include <memory> using namespace std; struct A { A() { cerr &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; endl; } ~A() { cerr &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; endl; } }; void test2(unique_ptr<A> ptr2) { cerr &lt;&lt; &quot;test2 grab ownership&quot; &lt;&lt; endl; cerr &lt;&lt; ptr2.get() &lt;&lt; endl; cerr &lt;&lt; &quot;test2 done&quot;&lt;&lt; endl; } void test1() { unique_ptr<A> ptr(new A()); cerr &lt;&lt; &quot;test1 give up ownership&quot; &lt;&lt; endl; test2(std::move(ptr)); cerr &lt;&lt; ptr.get() &lt;&lt; endl; } int main(int argc, char *argv[]) { test1(); return 0; } {% endhighlight %}</p>
+<p>输出结果</p>
+<p>{% highlight bash %} clang++ -std=c++11 -Wall -Werror unique_ptr.cpp &amp;&amp; ./a.out A test1 give up ownership test2 grab ownership 0xdfb010 test2 done ~A 0 {% endhighlight %}</p>
+<p>可能有问题了，不是说不能调用拷贝构造函数吗？怎么 <code>test2(std::move(ptr))</code> 就不报错了呢？这个不是拷贝构造函数，这个是移动 构造函数 (move constructor)。<code>std::move</code> 的作用是把一个变量变成右值引 用 (rvalue reference) 。这两个是 C++ 11 新的特性。</p>
+<h3 id="保留所有权">保留所有权</h3>
+<p>这个简单，就用 <code>unique_ptr&lt;A&gt; &amp;</code> 代替就行了。这就是 <code>unique*ptr</code> 的作 用，如果 <code>ptr</code> 不放弃所有权，那么就不可能有其他的 <code>unique*ptr&lt;T&gt;</code> 拥有 同样的对象。 除非你传递 <code>ptr</code> 对象本身的引用。</p>
+<h2 id="和容器的关系">和容器的关系</h2>
+<p><code>unique_ptr</code> 可以很好的和容器一起工作。<code>vector&lt;unique_ptr&lt;A&gt;</code></p>
+<p>{% highlight c++ %} #include <iostream> #include <memory> #include <vector> using namespace std; struct A { A(int _i):i(_i) { cerr &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; i &lt;&lt; endl; } ~A() { cerr &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; i &lt;&lt; endl; } int i; }; void test1() { cerr &lt;&lt; &quot;begin&quot; &lt;&lt; endl; { vector<unique_ptr<A> &gt; v; for(int i = 0; i &lt; 3; ++i){ v.push_back(unique_ptr<A>(new A(i))); } } cerr &lt;&lt; &quot;done&quot; &lt;&lt; endl; } int main(int argc, char *argv[]) { test1(); return 0; } {% endhighlight %}</p>
+<p>这里隐含使用了右值引用，如果没有右值引用，实现这个功能还不容易啊。 <code>v.push_back</code> 实际上的函数原型是</p>
+<p>{% highlight c++ %} void push_back( T&amp;&amp; value ); {% endhighlight %}</p>
+<p>下面这个例子也行，使用到了转移构造函数(move constructor)</p>
+<p>{% highlight c++ %} unique_ptr<A> ptr(new A(i)); v.push_back(std::move(ptr)); {% endhighlight %}</p>
+<h2 id="和-shared_ptr-的关系">和 <code>shared_ptr</code> 的关系</h2>
+<p><code>unique_ptr</code> 和 <code>shared_ptr</code> 都可以自动析构动态生成的对象。但是二者不同。</p>
+<ol style="list-style-type: decimal">
+<li>多个 <code>shared_ptr</code> 对象可以共享同一个指针，而 <code>unique_ptr</code> 可以保证 我是指针的唯一拥有者。</li>
+<li>当所有 <code>shared_ptr</code> 对象都被析构掉了，则动态指针所指的对象被析构。因 为 <code>unique_ptr</code> 唯一拥有该指针，<code>unique_ptr</code> 对象析构的时候，也会析构指 针所指的对象。</li>
+</ol>
+<h2 id="和-auto_ptr-的关系">和 <code>auto_ptr</code> 的关系</h2>
+<p><code>unique_ptr</code> 代替了 <code>auto_ptr</code> 。 <code>auto_ptr</code> 是以前标准遗留的一个比较 难看的设计。为了避免抛出异常的时候，<code>auto_ptr</code> 的对象可以被成功析构。 但是因为缺少右值引用和移动构造函数的支持，<code>auto_ptr</code> 的语义很不清晰。 <code>auto_ptr</code> 也不能和容器很好的工作，你不能用 <code>vector&lt;auto_ptr&lt;T&gt; &gt;</code>。</p>
+<h2 id="性能">性能</h2>
+<p><code>unique_ptr</code> 的性能很好，几乎没有任何多余的开销。</p>
+</article>
+</main>
+</body>
+</html>

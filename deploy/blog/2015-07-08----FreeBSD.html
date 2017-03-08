@@ -1,0 +1,103 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>折腾 FreeBSD</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>折腾 FreeBSD</h1>
+<h3 class="date">2015/07/08 08:56:29</h3>
+</header>
+<article>
+<p>据说不喜欢 Windows 的人使用 Linux， 而喜欢 Unix 的人使用 FreeBSD。我没 有啥偏见，就是好奇，试着玩一玩 FreeBSD。</p>
+<p>首先我下载了一个虚拟机版本的 FreeBSD 映像。 <a href="ftp://ftp.freebsd.org/pub/FreeBSD/releases/VM-IMAGES/10.1-RELEASE/amd64/Latest/">下载地址</a> 。我用的是 VirtualBox 24.3.26 ，下载的是 vhd 格式。下载过 vmdk 格式的， 但是 virtualbox 出现非法操作。</p>
+<p>然后用 virtualbox 创建一个虚拟机，打开虚拟镜像。</p>
+<h2 id="如何设置主机名称">如何设置主机名称</h2>
+<pre><code>sysrc hostname=&quot;mybsd&quot;</code></pre>
+<h2 id="打开网卡">打开网卡</h2>
+<pre><code>ifconfig em0 up
+dhclient em0</code></pre>
+<h2 id="如何安装软件">如何安装软件</h2>
+<pre><code>pkg install vim</code></pre>
+<p>pkg 安装的时候出现 &quot;operation timedout&quot;， 因为我的网络连接太慢了，我看 到 man fetch 里面提到，可以用环境变量调整这个超时时间。</p>
+<pre><code>setenv HTTP_TIMEOUT 3000 # 我花了好一段时间找到窍门。</code></pre>
+<h2 id="安装-guest-addition">安装 guest addition</h2>
+<pre><code>pkg install virtualbox-ose-additions-4.3.28
+sysrc vboxguest_enable=yes
+sysrc vboxservice_enable=yes</code></pre>
+<p>然后重启</p>
+<h2 id="如何查看有-rc.conf-中所有的默认配置">如何查看有 rc.conf 中所有的默认配置</h2>
+<pre><code>sysrc -A</code></pre>
+<h2 id="如何查找软件">如何查找软件</h2>
+<pre><code>pkg search gdm
+pkg search --description &#39;display manager&#39;</code></pre>
+<p>参考</p>
+<ul>
+<li>https://www.freebsd.org/doc/handbook/ports-finding-applications.html</li>
+<li>man pkg-search</li>
+</ul>
+<h2 id="安装图形系统">安装图形系统</h2>
+<pre><code>pkg install xorg xfce4</code></pre>
+<pre><code>pkg install gdm xorg xfce4
+sysrc gdm_enable=YES
+sysrc gnome_enable=YES
+sysrc hald_enable=&quot;YES&quot;  # 尤其是这两句话
+sysrc dbus_enable=&quot;YES&quot;</code></pre>
+<p>修改 /etc/fstab</p>
+<pre><code>proc /proc procfs rw 0 0</code></pre>
+<p>严格按照这几个步骤，否则图形界面出不来，还没有错误输出。查看 /var/log/gdm/:0-greater.log ，提示找不到 gnome-shell ，于是安装 gnome-shell ，其实我不太喜欢这个 gnome-shell ，被迫安装之。</p>
+<pre><code>pkg install gnome-shell</code></pre>
+<p>图形界面出来了，但是还黑屏幕。最后看 /var/log/gdm/:0-greater.log 可以 看到缺少 theme ，我也不愿在寻找这些 themes 了。这里 FreeBSD 不是很好。 gdm 太臃肿了。放弃了。</p>
+<p>换 slim</p>
+<pre><code>pkg install slim
+sysrc slim_enable=YES</code></pre>
+<p>重启，一切正常，可是登陆以后，屏幕一闪就没有了。这个很明显是 xinitrc 没有配置。</p>
+<pre><code>echo &quot;exec /usr/local/bin/xfce4-session&quot; &gt; ~/.xinitrc
+chmod +x ~/.xinitrc
+</code></pre>
+<p>参考</p>
+<ul>
+<li>https://www.freebsd.org/doc/handbook/x11-wm.html</li>
+</ul>
+<h2 id="安装-ssh">安装 ssh</h2>
+<pre><code>pkg install openssh-portable
+sysrc sshd_enable=YES
+service sshd start</code></pre>
+<h2 id="安装常用软件">安装常用软件</h2>
+<pre><code>pkg install gdm xfce4 emacs24 vim gcc git subversion</code></pre>
+<p>概念学习： 服务</p>
+<ul>
+<li>/etc/rc.d 下面有很多 shell 脚本，控制服务。</li>
+<li><code>rcvar</code> 表示控制服务的变量</li>
+<li>/etc/rc.conf 里面可以设置变量</li>
+<li>service 命令可以启动，停止，重启这些服务。 具体查看 man service</li>
+<li>sysrc 命令可以控制 /etc/rc.conf 中的变量设置。具体查看 man sysrc</li>
+</ul>
+<p>参考文献</p>
+<ul>
+<li>https://www.freebsd.org/doc/handbook/configtuning-starting-services.html</li>
+</ul>
+<h2 id="体会">体会</h2>
+<ul>
+<li>很干净。例如 debian 安装 openssh 之后，默认打开 sshd 服务，不需要任 何配置。freeBSD 需要简单的配置。难说那一个好，那一个坏。</li>
+<li>Debian 安装配置快速。缺点是如果你不懂的话，不知道到哪里去停止服务。</li>
+<li>FreeBSD 安装之后不能用。但是如果你懂的话，很容易知道怎么配置，一旦知 道怎么配置，发现其他的服务的方法都是类似的。</li>
+<li>GDM 这个是 GDM 本身的问题，太过于臃肿。</li>
+<li>据说 FreeBSD 上的商用软件似乎还不多，硬件支持不好。这个和市场占有率 有关系，不过我就是做一个稳定的开发环境，和我关系不大。</li>
+<li>以后的体会在慢慢说了。.....</li>
+</ul>
+</article>
+</main>
+</body>
+</html>

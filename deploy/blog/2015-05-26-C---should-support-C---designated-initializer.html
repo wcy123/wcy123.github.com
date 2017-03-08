@@ -1,0 +1,156 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title></title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<article>
+<p><a href="http://www.informit.com/guides/content.aspx?g=cplusplus&amp;seqNum=550">Two Core C99 Features that C++11 Lacks</a> mentions &quot;Designated Initializers and C++&quot;.</p>
+<p>I think the 'designated initializer' related with potential optimization. Here I use &quot;gcc/g++&quot; 5.1 as an example.</p>
+<pre class="shell"><code>g++ (GCC) 5.1.0
+Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+gcc (GCC) 5.1.0
+Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</code></pre>
+<p>Here is a simple example.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &lt;stdlib.h&gt;</span>
+<span class="ot">#include &lt;assert.h&gt;</span>
+
+<span class="kw">struct</span> point {
+    <span class="dt">int</span> x;
+    <span class="dt">int</span> y;
+};
+<span class="dt">const</span> <span class="kw">struct</span> point a_point = {.x = <span class="dv">0</span>, .y = <span class="dv">0</span>};
+<span class="dt">int</span> foo() {
+    <span class="kw">if</span>(a_point.x == <span class="dv">0</span>){
+        printf(<span class="st">&quot;x == 0&quot;</span>);
+        <span class="kw">return</span> <span class="dv">0</span>;
+    }<span class="kw">else</span>{
+        printf(<span class="st">&quot;x == 1&quot;</span>);
+        <span class="kw">return</span> <span class="dv">1</span>;
+    }
+}
+<span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
+{
+    <span class="kw">return</span> foo();
+}</code></pre></div>
+<p>We knew at compilation time, <code>a_point.x</code> is zero, so we could expected that <code>foo</code> is optimized into a single <code>printf</code>.</p>
+<pre><code>$ gcc -O3 a.c
+$ gdb a.out
+(gdb) disassemble foo
+Dump of assembler code for function foo:
+   0x00000000004004f0 &lt;+0&gt;: sub    $0x8,%rsp
+   0x00000000004004f4 &lt;+4&gt;: mov    $0x4005bc,%edi
+   0x00000000004004f9 &lt;+9&gt;: xor    %eax,%eax
+   0x00000000004004fb &lt;+11&gt;:    callq  0x4003a0 &lt;printf@plt&gt;
+   0x0000000000400500 &lt;+16&gt;:    xor    %eax,%eax
+   0x0000000000400502 &lt;+18&gt;:    add    $0x8,%rsp
+   0x0000000000400506 &lt;+22&gt;:    retq   
+End of assembler dump.
+(gdb) x /s 0x4005bc
+0x4005bc:   &quot;x == 0&quot;</code></pre>
+<p>Very good! <code>foo</code> is optmized to print <code>x == 0</code> only.</p>
+<p>Let's see c++ version.</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &lt;stdlib.h&gt;</span>
+<span class="ot">#include &lt;assert.h&gt;</span>
+
+<span class="kw">struct</span> point {
+    point(<span class="dt">int</span> _x,<span class="dt">int</span> _y):x(_x),y(_y){}
+    <span class="dt">int</span> x;
+    <span class="dt">int</span> y;
+};
+<span class="dt">const</span> <span class="kw">struct</span> point a_point(<span class="dv">0</span>,<span class="dv">0</span>);
+<span class="dt">int</span> foo() {
+    <span class="kw">if</span>(a_point.x == <span class="dv">0</span>){
+    printf(<span class="st">&quot;x == 0&quot;</span>);
+    <span class="kw">return</span> <span class="dv">0</span>;
+    }<span class="kw">else</span>{
+    printf(<span class="st">&quot;x == 1&quot;</span>);
+    <span class="kw">return</span> <span class="dv">1</span>;
+    }
+}
+<span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
+{
+    <span class="kw">return</span> foo();
+}</code></pre></div>
+<pre><code>$ g++ -O3 a.cc
+$ gdb a.out
+(gdb) disassemble foo
+Dump of assembler code for function _Z3foov:
+   0x00000000004005c0 &lt;+0&gt;: push   %rbx
+   0x00000000004005c1 &lt;+1&gt;: mov    0x200489(%rip),%ebx        # 0x600a50 &lt;_ZL7a_point&gt;
+   0x00000000004005c7 &lt;+7&gt;: test   %ebx,%ebx
+   0x00000000004005c9 &lt;+9&gt;: je     0x4005e0 &lt;_Z3foov+32&gt;
+   0x00000000004005cb &lt;+11&gt;:    mov    $0x1,%ebx
+   0x00000000004005d0 &lt;+16&gt;:    mov    $0x4006a3,%edi
+   0x00000000004005d5 &lt;+21&gt;:    xor    %eax,%eax
+   0x00000000004005d7 &lt;+23&gt;:    callq  0x400460 &lt;printf@plt&gt;
+   0x00000000004005dc &lt;+28&gt;:    mov    %ebx,%eax
+   0x00000000004005de &lt;+30&gt;:    pop    %rbx
+   0x00000000004005df &lt;+31&gt;:    retq   
+   0x00000000004005e0 &lt;+32&gt;:    mov    $0x40069c,%edi
+   0x00000000004005e5 &lt;+37&gt;:    xor    %eax,%eax
+   0x00000000004005e7 &lt;+39&gt;:    callq  0x400460 &lt;printf@plt&gt;
+   0x00000000004005ec &lt;+44&gt;:    mov    %ebx,%eax
+   0x00000000004005ee &lt;+46&gt;:    pop    %rbx
+   0x00000000004005ef &lt;+47&gt;:    retq   
+End of assembler dump.</code></pre>
+<p>We can see that <code>a_point</code> is not really a compile time constant value.</p>
+</article>
+</main>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Learning inline keyword by example in C</title>
+
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>Learning inline keyword by example in C</h1>
+<h3 class="date">2015/05/05 11:48:11</h3>
+</header>
+<article>
+<p>C also has <code>inline</code> keyword, the sementic is not as same as C++. <a href="http://www.greenend.org.uk/rjk/tech/inline.html">Inline Functions In C</a> has a good explaination. In this blog, I am going to do dome exercises to make it more concrete.</p>
+<h2 id="static-inline-functions">static inline functions</h2>
+<p>This is very simple. Let's start with it.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in foo.h</span>
+<span class="kw">typedef</span> <span class="dt">void</span> (*func_t)(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f);
+<span class="dt">static</span> <span class="kw">inline</span> <span class="dt">void</span> print_me(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
+{
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in main.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &lt;stdlib.h&gt;</span>
+<span class="ot">#include &lt;assert.h&gt;</span>
+
+<span class="kw">extern</span> <span class="dt">void</span> m1();
+<span class="kw">extern</span> <span class="dt">void</span> m2();
+<span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
+{
+    m1();
+    m2();
+    <span class="kw">return</span> <span class="dv">0</span>;
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, NULL);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m2()
+{
+    foo(<span class="st">&quot;from a2&quot;</span>, NULL);
+}</code></pre></div>
+<pre><code>+ gcc -O3 -c -o a1.o a1.c
++ gcc -O3 -c -o a2.o a2.c
++ gcc -O3 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is (nil)
+from a1: pointer is (nil)
++ objdump -d a1.o
+a1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;m1&gt;:
+   0:   31 d2                   xor    %edx,%edx
+   2:   be 00 00 00 00          mov    $0x0,%esi
+   7:   bf 00 00 00 00          mov    $0x0,%edi
+   c:   31 c0                   xor    %eax,%eax
+   e:   e9 00 00 00 00          jmpq   13 &lt;m1+0x13&gt;
++ nm a1.o
+0000000000000000 T m1
+                 U printf
+</code></pre>
+<p>With optimzation, we can see <code>a1.o</code> does not have local symbol <code>foo</code> defined, and there is no function call <code>foo</code>, i.e. it is inlined.</p>
+<pre><code>+ gcc -O0 -c -o a1.o a1.c
++ gcc -O0 -c -o a2.o a2.c
++ gcc -O0 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is (nil)
+from a1: pointer is (nil)
++ objdump -d a1.o
+
+a1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;foo&gt;:
+   0:   55                      push   %rbp
+   1:   48 89 e5                mov    %rsp,%rbp
+   4:   48 83 ec 10             sub    $0x10,%rsp
+   8:   48 89 7d f8             mov    %rdi,-0x8(%rbp)
+   c:   48 89 75 f0             mov    %rsi,-0x10(%rbp)
+  10:   48 8b 55 f0             mov    -0x10(%rbp),%rdx
+  14:   48 8b 45 f8             mov    -0x8(%rbp),%rax
+  18:   48 89 c6                mov    %rax,%rsi
+  1b:   bf 00 00 00 00          mov    $0x0,%edi
+  20:   b8 00 00 00 00          mov    $0x0,%eax
+  25:   e8 00 00 00 00          callq  2a &lt;foo+0x2a&gt;
+  2a:   c9                      leaveq 
+  2b:   c3                      retq   
+
+000000000000002c &lt;m1&gt;:
+  2c:   55                      push   %rbp
+  2d:   48 89 e5                mov    %rsp,%rbp
+  30:   be 00 00 00 00          mov    $0x0,%esi
+  35:   bf 00 00 00 00          mov    $0x0,%edi
+  3a:   e8 c1 ff ff ff          callq  0 &lt;foo&gt;
+  3f:   5d                      pop    %rbp
+  40:   c3                      retq   
++ nm a1.o
+0000000000000000 t foo
+000000000000002c T m1
+                 U printf
+</code></pre>
+<p>On the other hand, if we use <code>-O0</code> to disable optimization, we can see <code>foo</code> is defined, and <code>foo</code> is invoked, i.e. it is not inlined.</p>
+<h3 id="how-to-force-it-to-inline">how to force it to inline?</h3>
+<p>if we change the <code>foo.h</code> as following,</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">//in foo.h</span>
+...
+<span class="dt">static</span> <span class="kw">inline</span> __attribute__((always_inline))
+<span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
+...</code></pre></div>
+<p><code>__attribute__((always_inline))</code> force to inline the function, even when optimization is disabled.</p>
+<pre><code>sh build.sh
++ gcc -O0 -c -o a1.o a1.c
++ gcc -O0 -c -o a2.o a2.c
++ gcc -O0 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is (nil)
+from a1: pointer is (nil)
++ objdump -d a1.o
+
+a1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;m1&gt;:
+   0:   55                      push   %rbp
+   1:   48 89 e5                mov    %rsp,%rbp
+   4:   48 83 ec 10             sub    $0x10,%rsp
+   8:   48 c7 45 f8 00 00 00    movq   $0x0,-0x8(%rbp)
+   f:   00 
+  10:   48 c7 45 f0 00 00 00    movq   $0x0,-0x10(%rbp)
+  17:   00 
+  18:   48 8b 55 f0             mov    -0x10(%rbp),%rdx
+  1c:   48 8b 45 f8             mov    -0x8(%rbp),%rax
+  20:   48 89 c6                mov    %rax,%rsi
+  23:   bf 00 00 00 00          mov    $0x0,%edi
+  28:   b8 00 00 00 00          mov    $0x0,%eax
+  2d:   e8 00 00 00 00          callq  32 &lt;m1+0x32&gt;
+  32:   c9                      leaveq 
+  33:   c3                      retq   
++ nm a1.o
+0000000000000000 T m1
+                 U printf
+</code></pre>
+<h3 id="inline-functions-are-not-always-inlined">inline functions are not always inlined</h3>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) foo);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m2()
+{
+    foo(<span class="st">&quot;from a2&quot;</span>, (<span class="dt">void</span>*) foo);
+}</code></pre></div>
+<pre><code>sh build.sh
++ gcc -O3 -c -o a1.o a1.c
++ gcc -O3 -c -o a2.o a2.c
++ gcc -O3 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is 0x400530
+from a1: pointer is 0x400570
++ objdump -d a1.o
+
+a1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;foo&gt;:
+   0:   48 89 f2                mov    %rsi,%rdx
+   3:   31 c0                   xor    %eax,%eax
+   5:   48 89 fe                mov    %rdi,%rsi
+   8:   bf 00 00 00 00          mov    $0x0,%edi
+   d:   e9 00 00 00 00          jmpq   12 &lt;foo+0x12&gt;
+  12:   66 66 66 66 66 2e 0f    data16 data16 data16 data16 nopw %cs:0x0(%rax,%rax,1)
+  19:   1f 84 00 00 00 00 00 
+
+0000000000000020 &lt;m1&gt;:
+  20:   ba 00 00 00 00          mov    $0x0,%edx
+  25:   be 00 00 00 00          mov    $0x0,%esi
+  2a:   bf 00 00 00 00          mov    $0x0,%edi
+  2f:   31 c0                   xor    %eax,%eax
+  31:   e9 00 00 00 00          jmpq   36 &lt;m1+0x16&gt;
++ nm a1.o
+0000000000000000 t foo
+0000000000000020 T m1
+                 U printf</code></pre>
+<p>we can see that the function <code>foo</code> is inlined, but the <code>foo</code> object code is emitted by compiler, because the address of the function <code>foo</code> is used.</p>
+<h2 id="pitfall-of-static-inline-function">Pitfall of static inline function</h2>
+<p>As same as other static function, every transform unit has its own implementation, so that <code>foo</code> is the local function. <code>t</code> in <code>nm</code> output indicates that <code>foo</code> is a private symbol.</p>
+<p>The address of function <code>foo</code> is <code>0x400530</code> and <code>0x400570</code> for <code>a1.o</code> and <code>a2.o</code> respectively.</p>
+<h2 id="non-external-inline-function.">non-external inline function.</h2>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#pragma once</span>
+<span class="co">// in foo.h</span>
+<span class="kw">inline</span> __attribute__((always_inline))
+<span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
+{
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m2()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
+}</code></pre></div>
+<pre><code>+ gcc -O3 -c -o a1.o a1.c
++ gcc -O3 -c -o a2.o a2.c
++ gcc -O3 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
+a2.o: In function `foo&#39;:
+a2.c:(.text+0x0): multiple definition of `foo&#39;
+a1.o:a1.c:(.text+0x0): first defined here
+collect2: error: ld returned 1 exit status
++ nm a1.o
+0000000000000000 T foo
+0000000000000020 T m1
+                 U printf
++ nm a2.o
+0000000000000000 T foo
+0000000000000020 T m1
+                 U printf</code></pre>
+<p>We can see both <code>a1.o</code> and <code>a2.o</code> emits function definition of <code>foo</code>, so that the linker complains that <code>multile definition</code>.</p>
+<p>It means that the non-external inline function can only be used in one transform unit. This is rather rather limited use, it could be replace with <code>static inline</code> functions mentioned above.</p>
+<h2 id="extern-inline-functions">extern inline functions</h2>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#pragma once</span>
+<span class="co">// in foo.h</span>
+<span class="kw">extern</span> <span class="kw">inline</span>
+<span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
+{
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m2()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
+}</code></pre></div>
+<pre><code>+ gcc -O3 -c -o a1.o a1.c
++ gcc -O3 -c -o a2.o a2.c
++ gcc -O3 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is (nil)
+from a1: pointer is (nil)
++ objdump -d a1.o
+
+a1.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 &lt;m1&gt;:
+   0:   31 d2                   xor    %edx,%edx
+   2:   be 00 00 00 00          mov    $0x0,%esi
+   7:   bf 00 00 00 00          mov    $0x0,%edi
+   c:   31 c0                   xor    %eax,%eax
+   e:   e9 00 00 00 00          jmpq   13 &lt;m1+0x13&gt;
++ nm a1.o
+0000000000000000 T m1
+                 U printf</code></pre>
+<p>We can see <code>foo</code> is inlined, because of <code>-O3</code>, and no code object is emitted.</p>
+<p>But with the same source code but different compilation options, i.e. <code>-O0</code>, which disable inline optimization, we've got a linking error as below.</p>
+<p>```</p>
+<p>``<code>+ gcc -O0 -c -o a1.o a1.c + gcc -O0 -c -o a2.o a2.c + gcc -O0 -c -o main.o main.c + gcc -o a.out a1.o a2.o main.o a1.o: In function</code>m1': a1.c:(.text+0xf): undefined reference to <code>foo' a2.o: In function</code>m2': a2.c:(.text+0xf): undefined reference to `foo' collect2: error: ld returned 1 exit status + objdump -d a1.o</p>
+<p>a1.o: file format elf64-x86-64</p>
+<p>Disassembly of section .text:</p>
+<p>0000000000000000 <m1>: 0: 55 push %rbp 1: 48 89 e5 mov %rsp,%rbp 4: be 00 00 00 00 mov $0x0,%esi 9: bf 00 00 00 00 mov $0x0,%edi e: e8 00 00 00 00 callq 13 <m1+0x13> 13: 5d pop %rbp 14: c3 retq<br />
++ nm a1.o U foo 0000000000000000 T m1 ```</p>
+<p>Because <code>foo</code> is not inlined, and both <code>a1.o</code> and <code>a2.o</code> refer to and undefined reference to <code>foo</code>, but there is no code object for <code>foo</code> is emitted, so that there is the linking error, <code>undefined reference</code>.</p>
+<p>Stand-alone object code is never emitted.</p>
+<p>In order to fix the above error, we use non-external inline function in <code>a1.c</code></p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
+}
+
+<span class="kw">inline</span> <span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f);</code></pre></div>
+<pre><code>+ gcc -O0 -c -o a1.o a1.c
++ gcc -O0 -c -o a2.o a2.c
++ gcc -O0 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is (nil)
+from a1: pointer is (nil)
++ nm a1.o
+0000000000000000 T foo
+000000000000002c T m1
+                 U printf
+
++ nm a2.o
+                 U foo
+0000000000000000 T m2</code></pre>
+<p>We can see in <code>a2.o</code>, it is as same as before, <code>foo</code> is an external symbol. But in <code>a1.c</code> it is a public symbol, and <code>foo</code> should only be emitted by <code>a1.o</code>, otherwise it would have linking error <code>multiple definition</code>.</p>
+<h3 id="function-address">function address</h3>
+<p>If we change <code>a1.c</code> and <code>a2.c</code> as below, to print the address of function <code>foo</code>.</p>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m1()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) foo);
+}
+
+<span class="kw">inline</span> <span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f);
+
+<span class="co">// in a2.c</span>
+<span class="ot">#include &lt;stdio.h&gt;</span>
+<span class="ot">#include &quot;foo.h&quot;</span>
+
+<span class="dt">void</span> m2()
+{
+    foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) foo);
+}</code></pre></div>
+<pre><code>+ gcc -O0 -c -o a1.o a1.c
++ gcc -O0 -c -o a2.o a2.c
++ gcc -O0 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+from a1: pointer is 0x400506
+from a1: pointer is 0x400506
++ nm a1.o
+0000000000000000 T foo
+000000000000002c T m1
+                 U printf
++ nm a2.o
+                 U foo
+0000000000000000 T m2</code></pre>
+<p>We see the address of function <code>foo</code> is unique, i.e. <code>0x400506</code>.</p>
+<h3 id="what-if-inline-functions-have-with-difinitions">what if inline functions have with difinitions?</h3>
+<pre><code>// in a1.c
+#include &lt;stdio.h&gt;
+extern inline
+void foo(const char * msg, void * f)
+{
+   printf(&quot;foo in a1.c %s: pointer is %p\n&quot;,msg,f);
+}
+
+void m1()
+{
+    foo(&quot;from a1&quot;, (void*) foo);
+}
+
+inline void foo(const char * msg, void * f);
+// in a2.c
+#include &lt;stdio.h&gt;
+extern inline
+void foo(const char * msg, void * f)
+{
+   printf(&quot;foo in a2.c %s: pointer is %p\n&quot;,msg,f);
+}
+void m2()
+{
+    foo(&quot;from a2&quot;, (void*) foo);
+}</code></pre>
+<pre><code>+ gcc -O0 -c -o a1.o a1.c
++ gcc -O0 -c -o a2.o a2.c
++ gcc -O0 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+foo in a1.c from a1: pointer is 0x400506
+foo in a1.c from a2: pointer is 0x400506
++ nm a1.o
+0000000000000000 T foo
+000000000000002c T m1
+                 U printf
++ nm a2.o
+                 U foo
+0000000000000000 T m2</code></pre>
+<p>We notice that we didn't include the common definition of <code>foo</code> from <code>foo.h</code>, instead, <code>a1.c</code> and <code>a2.c</code> has its own definitions.</p>
+<p>Because of <code>-O0</code>, the function is not inlined, so that only <code>foo</code> defined in <code>a1.c</code> is used.</p>
+<p>But if we compile it with <code>-O3</code>.</p>
+<pre><code>+ gcc -O3 -c -o a1.o a1.c
++ gcc -O3 -c -o a2.o a2.c
++ gcc -O3 -c -o main.o main.c
++ gcc -o a.out a1.o a2.o main.o
++ ./a.out
+foo in a1.c from a1: pointer is 0x400530
+foo in a2.c from a2: pointer is 0x400530
++ nm a1.o
+0000000000000000 T foo
+0000000000000020 T m1
+                 U printf
++ nm a2.o
+                 U foo
+0000000000000000 T m2
+                 U printf</code></pre>
+<p>Because <code>foo</code> is inlined, <code>a2.c</code> uses the definition in <code>a2.c</code>, not the <code>foo</code> in <code>a1.c</code>.</p>
+<p>Don't do it in practice.</p>
+<p>But in practice it might happen. For example, you modify <code>foo</code> in <code>foo.h</code>, but you only compile <code>a1.c</code> and forgot to re-compile <code>a2.c</code>. If the function is inlined, <code>a2.c</code> still use the old definition of <code>foo</code>.</p>
+</article>
+</main>
+</body>
+</html>

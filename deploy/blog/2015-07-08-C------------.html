@@ -1,0 +1,157 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>C++11 的右值引用问题</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>C++11 的右值引用问题</h1>
+<h3 class="date">2015/07/08 17:09:12</h3>
+</header>
+<article>
+<p>C++11 中增加了一个新的特性，叫做“右值引用” (rvalue reference)。</p>
+<p>主要参考文献</p>
+<ul>
+<li><a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2006/n2027.html">Rvalue Reference Quick Look</a></li>
+<li><a href="https://pizer.wordpress.com/2009/04/13/c0x-do-people-understand-rvalue-references/">C++0x: Do people understand rvalue references?</a></li>
+</ul>
+<blockquote>
+<p>Abstract</p>
+</blockquote>
+<blockquote>
+<p>Rvalue references is a small technical extension to the C++ language. Rvalue references allow programmers to avoid logically unnecessary copying and to provide perfect forwarding functions. They are primarily meant to aid in the design of higer performance and more robust libraries.</p>
+</blockquote>
+<p>注解</p>
+<ol style="list-style-type: decimal">
+<li>为了避免无谓拷贝</li>
+<li>为了提供完美转寄函数</li>
+<li>主要目的是为了写通用库。</li>
+</ol>
+<p>个人以为，一般应用程序的作者，尽量别用这个功能。</p>
+<h2 id="怎么理解这个功能呢">怎么理解这个功能呢？</h2>
+<p>首先理解什么是左值，右值。十分困难给出一个严格的定义，个人觉得一下非正 式定义比较容易理解。</p>
+<ol style="list-style-type: decimal">
+<li>能取地址的表达式，就是左值。</li>
+<li>不是左值的表达式，就是右值。</li>
+</ol>
+<p>最常见的右值</p>
+<ol style="list-style-type: decimal">
+<li>常量表达式 1 + 2,</li>
+<li>函数调用参数的临时对象 <code>f(A_Class())</code>中 f 的实参。</li>
+<li>函数调用的返回值产生的临时变量。</li>
+</ol>
+<p>最简单的一个例子</p>
+<p>{% highlight c++ %} #include <iostream> using namespace std; void foo(int &amp;&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; a &lt;&lt; endl; } void foo(int&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; a &lt;&lt; endl; } int bar() { return 1000; } int main(int argc, char *argv[]) { int i = 100; foo(10); foo(i); foo(bar()); return 0; } {% endhighlight %}</p>
+<p>程序输出结果</p>
+<p>{% highlight bash %} clang++ -ggdb -O0 -Wall -Werror -std=c++11 rvalue0.cpp &amp;&amp; ./a.out void foo(int &amp;&amp;) 10 void foo(int &amp;) 100 void foo(int &amp;&amp;) 1000 {% endhighlight %}</p>
+<p>普通函数调用重载理解了，就不难理解转移构造函数了。</p>
+<h2 id="谨慎使用这个功能">谨慎使用这个功能</h2>
+<p>C++ 的编译器已经十分聪明，在一般情况下，已经尽最大可能避免无谓的对象拷 贝。例如</p>
+<p>{% highlight c++ %} #include <iostream> using namespace std; struct A { A(); ~A(); A(const A&amp; a); int value; }; A::A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void<em>) this &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void</em>) this &lt;&lt; endl; }</p>
+<p>A::A(const A&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void<em>) this &lt;&lt; endl; } A bar() { A ret; cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void</em>) &amp;ret &lt;&lt; endl; return ret; } void foo(A x) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; (void<em>)&amp;x &lt;&lt;endl; } int main(int argc, char </em>argv[]) { foo(bar()); return 0; } {% endhighlight %}</p>
+<p>结果如下</p>
+<p>{% highlight bash %} clang++ -ggdb -O0 -Wall -Werror -std=c++11 rvalue0.cpp &amp;&amp; ./a.out A::A() 0x7ffff687a968 A bar() 0x7ffff687a968 void foo(A)0x7ffff687a968 A::~A() 0x7ffff687a968 {% endhighlight %}</p>
+<h2 id="左值引用是右值">左值引用是右值</h2>
+<p>{% highlight c++ %} void foo(A &amp;&amp; x){ ... x } {% endhighlight %}</p>
+<p>在函数体中，x 不是右值，而是左值，因为可以取到 x 的地址。</p>
+<h2 id="stdmove-的作用"><code>std::move</code> 的作用</h2>
+<p>这函数就是一个强制类型转换，把左值转换为左值，没有任何函数开销。如果没 有这个函数，一般很难调用转移构造函数(move constructor)。</p>
+<h2 id="可否返回一个临时对象的右值引用">可否返回一个临时对象的右值引用？</h2>
+<p>{% highlight c++ %} A&amp;&amp; foo() { A x; return std::move(A) // or return x; } {% endhighlight %}</p>
+<p>无论怎样，和返回普通引用一样，导致程序崩溃。</p>
+<h2 id="为什么有这个特性呢">为什么有这个特性呢？</h2>
+<ol style="list-style-type: decimal">
+<li>实现“可转移“ ， 和 std::move 相关</li>
+<li>提供完美转寄函数，和 std::forward 相关。（perfect forwarding function 怎么译？）</li>
+</ol>
+<h3 id="可转移">可转移</h3>
+<p>有很多时候，对象是可移动的而是不可以拷贝的。上面参考文献给出三个例子</p>
+<ol style="list-style-type: decimal">
+<li><code>fstream</code></li>
+<li><code>unique_ptr</code> (这里)[{{site.baseurl}}/{% post_url 2015-07-08-C-------feature--unique-ptr %}</li>
+<li>线程对象</li>
+</ol>
+<p>如果拷贝构造函数是私有函数，那么就是被禁止的。C++11 中有新特性，可以定 义 delete 函数。</p>
+<p>一般来讲，一个对象拥有某一资源，例如内存，文件，线程等等，这种所有权是 不能与其他对象共享的，因为析构函数会释放资源，如果和别人共享，”别人“被 析构了，析构函数会释放资源，那么你手里就拿着一个被释放的资源。类似这样 的对象就是不可以拷贝的</p>
+<p>但是_不可拷贝对象_并不是_不可转移对象_，假如拷贝了一个对象之后，但是源 对象放弃了所有权，那么目标对象就可以拥有所有权了。这个时候，我们不叫做 拷贝(copy)，叫做转移(move)。</p>
+<p>{% highlight c++ %} ifstream foo() { ifstream fs(<strong>FILE</strong>); return fs; } {% endhighlight %}</p>
+<p>这个例子会有编译错误，因为 ifstream 没有可用的拷贝构造函数，即“不可拷 贝”。但是在新的标准里面，解决了这个问题。 可惜的是 GCC-4.8 还没有实现 这个 ifstream 的转移构造函数。为了凑数，下面用 <code>unique_ptr</code> 为例。</p>
+<p>{% highlight c++ %} #include <iostream> #include <fstream> #include <memory> #include <iterator> using namespace std; unique_ptr<ifstream> foo() { return std::move(unique_ptr<ifstream>(new ifstream(<strong>FILE</strong>))); } int main(int argc, char <em>argv[]) { unique_ptr<ifstream> fs = foo(); copy(istreambuf_iterator<char>(</em>fs),istreambuf_iterator<char>(), ostream_iterator<char>(cout)); return 0; } {% endhighlight %}</p>
+<h2 id="完美转寄函数perfect-forward-function">完美转寄函数(Perfect Forward function)</h2>
+<p>假设我们写一个函数 <code>g(a1)</code> ，就和调用 <code>f(a1)</code> 一模一样。很容易吗？</p>
+<p>{% highlight c++ %} #include <iostream> #include <vector> using namespace std; class A { public: explicit A(int v); A(const A&amp; other); ~A(); public: int value; }; A::A(int v):value(v) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void<em>)this &lt;&lt; endl; } A::A(const A&amp; other):value(other.value) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; endl; } void f(A a) { cout &lt;&lt; a.value &lt;&lt; endl; } template<class T> void g(T a) { f(a); }</p>
+<p>int main(int argc, char *argv[]) { A x(100); g<A>(x); return 0; } {% endhighlight %}</p>
+<p>程序输出</p>
+<pre><code>A::A(int) 100 0x7fff48d239e8
+A::A(const A &amp;) 100 0x7fff48d239e0 0x7fff48d239e8
+A::A(const A &amp;) 100 0x7fff48d239a8 0x7fff48d239e0
+100
+A::~A() 100 0x7fff48d239a8
+A::~A() 100 0x7fff48d239e0
+A::~A() 100 0x7fff48d239e8</code></pre>
+<p>可以明显看到有一次多余拷贝构造函数。容易，改成引用就行了。</p>
+<p>{% highlight c++ %} template<class T> void g(T&amp; a) { f(a); } {% endhighlight %}</p>
+<p>这样的确避免了这次多余的拷贝构造函数，但是就没有那么通用了。所以我的体 会是，这个 rvalue reference 的功能是给库作者用的，普通应用程序，不用搞 得这么复杂。</p>
+<p>不通用的原因是，如果传递常量引用，就会编译错误。</p>
+<p>{% highlight c++ %} const A x(100); g<A>(x); {% endhighlight %}</p>
+<p>你会说，容易改，弄一个函数重载就行了。</p>
+<p>{% highlight c++ %} template<class T> void g(T&amp; a) { f(a); } template<class T> void g(const T&amp; a) { f(a); } {% endhighlight %}</p>
+<p>搞定。</p>
+<p>这样是搞定了，但是如果这样的函数多了，写起来十分难看，可读性也很差。 c++11 rvalue reference 这样解决了这个问题。</p>
+<p>{% highlight c++%} #include <iostream> #include <vector> using namespace std; class A { public: explicit A(int v); A(const A&amp; other); A(A&amp;&amp; other); ~A(); public: int value; }; A::A(int v):value(v) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void<em>)this &lt;&lt; endl; } A::A(const A&amp; other):value(other.value) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::A(A&amp;&amp; other):value(other.value) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; endl; } void f(A a) { cout &lt;&lt; a.value &lt;&lt; endl; } template<class T> void g(const T&amp;&amp; a) { f(a); }</p>
+<p>int main(int argc, char *argv[]) { A x(100); g<A>(std::move(x)); return 0; } {% endhighlight %}</p>
+<p>写一个通用的完美转寄函数十分困难，标准已经弄好了。<code>std::forward</code></p>
+<p>如何使用 std::forward</p>
+<p>参考 (std::forward)[http://en.cppreference.com/w/cpp/utility/forward]</p>
+<p>{% highlight c++ %} template<class T> void wrapper(T&amp;&amp; arg) { foo(std::forward<T>(arg)); // Forward a single argument. } {% endhighlight %}</p>
+<ol style="list-style-type: decimal">
+<li>如果调用 wrapper 的实参是 <code>std::string</code> 类型的右值引用，那么 T 是 <code>std::string</code> （不是 <code>std::string&amp;</code> 也不是 <code>const std::string&amp;</code> 也 不是事 <code>std::string&amp;&amp;</code>) ，那么 <code>std::forward</code> 保证传递右值引用给 <code>foo</code> 函数，即调用重载右值引用的 <code>foo</code>。</li>
+<li>如果调用 wrapper 的实参是 左值常量的 <code>std::string</code> ，那么 <code>T</code> 是 <code>const std::string&amp;</code> 并且 <code>std::forward</code> 保证传递常量左值引用给 <code>foo</code> 函数，即调用重载常量左值引用的 <code>foo</code>。</li>
+<li>如果调用 <code>wrapper</code> 的实参是非常量左值 <code>std::string</code>，那么 <code>T</code> 是 <code>std::string&amp;</code> ，并且 <code>std::forward</code> 保证传递非常量左值给 <code>foo</code> ， 即调用重载非常量左值的 <code>foo</code>。</li>
+</ol>
+<p>听上去比较复杂，简单理解就是，怎么调用 <code>wrapper</code> ，就怎么调用 <code>foo</code> ， 不用写很多的重载函数，只用一个 <code>wrapper</code> 函数，利用 <code>std::forward</code> ， 就可以找到合适版本的 foo，就算 foo 有很多个重载版本。</p>
+<p>{% highlight c++ %} #include <iostream> #include <vector> #include <string> using namespace std; void foo(std::string&amp;&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; a &lt;&lt; endl; } void foo(const std::string&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; a &lt;&lt; endl; } void foo(string&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; a &lt;&lt; endl; } template<class T> void wrapper(T&amp;&amp; arg) { foo(std::forward<T>(arg)); // Forward a single argument. }</p>
+<p>int main(int argc, char *argv[]) { string a = &quot;lvalue&quot;; const string b = &quot;const lvalue&quot;; wrapper(string(&quot;rvalue&quot;)); wrapper(b); wrapper(a);</p>
+<pre><code>return 0;</code></pre>
+<p>} {% endhighlight %}</p>
+<p>输出结果</p>
+<pre><code>lang++ -ggdb -O0 -Wall -Werror -std=c++11 forward3.cpp &amp;&amp; ./a.out
+void foo(std::string &amp;&amp;) rvalue
+void foo(const std::string &amp;) const lvalue
+void foo(string &amp;) lvalue</code></pre>
+<p>别重新发明轮子了，标准库已经做好了，而且这个工作并不简单。</p>
+<h2 id="不要用右值引用代替返回值优化">不要用右值引用代替返回值优化</h2>
+<p>前面说了 C++11 rvalue reference 的两个用处。经常看到有人说，还有一个用 处，就是，如果一个函数返回一个临时变量， rvalue reference 可以提高性能。 我觉得这是一个误解， 返回值优化 (RVO) 已经是十分成熟的技术，不需要 rvalue reference ，有了这个，反而更慢。前面的例子已经看到，C++ 编译器 足够聪明，很多情况下已经避免了无谓拷贝。</p>
+<p>{% highlight c++ %} #include <iostream> #include <vector> using namespace std; class A { public: explicit A(int v); A(const A&amp; other); A(A&amp;&amp; other); ~A(); public: int value; }; A::A(int v):value(v) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void<em>)this &lt;&lt; endl; } A::A(const A&amp; other):value(other.value) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::A(A&amp;&amp; other):value(other.value) { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; endl; } A f() { return A(100); } int main(int argc, char *argv[]) { A x = f(); return 0; } {% endhighlight %}</p>
+<p>这个例子中</p>
+<pre><code>clang++ -ggdb -O0 -Wall -Werror -std=c++11 rvo.cpp &amp;&amp; ./a.out
+A 100 0x7fff76a18a78
+~A 100 0x7fff76a18a78</code></pre>
+<p>可以看到，没有任何多多余动作，RVO 工作的很好。我们画蛇添足一下，用 rvalue reference 看看。</p>
+<p>改成</p>
+<pre><code>A &amp;&amp; x = f()</code></pre>
+<p>程序输出没有任何变化。</p>
+<p>如果</p>
+<pre><code>return A(100) =&gt; return std::move(A(100))</code></pre>
+<p>反倒多了一次转移构造函数的调用和临时对象的析构。</p>
+<h2 id="总结">总结</h2>
+<ol style="list-style-type: decimal">
+<li>右值引用是为了库函数作者用的，尤其是模板库。普通应用程序尽量不要用， 除非你真正理解这个功能。</li>
+<li><code>std::move</code> 经常和转右值构造函数配合使用，转移构造函数的形参是右值引用。</li>
+<li><code>std::forward</code> 利用右值引用。尽量用这个。</li>
+</ol>
+</article>
+</main>
+</body>
+</html>

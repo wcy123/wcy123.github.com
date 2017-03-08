@@ -1,0 +1,309 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>ejabberd 的启动过程</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>ejabberd 的启动过程</h1>
+<h3 class="date">2015/07/30 15:21:02</h3>
+</header>
+<article>
+<h2 id="ejabberd_loggerstart1"><a href="https://github.com/processone/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/src/ejabberd_app.erl#L41">ejabberd_logger:start()</a></h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L105">加载 sasl</a>，还没有启动。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L128">启动 lage</a></li>
+</ol>
+<ul>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L106">替代 <code>sasl</code> 自己的 logger</a></li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L54">设置 log 文件名称</a></p>
+<p>``` 可以用环境变量设置 log 文件名称。EJABBERD_LOG_PATH 或者用命令行 erl -ejabberd log_path '&quot;/var/log/ejabberd/&quot;' 会有 log 文件 error.log 和 crash.log 生成。</p>
+```</li>
+<li>设置 log 参数
+<ul>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L112">设置 log_rotate_date</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L113">设置 log_rotate_size</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L114">设置 log_rotate_count</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ab196b4b02ac2cbe7114ecb466cc10aea55bc112/src/ejabberd_logger.erl#L115">设置 log_rate_limit</a></li>
+</ul>
+<p><code>这些参数可以通过命令行设置 erl -ejabberd log_rotate_date 111</code> <a name="lager"> </a> 问题：既然已经替代掉了，为啥还有一个条件编译 <code>LAGER</code> ，<a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/include/logger.hrl#L22">参见这里</a> rebar 的配置文件已经默认定义这个宏了，<a href="https://github.com/wcy123/ejabberd/blob/b0453ea2ce8bf5078c345da4b7d8870d025976c2/rebar.config.script#L29">参见这里</a></p></li>
+</ul>
+<h2 id="写-pid-文件"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L211">写 pid 文件</a></h2>
+<p>pid 文件由环境变量 <a href="https://github.com/wcy123/ejabberd/blob/66310788848ef185f3831648b2abf67ab6ded7fa/src/ejabberd.erl#L54">EJABBERD_PID_PATH</a> 来控制，如果没有定义就不写。</p>
+<h2 id="start_apps"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L46">start_apps</a></h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L250">crypto</a> 正常 application</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L251">sasl</a> 正常启动。<code>start_app</code> 可以自动处理依赖关系。</li>
+<li><code>p1_ssl</code></li>
+<li><code>p1_yaml</code></li>
+<li><code>p1_tls</code></li>
+<li><code>p1_xml</code></li>
+<li><code>p1_stringprep</code></li>
+<li><code>p1_zlib</code></li>
+<li><code>p1_cache_tab</code></li>
+</ol>
+<p>问题: <code>ejabberd_app:start_app</code> 中的参数 <code>Type</code> 似乎没有使用，似乎准备传递给 <code>application:start</code> 但是没有传递。不过默认参数也是 temporary 。<a href="https://github.com/wcy123/ejabberd/blob/66310788848ef185f3831648b2abf67ab6ded7fa/src/ejabberd.erl#L81">参考这里</a>.</p>
+<p>StartFlag 似乎只是用来调试的，表明 ejabberd 是否已经加载。 <a name="app_deps"></a> 问题：Erlang OTP 本身有处理依赖关系的功能，例如 application:get_key(App, applications) 可以查看依赖关系。利用这个功能， 整个 <code>ejabberd_app</code> 的功能都可以简化了，可读性也变好了。</p>
+<p>除了处理依赖关系，<code>start_app</code> 还有一个功能，可以检查 app 相关的 modules 是否都已经加载了。相关的系统 API 有。</p>
+<ul>
+<li><code>application:get_key(App, modules)</code></li>
+<li><code>code:which(Mod)</code></li>
+<li><code>code:lib_dir(Mod)</code></li>
+</ul>
+<h2 id="ejabberdcheck_appejabberd"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L47">ejabberd:check_app(ejabberd)</a></h2>
+<p>这个就是 <code>ejabberd_app:start_app</code> 中的功能了。 <a href="https://github.com/wcy123/ejabberd/blob/66310788848ef185f3831648b2abf67ab6ded7fa/src/ejabberd.erl#L70">参考这里</a></p>
+<h2 id="db_init"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L49">db_init</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L116">初始化数据库</a></p>
+<p><a name="dynamic_cluster"></a>问题：这里不支持动态进入 cluster ? cluster 可以自动变大变小。</p>
+<p>问题：<a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L135">可能是一个 bug</a> 因为 <code>ejabberd_app::start_app</code> 中没有使用 Type。提交了 pull request。</p>
+<p>这里启动 mnesia。如果使用 OTP 自带的以来管理工具，applications 应该包含 mnesia。</p>
+<h2 id="start"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L50">start</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L109">这里启动一个空循环的进程</a></p>
+<p><a name="style1"></a>问题：<code>ejabberd:start/2</code> 和 <code>ejabberd:start/0</code> 完全不相关，这个有些怪异。</p>
+<h2 id="translatestart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L51">translate:start</a></h2>
+<p>暂时忽略这个模块，用于支持多语言界面的功能。<code>EJABBERD_MSGS_PATH</code> 环境 变量在这里使用了。</p>
+<h2 id="ejabberd_ctlinit"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L52">ejabberd_ctl:init</a></h2>
+<p>控制接口模块初始化。创建两个 ets 表格。</p>
+<ul>
+<li><code>ejabberd_ctl_cmds</code></li>
+<li><code>ejabberd_ctl_host_cmds</code></li>
+</ul>
+<p>疑问：named_table, set, public 是不是 cluster level 还是 node level 的。</p>
+<h2 id="ejabberd_commandsinit"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L53">ejabberd_commands:init</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/7ab6c4b4fd65d75e670152c38551d4311e1b481b/src/ejabberd_commands.erl#L228">创建表格</a> <code>ejabberd_commands</code> 。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/5a35405cd523127fcd051a38414529680b69505c/include/ejabberd_commands.hrl#L35">表格格式</a></p>
+<p>TODO: 格式啥意思？</p>
+<h2 id="ejabberd_adminstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L54">ejabberd_admin:start</a></h2>
+<p>向表格 <code>ejabberd_commands</code> <a href="https://github.com/wcy123/ejabberd/blob/7ab6c4b4fd65d75e670152c38551d4311e1b481b/src/ejabberd_commands.erl#L235">灌入</a> 命令。</p>
+<h2 id="gen_modstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L55">gen_mod:start</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L63">创建表格</a> <code>ejabberd_modules</code> 。这个函数的名字不好，其实没有启动任何进程。</p>
+<h2 id="ejabberd_configstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L56">ejabberd_config:start</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L63">创建表格</a> <code>local_config</code> ， <a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L69">读取配置文件</a> ，<a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L82">写入刚刚创建的表格中</a></p>
+<p>TODO: 单独一个页面描述参数系统的两个功能， macro 和 <code>include_config_file</code>。</p>
+<ol style="list-style-type: decimal">
+<li>初始化 mnesia 的表格 <code>local_config</code> , <a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L57-#L68">参考</a></li>
+</ol>
+<pre><code>{ { OptionName, Host} , value}
+
+OptionName :: atom()
+Host       :: global | binary() %% as hostname
+
+例如
+
+[{local_config,{access,global},
+                       [{announce,[{admin,allow}]},
+                        {c2s,[{blocked,deny},{all,allow}]},
+                        {c2s_shaper,[{admin,none},{all,normal}]},
+                        {configure,[{admin,allow}]},
+                        {local,[{local,allow}]},
+                        {max_user_offline_messages,[{admin,5000},{all,100}]},
+                        {max_user_sessions,[{all,10}]},
+                        {muc,[{all,allow}]},
+                        {muc_admin,[{admin,allow}]},
+                        {muc_create,[{local,allow}]},
+                        {pubsub_createnode,[{local,allow}]},
+                        {register,[{all,allow}]},
+                        {s2s_shaper,[{all,fast}]},
+                        {trusted_network,[{loopback,allow}]}]},
+         {local_config,{listen,global},[]},
+         {local_config,{log_rate_limit,global},100},
+         {local_config,{shared_key,global},
+                       &lt;&lt;&quot;0536d30a11489ce8fa49cabf3b80b3856ee6d22a&quot;&gt;&gt;},
+         {local_config,{auth_method,&lt;&lt;&quot;localhost&quot;&gt;&gt;}, [internal,anonymous]},
+         {local_config,{loglevel,global},1},
+         {local_config,{shaper,global},[{normal,1000},{fast,50000}]},
+         {local_config,{log_rotate_size,global},10485760},
+         {local_config,{modules,global},
+                       [{mod_echo,[]},{mod_roster,[]}]},
+         {local_config,{acl,global},
+                       [{admin,[{user,[[{&lt;&lt;&quot;admin1&quot;&gt;&gt;,&lt;&lt;&quot;localhost&quot;&gt;&gt;}],
+                                       [{&lt;&lt;&quot;ermine&quot;&gt;&gt;,&lt;&lt;&quot;example.org&quot;&gt;&gt;}]]}]},
+                        {local,[{user_regexp,&lt;&lt;&gt;&gt;}]},
+                        {loopback,[{ip,[&lt;&lt;&quot;127.0.0.0/8&quot;&gt;&gt;]}]}]},
+         {local_config,{auth_method,global},internal},
+         {local_config,{node_start,global},1438247600},
+         {local_config,{log_rotate_count,global},1},
+         {local_config,{allow_contrib_modules,global},true},
+         {local_config,{log_rotate_date,global},&lt;&lt;&gt;&gt;},
+         {local_config,{hosts,global},[&lt;&lt;&quot;localhost&quot;&gt;&gt;]},
+         {local_config,{max_fsm_queue,global},1000},
+         {local_config,{language,global},&lt;&lt;&quot;en&quot;&gt;&gt;}]
+</code></pre>
+<p>这里也使用了 <code>local_content</code>，不解。如果要支持动态增加 node 就需要修改这里。</p>
+<p>删除 <code>disc_copies</code> 的表格，奇怪，如果有这样的表格，直接 crash 就好了。</p>
+<p><code>create_table</code> 也没有检查是否能成功，应该不成功就直接 crash。</p>
+<ol start="2" style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L89">得到配置文件名称</a></li>
+</ol>
+<ul>
+<li>首先找命令行参数 <code>erl -ejabberd config FILE</code></li>
+<li>然后环境变量 <code>EJABBERD_CONFIG_PATH</code></li>
+<li>最后用默认参数 <code>&quot;ejabberd.cfg&quot;</code></li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L117">读取配置文件</a></li>
+</ol>
+<p>推荐用 yaml 格式了。<a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L123">get_plain_terms_file</a> 这里的 Opt 用来实现 <code>macro</code> 的功能。</p>
+<pre><code>ejabberd_config:get_plain_terms_file(&quot;b1.yml&quot;,[{include_files,true}]).
+[{modules,[]},{hosts,[]},{listen,[]},{y,1},{x,1}]</code></pre>
+<p>{% highlight yaml %} ## b1.yml include_config_file: &quot;b2.yml&quot; y: 1 {% endhighlight %}</p>
+<p>{% highlight yaml %} ## b2.yml include_config_file: &quot;b2.yml&quot; y: 1 {% endhighlight %}</p>
+<p>Opt 中的 <a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L120">include_modules_configs</a> 用来加载扩展模块的参数文件。 扩展模块的参数目录是 <a href="https://github.com/wcy123/ejabberd/blob/e211bf713122322562d950439a7d24c00ff82ed5/src/ext_mod.erl#L351">modules_dir</a></p>
+<ul>
+<li>首先看环境变量 <code>CONTRIB_MODULES_PATH</code></li>
+<li>然后用默认参数 <code>~/.ejabberd-modules/</code></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L209">filelib:wildcard</a> <code>/*/conf/*.{yml,yaml}</code></li>
+</ul>
+<p>然后利用 <code>include_files</code> 的功能，把他们都加载进来。</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L124">replace_macros</a> 的功能是定义宏。</p>
+<p>{% highlight yaml %} # a.yml define_macro: KEY1: a: 1 b: 2 KEY2: c: 1 x: name: John Smith age: KEY1 {% endhighlight %}</p>
+<pre><code>(a@debian)31&gt; ejabberd_config:get_plain_terms_file(&quot;a.yml&quot;,[]).
+[{define_macro,[{&#39;KEY1&#39;,[{a,1},{b,2}]},{&#39;KEY2&#39;,[{c,1}]}]},  %% 没有宏展开的结果
+ {x,[{name,&#39;John Smith&#39;},{age,&#39;KEY1&#39;}]}]
+(a@debian)31&gt; ejabberd_config:replace_macros(ejabberd_config:get_plain_terms_file(&quot;a.yml&quot;,[])).
+[{x,[{name,&#39;John Smith&#39;},{age,[{a,1},{b,2}]}]}]   %% 宏展开之后的结果</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L128">transform_terms</a> 这个功能是为了后向兼容。是吗？</p></li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L82">set_opts(State2)</a></p></li>
+</ol>
+<p>写入 <code>local_config</code> 表格。</p>
+<h2 id="set_settings_from_config"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L57">set_settings_from_config</a></h2>
+<ul>
+<li><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L242">设置日志等级</a></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L247">net_kernel:set_net_ticktime</a> ， 默认 60 秒 ， 参考 <a href="http://erlang.org/doc/man/kernel_app.html">kernel</a> 手册。</li>
+</ul>
+<h2 id="aclstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L58">acl:start()</a></h2>
+<p><a name="acl_init"></a> <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/acl.erl#L73">创建表格</a> acl , access 。然后从配置文件初始化表格。</p>
+<p>问题：创建这么多 <code>local_content</code> 的表格，为啥不用 ets ?</p>
+<h2 id="shaperstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L59">shaper:start()</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/shaper.erl#L53">创建表格</a> <code>shaper</code> ，<a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/shaper.erl#L66">从配置文件灌入数据</a>。</p>
+<h2 id="connect_nodes"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L60">connect_nodes</a></h2>
+<p>参数 <code>cluster_nodes</code> 控制的，<a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L176">链接所有节点。</a></p>
+<p><a name="dynamic_cluster2"></a>问题：似乎不知道动态增加/删除节点？</p>
+<p>如果可以支持这个功能，那么 cluster 就变成活的，只要有一个节点不死， cluster 就可以慢慢长大。</p>
+<h2 id="sup-ejabberd_supstart_link"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L61">Sup = ejabberd_sup:start_link</a></h2>
+<p>这个需要单独一个页面描述。这个 supervisor 启动了好多东西。</p>
+<h2 id="ejabberd_rdbmsstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L62">ejabberd_rdbms:start</a></h2>
+<p>参数 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_rdbms.erl#L76">odbc_type</a> 控制。</p>
+<p>可以是 - mysql - pgsql - sqlite - odbc - undefined</p>
+<p>参数 <a href="https://github.com/wcy123/ejabberd/blob/76104cd117126a2ac8b20b2ddcce4ec6ff12004a/src/ejabberd_config.erl#L787">hosts</a> 控制那些 hosts 需要 odbc.</p>
+<p><a href="https://github.com/wcy123/ejabberd/blob/9b4942890d251bf8d8bb373984c8e441eafdd300/include/ejabberd.hrl#L26">MYHOST</a> 的定义。用的地方还挺多。</p>
+<h2 id="ejabberd_riak_supstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L63">ejabberd_riak_sup:start</a></h2>
+<p>有参数 <a href="https://github.com/wcy123/ejabberd/blob/c1119b1f3945a37f656934ef530f8c7bf158530f/src/ejabberd_riak_sup.erl#L61">riak_server</a> <a href="https://github.com/wcy123/ejabberd/blob/c1119b1f3945a37f656934ef530f8c7bf158530f/src/ejabberd_riak_sup.erl#L64">riak_port</a> <a href="https://github.com/wcy123/ejabberd/blob/c1119b1f3945a37f656934ef530f8c7bf158530f/src/ejabberd_riak_sup.erl#L67">ejabberd_auth_riak</a> 或者 module 参数 <a href="https://github.com/wcy123/ejabberd/blob/9a9633dbc50430185a49cfda489bc87bed838d7c/src/gen_mod.erl#L281">db_type</a> 控制。</p>
+<p>启动 riakc 。</p>
+<h2 id="ejabberd_smstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L64">ejabberd_sm:start</a></h2>
+<p>在 <a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/ejabberd_sm.erl#L107">ejabberd_sub</a> 增加 child 。</p>
+<p><a name="app_deps2"></a> 疑问，为啥不在 <code>ejabberd_sup</code> 中直接加 child spec 呢？有执行顺序问题？ 回答。是的，有执行顺序问题，<code>ejabberd_sm</code> 需要根据参数来初始化不同的模块，所以要等待 <code>ejabberd_config:start</code> 之后运行。</p>
+<h2 id="cyrsaslstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L65">cyrsasl:start</a></h2>
+<p><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L83">启动下面的东西</a> 这个也不是启动。因为没有创建任何近程。</p>
+<ul>
+<li><a name="table_sasl_mechanism"></a><a href="https://github.com/wcy123/ejabberd/blob/fb6267f38ee47f3f725f88324d132741c85dfb6a/src/cyrsasl.erl#L80">创建表格 sasl_mechanism</a></li>
+<li><code>cyrsasl_plain</code></li>
+<li><code>cyrsasl_digest</code></li>
+<li><code>cyrsasl_scram</code></li>
+<li><code>cyrsasl_anonymous</code></li>
+</ul>
+<h2 id="maybe_add_nameservers"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L69">maybe_add_nameservers</a></h2>
+<p>没有用。</p>
+<h2 id="ext_modstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L70">ext_mod:start</a></h2>
+<p>启动扩展模块。</p>
+<h2 id="ejabberd_authstart"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L71">ejabberd_auth:start</a></h2>
+<p>启动认证模块。</p>
+<h2 id="start_modules"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L72">start_modules</a></h2>
+<p>启动其他配置的模块</p>
+<h2 id="ejabberd_listenerstart_listeners"><a href="https://github.com/wcy123/ejabberd/blob/dcf5aefea0363cc96d404591696e306fc323d8f5/src/ejabberd_app.erl#L73">ejabberd_listener:start_listeners</a></h2>
+<p>启动监听端口。</p>
+<h3 id="start_listeners"><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L85">start_listeners</a></h3>
+<p><a name="c2s_access"></a> 1. 参数 listen 控制 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L86">ejabberd_config:get_option(listen, fun validate_cfg/1)</a></p>
+<pre><code>(a@debian)42&gt; ejabberd_config:get_option(listen, fun ejabberd_listener:validate_cfg/1).
+[{ {5222,{0,0,0,0},tcp},
+  ejabberd_c2s,
+  [{access,c2s},{shaper,c2s_shaper},{max_stanza_size,65536}]},
+ { {5269,{0,0,0,0},tcp},ejabberd_s2s_in,[]},
+ { {5280,{0,0,0,0},tcp},
+  ejabberd_http,
+  [{captcha,true},
+   {http_bind,true},
+   {web_admin,true},
+   {request_handlers,[{&lt;&lt;&quot;/websocket&quot;&gt;&gt;,ejabberd_http_ws}]}]}]</code></pre>
+<p>配置了三个监听端口。这里比较怪异的是，<code>ejabberd_listener</code> 不是一个 OTP behavior ，这样代码读起来比较吃力。</p>
+<ol start="2" style="list-style-type: decimal">
+<li>启动各个监听端口 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L92">case start_listener(Port, Module, Opts)</a></li>
+</ol>
+<p>例如启动 c2s 的时候，参数如下</p>
+<pre><code>Port = {5222,{0,0,0,0},tcp},
+Module = ejabberd_c2s,
+Opt = [{access,c2s},{shaper,c2s_shaper},{max_stanza_size,65536}]</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L351">start_listener2(Port, Module, Opts)</a></p></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L355">maybe_start_sip(Module)</a> 其实啥也没干。</li>
+<li><p><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L356">start_module_sup(Port, Module)</a></p>
+<p>以 Module 名义，通过 <code>ejabberd_tmp_sup</code> 启动一个假的 <code>simple_one_for_one</code> 的 supervisor。 这个比较费解。</p>
+<ol style="list-style-type: decimal">
+<li>会启动一个名字为 <code>ejabberd_c2s_sup</code> 的 supervisor ，挂在 <code>ejabberd_sup</code> 下面。</li>
+<li>这个 <code>ejabberd_c2s_sup</code> 实际上不存在，真正的 Module 是 <code>ejabberd_tmp_sup</code> ，通常情况下，supervisor 的名字和 Module 的名字是一致的，但是这个不是。</li>
+<li><code>ejabberd_c2s_sup</code> 是一个 supervisor ，所以 ChildSpec 中，
+<ol style="list-style-type: decimal">
+<li>shutdown 为 infinite ，父领导等子领导，无限时间等。</li>
+<li>restart 为 permanent ，子领导消失，立刻找替代。</li>
+<li>启动参数是 <code>[ejabberd_c2s_sup, ejabberd_c2s]</code>, Proc 和 Module</li>
+</ol></li>
+<li>调用 <code>start_child</code> 的时候，会调用 <code>ejabberd_tmp_sup:init</code>
+<ol style="list-style-type: decimal">
+<li>返回一个 <code>simple_one_for_one</code> 的 ChildSpec。</li>
+<li>如果以后在调用 <code>supervisor:start_clild(ejabberd_c2s_sup)</code> 的时候，会真正调用 ejabber_c2s 中的 <code>start_link</code>，</li>
+<li>然后启动 <code>ejabberd_c2s:init</code></li>
+<li>糟糕的是，<code>ejabberd_c2s</code> 也不是一个正常的 OTP behavior ， 而是一个修改过的 fsm</li>
+</ol></li>
+</ol></li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L377">supervisor:start_child(ejabberd_listeners, ChildSpec)</a>
+<ol style="list-style-type: decimal">
+<li>这里更让人费解了。会在 <code>ejabberd_listeners</code> 下面启动一个新的 supervisor。</li>
+<li><code>ejabberd_listeners</code> 这个 supervisor 是啥时候启动的呢？他是 在 <code>ejabberd_sup</code> 中的一个 ChildSpec <a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_sup.erl#L93">Listener</a> ，装作自己是一个 supervisor ，可惜<code>ejabberd_listerners</code> 就不 是一个正常的 OTP behaviors，这样代码的可读性降低。 supervisor 也是一个 <code>gen_server</code>。</li>
+<li><code>ejabberd_listerners</code> 在 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L47">init/1</a> 中，装作是一个 supervisor ，只不过不管理任何子进程。但是实际 上会有三个 listeners 的子进程挂在下面。好乱。init 还顺手 bind 了三个 tcp port。不过以后会被回收，不过似乎有一个 bug 。表格没有更新。不过不影响使用。 创建表格 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L48">listen_sockets</a>。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L377">supervisor:start_child(ejabberd_listeners, ChildSpec)</a> 开始真正启动子进程了。
+<ol style="list-style-type: decimal">
+<li>这个子进程对应的模块居然是 <code>ejabberd_listener</code> 自己，WTF。 刚刚说好了自己是一个 supervisor ，现在又装作是一个 <code>gen_server</code>，这回调用的是自己的 <code>start/3</code> 函数。</li>
+<li>通常来讲，<code>start</code> 和 <code>start_link</code> 是一对，区别就是是否有 link，但是 <code>ejabberd_listner</code> 的这对函数，完全没有关系。 <code>start_link</code> 是装 supervisor 用的。 <code>start</code> 根本就不用 export 。<code>start</code> 是用来被回调的，装做 <code>gen_server</code>。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L113">start(Port, Module, Opts)</a> 启动监听端口进程。 刚刚 <code>staret_child</code> ，就是回调调用 这个 <code>start</code>。</li>
+<li>在 <code>start</code> 中，<a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L116">ModuleRaw:socket_type</a> <code>ejabberd_c2s</code> 返回 <code>xmlstream</code> ，所以我们看 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L118">start_dependent</a></li>
+<li>在 <code>start_dependent</code> 中的 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L123">check_listener_options(Opts)</a> 检查参数。不影响啥。</li>
+<li>在 <code>start_dependent</code> 中， <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L125">proc_lib:start_link(?MODULE, init, [Port, Module, Opts])</a> OMG , 这里用非常底层的函数，启动了一个子进程。我们可以去 参观 <code>ejabberd_listener:init</code> 了。因为是底层函数，所以千万别 忘了调用 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L170">proc_lib:init_ack({ok, self()})</a> 。</li>
+<li>注意 <code>ejabberd_listener</code> 有两个 init, <code>init/3</code> 和 <code>init/1</code> ，<code>init/1</code> 是装作 supervisor 时候用的。<code>init/3</code> 是装做 <code>gen_server</code> 时候用的。TMD.</li>
+<li><code>init/3</code> 调用 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L138">init_tcp(PortIP, Module, Opts, SockOpts, Port, IPS)</a>。</li>
+<li><code>init_tcp</code>中， <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L168">ListenSocket = listen_tcp(PortIP, Module, SockOpts, Port, IPS)</a> ，试图重新利用刚刚顺手建立的监听端口。</li>
+<li>这里有 bug , <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L190">ets:delete(listen_sockets, Port)</a> ，其实么有删除掉。但是也无关紧要。</li>
+<li>listen 完了就要 accept 了 ，不过因为调用了底层 <code>proc_lib</code> 库， 所以一定不要忘了 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L170">proc_lib:init_ack({ok, self()})</a> 。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L171">erlang:function_exported(Module, tcp_init, 2)</a> 这个有点过了吧，只有 stun 模块定义了这个。过于 OO 了吧？</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L295">gen_tcp:accept(ListenSocket)</a> 你终于 block 在这里了。</li>
+<li>有人来了，就调用 <a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L309">CallMod:start(strip_frontend(Module), gen_tcp, Socket, Opts)</a> 接客。</li>
+<li>去参观 <code>ejabberd_socket:start</code> 了, TMD。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/1cf2dfe63afe0994988e756dfbb82524f50f6af8/src/ejabberd_listener.erl#L310">accept(ListenSocket, Module, Opts)</a> 死循环。Erlang 喜欢死循环。</li>
+<li><code>ejabberd_socket:start</code> 中 关注 <a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L81">xml_stream</a>。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L89">SockMod:custom_receiver</a> 就只有 <code>ejabberd_http_bind</code> 有定义，其他都是 error。这 样非常不好，如果 <code>ejabberd_http_bind:custom_receiver</code> 产生意外，就会执行<a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L94">后面的代码</a>，而不是 crash 掉，导致错误 一定会发生在后面。 Erlang 的建议 let it crash，crash 在 错误发生的最近处。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L95">ejabberd_receiver:start</a> 你还能缩进的更深吗？创建子进程 <code>ejabberd_receiver</code>， 用于解析 xml。</li>
+<li>终于调用 <code>ejabberd_c2s:start</code> 了 <a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L104">Module:start({?MODULE, SocketData}, Opts)</a>.</li>
+<li><code>ejabberd_c2s:start</code> 调用 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L135">supervisor:start_child(ejabberd_c2s_sup,[...])</a></li>
+<li>注意到刚刚费劲安装的 <code>ejabberd_c2s_sup</code> ，现在有用了， 启动子进程，调用 <code>ejabberd_c2s:init</code> 。初始状态是 <code>wait_for_stream</code>。以后可以参观来了一个第一个数据包之后 该怎么办了。从 <a href="https://github.com/wcy123/ejabberd/blob/1048e21643cb610f112f8dc95d32e3230b819361/src/ejabberd_c2s.erl#L354">wait_for_stream</a> 开始。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L106">case SockMod:controlling_process(Socket, Receiver)</a> 把 socket 控制权给 <code>ejabberd_receiver</code>。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L108">{error, _Reason} -&gt; SockMod:close(Socket)</a> <a name="let_it_crash_1"></a> 这里如果传递失败居然不 crash! 还好，这种概率非常低。但 是负载高的时候也会发生问题。</li>
+<li><a href="https://github.com/wcy123/ejabberd/blob/ba69c469b551e77929bd1a6eb3fd16a82ef13687/src/ejabberd_socket.erl#L110">ReceiverMod:become_controller</a> 把 <code>ejabberd_c2s</code> 的进程 ID 传给 <code>ejabberd_receiver</code> 。</li>
+<li>这里进程 <code>ejabberd_reciver</code> 和 进程<code>ejabberd_c2s</code> 之间 没有直接关系，一个挂掉，另一个接着跑，这个挺奇怪。应该 用 <code>one_for_all</code> supervisor 把他们连起来。 、</li>
+</ol></li>
+</ol></li>
+</ol>
+</article>
+</main>
+</body>
+</html>

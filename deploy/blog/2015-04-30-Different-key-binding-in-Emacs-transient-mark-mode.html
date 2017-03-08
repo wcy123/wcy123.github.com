@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" async
+  src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
+</script>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Different key binding in Emacs transient mark mode</title>
+
+  <link rel="stylesheet" href="../writ.min.css">
+</head>
+<body>
+<main>
+<header>
+<h1>Different key binding in Emacs transient mark mode</h1>
+<h3 class="date">2015/04/30 12:24:15</h3>
+</header>
+<article>
+<p><a href="http://www.emacswiki.org/emacs/TransientMarkMode">Emacs transient mark mode</a> gives you much of the standard selection-highlighting behavior of other editors, but key binding is not changed when mark is active, for example, many letter keys are bound to <code>self-insert-command</code>. This is quite different with other editors. In other editors, usually when mark is active and you input some texts, the new texts replace the selected text.</p>
+<p>There is an easy way to temporarily change the key binding when mark is active and restore the original key bind automatically when mark is inactive.</p>
+<pre class="elisp"><code>(global-set-key (kbd &quot;C-w&quot;) &#39;backward-kill-word)
+(defconst wcy-transient-mode-map-alist
+  `((mark-active
+     ,@(let ((m (make-sparse-keymap)))
+     (define-key m (kbd &quot;C-w&quot;) &#39;kill-region)
+     m))))
+(add-to-list &#39;emulation-mode-map-alists
+         &#39;wcy-transient-mode-map-alist)
+</code></pre>
+<p>The above example makes <code>C-w</code> have two different bindings. When mark is not active, it is <code>backward-kill-word</code>, similiar to the key binding under some shell, when mark is active, it binds to <code>kill-region</code>, following the emacs convention.</p>
+<p>This example just illustrates the idea how to do it, maybe you might have your own preferred key bindings.</p>
+<p>Emacs has a lot of key bindings, in such way, one key is able to bind to different emacs commands depending on whether the mark is active or not.</p>
+</article>
+</main>
+</body>
+</html>
