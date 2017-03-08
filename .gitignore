@@ -1,5 +1,6 @@
-_siteGemfile.lock
-_site
-Gemfile.lock
-workspace/
-*~
+deploy/
+.idea/
+mptextmp.mp
+mptextmp.mpx
+mpxerr.tex
+*.iml
