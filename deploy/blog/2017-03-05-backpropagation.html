@@ -12,7 +12,7 @@
       inlineMath: [['$','$'], ['\\(','\\)']]
       }});
 </script>
-<script type="text/javascript" async
+<script type="text/javascript"
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
 </script>
 
@@ -86,18 +86,41 @@ a_{l,j} &amp;= \sigma(z_{l,j})
 <p>根据链式求导法则，就得出了下面的公式。</p>
 <p><span class="math display">\[
 \begin{align}
-\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &amp;= \frac{\partial{C}}{\partial{z_{l,j}}} a_{l-1,i} \\
-                                          &amp;= \delta_{l,j} a_{l-1,i} \\
-\frac{\partial{C}}{\partial{b_{l,j}}} &amp;= \delta_{l,j}
+\frac{\partial{C}}{\partial{w_{l-1,j,i}}}
+   &amp;= \frac{\partial{C}}{\partial{z_{l,j}}}
+      \frac{\partial{z_{l,j}}}{\partial{w_{l-1,j,i}}} \\
+   &amp;= \delta_{l,j} a_{l-1,i}
+\end{align}
+\]</span></p>
+<p>类似的</p>
+<p><span class="math display">\[
+\begin{align}  
+\frac{\partial{C}}{\partial{b_{l,j}}}
+&amp;= \frac{\partial{C}}{\partial{z_{l,j}}}
+   \frac{\partial{z_{l,j}}}{\partial{b_{l,j}}} \\
+&amp;= \delta_{l,j}
 \end{align}
 \]</span></p>
 <p>那么现在的关键是如何求 <span class="math inline">\(\delta_{l,j}\)</span></p>
-<p>因为 <span class="math display">\[C = \frac{1}{2} \sum_{k=0}^{N_{L-1}-1} (y_{k}-a_{L-1,k})^2\]</span></p>
-<p>考虑第 L - 1 层，即最后一层。</p>
-<p><span class="math display">\[\delta_{L-1,j}= \frac{\partial{C}}{\partial{z_{L-1,j}}}\]</span></p>
+<p>思路类似于自然归纳法，就是先求 <span class="math inline">\(\delta_{L-1,j}\)</span> ，然后假设已知所有 <span class="math inline">\(\delta_{l,j}\)</span> ，如果求 <span class="math inline">\(\delta_{l-1,j}\)</span> 。</p>
+<p>首先考虑第 <span class="math inline">\(L - 1\)</span> 层，即最后一层。</p>
+<p><span class="math display">\[
+\begin{align}  
+C &amp;= \frac{1}{2} \sum_{k=0}^{N_{L-1}-1} (y_{k}-a_{L-1,k})^2 \\
+\delta_{L-1,j}
+ &amp;= \frac{\partial{C}}{\partial{z_{L-1,j}}}
+\end{align}
+\]</span></p>
 <p>根据链式求导法则</p>
-<p><span class="math display">\[\delta_{L-1,j}= \frac{\partial{C}}{\partial{a_{L-1,j}}}\frac{\partial{a_{L-1,j}}}{\partial{z_{L,j}}}\]</span></p>
-<p><span class="math display">\[\delta_{L-1,j}= (a_{L-1,j} - y_j) \frac{\partial{a_{L-1,j}}}{\partial{z_{L-1,j}}}\]</span></p>
+<p><span class="math display">\[
+\begin{align}  
+\delta_{L-1,j} &amp;=
+\frac{\partial{C}}{\partial{a_{L-1,j}}}
+\frac{\partial{a_{L-1,j}}}{\partial{z_{L-1,j}}} \\
+&amp;=(a_{L-1,j} - y_j)
+\sigma&#39;(z_{L-1,j})
+\end{align}
+\]</span></p>
 <p>这样，我们得到了最后一层的 <span class="math inline">\(\delta_{L-1,j}\)</span>。</p>
 <p>我们递归的向后回溯，假设已知所有 <span class="math inline">\(\delta_{l,j}\)</span> ，如果求 <span class="math inline">\(\delta_{l-1,j}\)</span> 。</p>
 <p><span class="math display">\[\delta_{l-1,j}= \frac{\partial{C}}{\partial{z_{l-1,j}}}\]</span></p>
@@ -114,7 +137,7 @@ a_{l,j} &amp;= \sigma(z_{l,j})
               &amp;= \sum_{i=0}^{N_{l} -1}
                   \delta_{l,i}
                   w_{l-1,j,i}
-                  \frac{\partial{a_{l-1,i}}}{\partial{z_{l-1,j}}}
+                  \sigma&#39;(z_{l-1,j})
 \end{align}
 \]</span></p>
 <p>上述公式的理解就是，第 $l -1 $ 层的输入 <span class="math inline">\(z_{l-1,j}\)</span> 的变化，会导致成本 <span class="math inline">\(C\)</span> 变化多少呢？ 根据链式求导法则，这个 <span class="math inline">\(C\)</span> 的变化量，会分散传导至第 <span class="math inline">\(l\)</span> 层。第 <span class="math inline">\(l\)</span> 层每个神经元分摊到的成本变化量是和 <span class="math inline">\(w_{l-1,j,i}\)</span> 成正比，也和 sigmod 函数的变化率成正比。</p>

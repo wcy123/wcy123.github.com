@@ -95,28 +95,52 @@ $b_{l,j}$ 变化一点点，会导致 $z_{l,j}$ 变化 同样的比例。
 
 $$
 \begin{align}
-\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &= \frac{\partial{C}}{\partial{z_{l,j}}} a_{l-1,i} \\
-                                          &= \delta_{l,j} a_{l-1,i} \\
-\frac{\partial{C}}{\partial{b_{l,j}}} &= \delta_{l,j}
+\frac{\partial{C}}{\partial{w_{l-1,j,i}}}
+   &= \frac{\partial{C}}{\partial{z_{l,j}}}
+      \frac{\partial{z_{l,j}}}{\partial{w_{l-1,j,i}}} \\
+   &= \delta_{l,j} a_{l-1,i}
+\end{align}
+$$
+
+
+类似的
+
+$$
+\begin{align}  
+\frac{\partial{C}}{\partial{b_{l,j}}}
+&= \frac{\partial{C}}{\partial{z_{l,j}}}
+   \frac{\partial{z_{l,j}}}{\partial{b_{l,j}}} \\
+&= \delta_{l,j}
 \end{align}
 $$
 
 
 那么现在的关键是如何求 $\delta_{l,j}$
 
-因为
-$$C = \frac{1}{2} \sum_{k=0}^{N_{L-1}-1} (y_{k}-a_{L-1,k})^2$$
+思路类似于自然归纳法，就是先求 $\delta_{L-1,j}$ ，然后假设已知所有 $\delta_{l,j}$ ，如果求 $\delta_{l-1,j}$ 。
 
-考虑第 L - 1 层，即最后一层。
+首先考虑第 $L - 1$ 层，即最后一层。
 
-$$\delta_{L-1,j}= \frac{\partial{C}}{\partial{z_{L-1,j}}}$$
+$$
+\begin{align}  
+C &= \frac{1}{2} \sum_{k=0}^{N_{L-1}-1} (y_{k}-a_{L-1,k})^2 \\
+\delta_{L-1,j}
+ &= \frac{\partial{C}}{\partial{z_{L-1,j}}}
+\end{align}
+$$
 
 
 根据链式求导法则
 
-$$\delta_{L-1,j}= \frac{\partial{C}}{\partial{a_{L-1,j}}}\frac{\partial{a_{L-1,j}}}{\partial{z_{L,j}}}$$
-
-$$\delta_{L-1,j}= (a_{L-1,j} - y_j) \frac{\partial{a_{L-1,j}}}{\partial{z_{L-1,j}}}$$
+$$
+\begin{align}  
+\delta_{L-1,j} &=
+\frac{\partial{C}}{\partial{a_{L-1,j}}}
+\frac{\partial{a_{L-1,j}}}{\partial{z_{L-1,j}}} \\
+&=(a_{L-1,j} - y_j)
+\sigma'(z_{L-1,j})
+\end{align}
+$$
 
 这样，我们得到了最后一层的 $\delta_{L-1,j}$。
 
@@ -140,7 +164,7 @@ $$
               &= \sum_{i=0}^{N_{l} -1}
                   \delta_{l,i}
                   w_{l-1,j,i}
-                  \frac{\partial{a_{l-1,i}}}{\partial{z_{l-1,j}}}
+                  \sigma'(z_{l-1,j})
 \end{align}
 $$
 
