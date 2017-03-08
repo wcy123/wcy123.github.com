@@ -1,7 +1,16 @@
 <html>
   <head>
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      "HTML-CSS": {
+      preferredFont: "STIX"
+      },
+      CommonHTML: {
+      scale: 100
+      },
+      tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+      }});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -100,6 +109,5 @@ _Z3barP1B:
 <p>We know <code>%rdi</code> is the first function argument, and it is <code>this</code> pointer. I guess the very first 8 bytes it is pointed to are the pointer of <code>vtable</code>, so firstly, we load the <code>vtable</code> into <code>%rax</code>. <code>gcc</code> knows that <code>foo3</code> is the third virtual function, so that the offset of <code>foo3</code> is <code>16</code>, and we load the virtual function pointer <code>foo3</code> into <code>%rax</code>. Finally, jumping to the virtual function.</p>
 </article>
 </main>
-<span class="math"><script type="math/tex; mode=display"></script></span>
 </body>
 </html>

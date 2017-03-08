@@ -1,7 +1,16 @@
 <html>
   <head>
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      "HTML-CSS": {
+      preferredFont: "STIX"
+      },
+      CommonHTML: {
+      scale: 100
+      },
+      tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+      }});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -144,6 +153,5 @@ emitter.<span class="fu">setCancellation</span>(c::close);
 <p><code>latch.await()</code> 等待所有线程结束。</p>
 </article>
 </main>
-<span class="math"><script type="math/tex; mode=display"></script></span>
 </body>
 </html>

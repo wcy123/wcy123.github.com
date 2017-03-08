@@ -1,7 +1,16 @@
 <html>
   <head>
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      "HTML-CSS": {
+      preferredFont: "STIX"
+      },
+      CommonHTML: {
+      scale: 100
+      },
+      tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+      }});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -77,7 +86,8 @@ a_{l,j} &amp;= \sigma(z_{l,j})
 <p>根据链式求导法则，就得出了下面的公式。</p>
 <p><span class="math display">\[
 \begin{align}
-\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &amp;= \delta_{l,j} a_{l-1,i} \\
+\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &amp;= \frac{\partial{C}}{\partial{z_{l,j}}} a_{l-1,i} \\
+                                          &amp;= \delta_{l,j} a_{l-1,i} \\
 \frac{\partial{C}}{\partial{b_{l,j}}} &amp;= \delta_{l,j}
 \end{align}
 \]</span></p>
@@ -110,6 +120,5 @@ a_{l,j} &amp;= \sigma(z_{l,j})
 <p>上述公式的理解就是，第 $l -1 $ 层的输入 <span class="math inline">\(z_{l-1,j}\)</span> 的变化，会导致成本 <span class="math inline">\(C\)</span> 变化多少呢？ 根据链式求导法则，这个 <span class="math inline">\(C\)</span> 的变化量，会分散传导至第 <span class="math inline">\(l\)</span> 层。第 <span class="math inline">\(l\)</span> 层每个神经元分摊到的成本变化量是和 <span class="math inline">\(w_{l-1,j,i}\)</span> 成正比，也和 sigmod 函数的变化率成正比。</p>
 </article>
 </main>
-<span class="math"><script type="math/tex; mode=display"></script></span>
 </body>
 </html>

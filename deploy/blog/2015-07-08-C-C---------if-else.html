@@ -1,7 +1,16 @@
 <html>
   <head>
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      "HTML-CSS": {
+      preferredFont: "STIX"
+      },
+      CommonHTML: {
+      scale: 100
+      },
+      tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+      }});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -50,6 +59,5 @@
 <p>if else 看似很简单，实际上对代码的可读性有很大的影响。这些改进都是很简 单的改进，小小的改进，积累多了，就清爽多了。如果看不起这些小小的改进， 臭代码积累多了，以后再改就难了。</p>
 </article>
 </main>
-<span class="math"><script type="math/tex; mode=display"></script></span>
 </body>
 </html>

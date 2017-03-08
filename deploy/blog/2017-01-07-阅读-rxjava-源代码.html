@@ -1,7 +1,16 @@
 <html>
   <head>
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      MathJax.Hub.Config({
+      "HTML-CSS": {
+      preferredFont: "STIX"
+      },
+      CommonHTML: {
+      scale: 100
+      },
+      tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']]
+      }});
 </script>
 <script type="text/javascript" async
   src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML">
@@ -147,6 +156,5 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><code>java     @Test     public void main() throws Exception {         final Observable&lt;String&gt; observable = new Observable&lt;&gt;(subscriber -&gt; {             subscriber.onNext(&quot;hello world&quot;);             subscriber.onCompleted();         });         final Subscriber&lt;String&gt; subscriber = new Subscriber&lt;String&gt;() {             @Override             public void onCompleted() {                 System.out.println(&quot;byebye&quot;);             }             @Override             public void onError(Throwable e) {             }             @Override             public void onNext(String s) {                 System.out.println(&quot;&gt; &quot; + s);             }             @Override             public void unsubscribe() {             }             @Override             public boolean isUnsubscribed() {                 return false;             }         };         observable.subscribe(subscriber);     }</code></p>
 </article>
 </main>
-<span class="math"><script type="math/tex; mode=display"></script></span>
 </body>
 </html>

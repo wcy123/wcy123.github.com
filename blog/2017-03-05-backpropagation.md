@@ -95,7 +95,8 @@ $b_{l,j}$ 变化一点点，会导致 $z_{l,j}$ 变化 同样的比例。
 
 $$
 \begin{align}
-\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &= \delta_{l,j} a_{l-1,i} \\
+\frac{\partial{C}}{\partial{w_{l-1,j,i}}} &= \frac{\partial{C}}{\partial{z_{l,j}}} a_{l-1,i} \\
+                                          &= \delta_{l,j} a_{l-1,i} \\
 \frac{\partial{C}}{\partial{b_{l,j}}} &= \delta_{l,j}
 \end{align}
 $$
