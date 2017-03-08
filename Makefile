@@ -53,8 +53,8 @@ $(addprefix $(DEPLOY_DIRECTORY),%.png): %.1
 %.1: %.mp
 	(cd `dirname $<`;mpost `basename $<`)
 
-REMOTE = github
-BRANCH = gh-pages
+REMOTE = origin
+BRANCH = master
 
 deploy: bake
 	git add $(DEPLOY)
