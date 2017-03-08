@@ -54,7 +54,7 @@ $(addprefix $(DEPLOY_DIRECTORY),%.png): %.1
 	@(cd `dirname $<`;mpost `basename $<`)
 
 
-deploy: bake
+deploy: bake save
 	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
 
 save:

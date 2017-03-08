@@ -51,7 +51,7 @@ a_{l,j} &amp;= \sigma(z_{l,j})
 <li><span class="math inline">\(N_{l}\)</span> 是第 <span class="math inline">\(l\)</span> 层神经网络的神经元的个数</li>
 <li><span class="math inline">\(j = 1, ..., N_{l}\)</span> 每一次的第 <span class="math inline">\(j\)</span> 个神经元的下标</li>
 <li><span class="math inline">\(z_{l,j}\)</span> 是第 <span class="math inline">\(l\)</span> 层神经网络中，第 <span class="math inline">\(j\)</span> 个神经元的 sigmoid 函数的输入。</li>
-<li><span class="math inline">\(a_{l,j}\)</span> 是第 <span class="math inline">\(l\)</span> 层神经网络中，第 <span class="math inline">\(j\)</span> 个神经元的 sigmoid 函数的输出。特别的，当 <span class="math inline">\(l=1\)</span> 时， <span class="math inline">\(a_{0,i}\)</span> 表示输入层，<span class="math inline">\(N_0\)</span> 表示输入层的个数。</li>
+<li><span class="math inline">\(a_{l,j}\)</span> 是第 <span class="math inline">\(l\)</span> 层神经网络中，第 <span class="math inline">\(j\)</span> 个神经元的 sigmoid 函数的输出。特别的，当 <span class="math inline">\(l=0\)</span> 时， <span class="math inline">\(a_{0,i}\)</span> 表示输入层，<span class="math inline">\(N_0\)</span> 表示输入层的个数。</li>
 <li>sigmoid 函数可以是，例如 <span class="math display">\[\sigma(x) = \frac{1}{1+e^{-x}}\]</span></li>
 <li><span class="math inline">\(w_{l-1,j,i}\)</span> 是第 <span class="math inline">\(l-1\)</span> 层中第 <span class="math inline">\(i\)</span> 个输出和 <span class="math inline">\(l\)</span> 层的第 <span class="math inline">\(j\)</span> 个输入之间的权值。</li>
 <li><span class="math inline">\(b_{l,i}\)</span> 是第 <span class="math inline">\(l\)</span> 层中第 <span class="math inline">\(j\)</span> 个神经元的偏移量</li>
