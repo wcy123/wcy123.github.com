@@ -53,18 +53,9 @@ $(addprefix $(DEPLOY_DIRECTORY),%.png): %.1
 %.1: %.mp
 	(cd `dirname $<`;mpost `basename $<`)
 
-REMOTE = origin
-BRANCH = master
 
 deploy: bake
-	git add $(DEPLOY)
-	git commit -m 'Deploy'
-	git subtree push --prefix=$(DEPLOY) $(REMOTE) $(BRANCH)
-
-undeploy:
-	git push $(REMOTE) `git subtree split --prefix $(DEPLOY) $(BRANCH)`:$(BRANCH) --force
-
-
+	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
 
 t:
 	echo $(ALL_MD)  $(HTML_FROM_MD)

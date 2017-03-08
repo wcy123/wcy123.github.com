@@ -40,6 +40,6 @@ beginfig(1);
     endfor;
   endfor;
   write EOF to "mptextmp.tmp";
-  %scantokens "input mptextmp.tmp"
+  scantokens "input mptextmp.tmp"
 endfig;
 end;
