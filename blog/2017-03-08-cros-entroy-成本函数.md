@@ -2,6 +2,9 @@
 title: 成本函数与学习速度
 ---
 
+本文参考 http://neuralnetworksanddeeplearning.com/chap3.html
+
+
 [back propagation](2017-03-05-backpropagation.html) 里提到模型，
 我们十分关心 $\frac{\partial{C}}{\partial{w_{l-1,j,i}}}$ 和 $\frac{\partial{C}}{\partial{b_{l,j}}}$ ，因为这个是学习速度，或者叫做训练速度。这个值很大的话，就会很快收敛。训练一个神经网路需要很大的计算量，如果能提高  $\frac{\partial{C}}{\partial{w_{l-1,j,i}}}$  和 $\frac{\partial{C}}{\partial{b_{l,j}}}$，那么我们就可以很大提升训练效率。他们的含义是指 ${w_{l-1,j,i}}$ 变化一点点，导致 $C$ 变化是不是很大。我们希望越大越好。因为梯度求解过程中，我们知道 $C$ 一定会变小，奔向最低点，那么何不让他跑的快一点。
 
@@ -58,7 +61,7 @@ $$\sigma'(x) = \sigma(x) (1- \sigma(x))$$
 既然 $\sigma'(x)$ 已经很小了，接近于 $0$ ，那么我们需要改变成本函数 $C$，提高
 $\frac{\partial{C}}{\partial{a_{L-1,j}}}$
 
-如果选择另一个 cross entroy 成本函数
+如果选择另一个 cross entropy 成本函数
 （TODO: 下面的公式似乎不够清晰）
 $$
 C = - \frac{1}{n} \sum_{x} (y\log a + (1-y) \log(1-a)))
@@ -90,3 +93,14 @@ $$
 (TODO 检查上面的推导，是不是最后 ${a_{L-1,j}(1-a_{L-1,j})}$ 可以约掉了？因为 $\sigma'(x) = \sigma(x) (1- \sigma(x))$)
 
 可以看到，这样的成本函数，在 $a_{L-1,j}$ 趋近于 $1$ 或者 $0$ 的时候， 都会导致 $\frac{\partial{C}}{\partial{w_{l-1,j,i}}}$ 变得很大。
+
+# cross entropy 函数
+
+cross entropy 成本函数从哪里来的？我们从小的应试教育中，学会是什么，基本上考试没问题了，
+能知道为什么，也就是推导过程，那么就可以很扎实的举一反三。但很少想这个东西是怎么来的，这就是创造力。
+
+其实神仙也不能直接想到这个函数，实际上是倒着推出来的。首先我们假定需要偏微分的形式，希望成本函数对权重的偏导数和误差大小成正比关系，然后解偏微分方程，就可以求得这个函数。然后作者写论文的时候，有可能不需要把自己创造性的思维过程写出来，只写出结论。
+
+cross entropy 的物理含义是什么呢？ https://en.wikipedia.org/wiki/Cross_entropy 里面有详细介绍。
+
+文章开头的参考文章中说互熵主要描述我们的吃惊程度，我不是特别理解，后悔当初信息论没学好。
