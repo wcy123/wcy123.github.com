@@ -153,7 +153,7 @@ $$
 
  - $\vec{\delta}_{l}$ 是一个 $N_{l} \times 1$ 的向量。
  - $\vec{a}_{l-1}$ 是一个 $N_{l-1} \times 1$ 的向量。
- - $\matrix{W}$ 是一个 $N_{l} \times N_{l-1}$ 的向量。
+ - $\matrix{W}$ 是一个 $N_{l} \times N_{l-1}$ 的矩阵。
 
 类似的
 
