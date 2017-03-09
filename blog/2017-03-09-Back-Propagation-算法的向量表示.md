@@ -133,7 +133,7 @@ $\frac{\partial{C}}{\partial{\matrix{W}_{l-1}}}$ 和 $\frac{\partial{C}}{\partia
 $$\vec{\delta}_{l}= \frac{\partial{C}}{\partial{\vec{z}_{l}}}$$
 
 $\vec{\delta}_{l}$ 的含义就是，如果神经元输入 $\vec{z}_{l}$ 变化一点点，
-会导致成本函数 $C$ 变化多少？
+会导致成本函数 $C$ 变化多少？（TODO: 应该用 $\triangledown$ 表示，否则有歧义，见下面）
 
 因为
 
