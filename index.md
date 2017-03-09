@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-03-09-Back-Propagation-算法的向量表示.html">2017-03-09 Back Propagation 算法</a></h3>
 <h3><a href="blog/2017-03-08-cros-entroy-成本函数.html">2017-03-08 成本函数与学习速度</a></h3>
 <h3><a href="blog/2017-03-08-用-markdown-写笔记.html">2017-03-08 用 Makefile + pandoc + markdown 写博客</a></h3>
 <h3><a href="blog/2017-03-05-backpropagation.html">2017-03-05 backpropagation</a></h3>
