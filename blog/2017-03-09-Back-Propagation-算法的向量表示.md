@@ -42,7 +42,9 @@ $$
 
  - $\vec{z}_l$ 是第 $l$ 层神经元的输入向量。
  - $\vec{a}_l$ 是第 $l$ 层神经元的输出向量。
- - $\matrix{W}_{l-1}$ 是第 $l-1$ 层神经元和 $l$ 层神经元之间的权重矩阵，是 $N_{l} \times N_{l-1}$ 维矩阵
+ - $\matrix{W}_{l-1}$ 是第 $l-1$ 层神经元和 $l$ 层神经元之间的权重矩阵是 $N_{l} \times N_{l-1}$ 维矩阵
+ - $N_{l}$ 是第 $l$ 层神经元的个数
+ - $N_{l-1}$ 是第 $l-1$ 层神经元的个数
  - $\vec{b}_l$ 是第 $l$ 层神经元的偏移量向量。
  - sigmoid 函数可以是，例如
     $$\sigma(x) = \frac{1}{1+e^{-x}}$$
@@ -99,7 +101,6 @@ $$
   \cdots &
   \frac{\partial{C}}{\partial{w_{l-1,N_{l}-1,N_{l-1}-1}}}
 \end{array}\right) \\
-
 \frac{\partial{C}}{\partial{\vec{b}_{l}}} &=
  \left(
    \begin{array}{c}
