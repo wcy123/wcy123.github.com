@@ -1,5 +1,5 @@
 ---
-title: Back Propagation 算法
+title: Back Propagation 算法的向量表示
 ---
 
 [back propagation](2017-03-05-backpropagation.html) 中描述的是按照单个元素，本文试图用向量和矩阵表示模型。
