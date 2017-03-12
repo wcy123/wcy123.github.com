@@ -67,13 +67,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </header>
 <article>
 <p>最近对 classloader 感兴趣, 于是研究了一下。下面是 classloader 的核心代码。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> Class&lt;?&gt; <span class="fu">loadClass</span>(String name) <span class="kw">throws</span> ClassNotFoundException;
-<span class="kw">protected</span> Class&lt;?&gt; <span class="fu">loadClass</span>(String name, <span class="dt">boolean</span> resolve)
-        <span class="kw">throws</span> ClassNotFoundException;
-<span class="kw">protected</span> Class&lt;?&gt; <span class="fu">findClass</span>(String name) <span class="kw">throws</span> ClassNotFoundException;
-<span class="kw">protected</span> <span class="dt">final</span> Class&lt;?&gt; <span class="fu">defineClass</span>(<span class="dt">byte</span>[] b, <span class="dt">int</span> off, <span class="dt">int</span> len)
-        <span class="kw">throws</span> ClassFormatError;
-<span class="kw">protected</span> <span class="dt">final</span> <span class="dt">void</span> <span class="fu">resolveClass</span>(Class&lt;?&gt; c);</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">loadClass</span>(<span class="bu">String</span> name) <span class="kw">throws</span> <span class="bu">ClassNotFoundException</span>;
+<span class="kw">protected</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">loadClass</span>(<span class="bu">String</span> name, <span class="dt">boolean</span> resolve)
+        <span class="kw">throws</span> <span class="bu">ClassNotFoundException</span>;
+<span class="kw">protected</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">findClass</span>(<span class="bu">String</span> name) <span class="kw">throws</span> <span class="bu">ClassNotFoundException</span>;
+<span class="kw">protected</span> <span class="dt">final</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">defineClass</span>(<span class="dt">byte</span>[] b, <span class="dt">int</span> off, <span class="dt">int</span> len)
+        <span class="kw">throws</span> <span class="bu">ClassFormatError</span>;
+<span class="kw">protected</span> <span class="dt">final</span> <span class="dt">void</span> <span class="fu">resolveClass</span>(<span class="bu">Class</span>&lt;?&gt; c);</code></pre></div>
 <p>可以看到，只有 <code>loadClass(String)</code> 是 public 的成语函数，其他几个函数都是 <code>protected</code> ，意味着是只有子类可以调用。</p>
 <p>例如下面的 java 普通代码</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> FactoryA {
@@ -91,15 +91,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 <h1 id="代理模式">代理模式</h1>
 <p>大多数 class loader 会采用代理模式，因为默认的 ClassLoader 是这么做的。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">protected</span> Class&lt;?&gt; <span class="fu">loadClass</span>(String name, <span class="dt">boolean</span> resolve)
-        <span class="kw">throws</span> ClassNotFoundException
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">protected</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">loadClass</span>(<span class="bu">String</span> name, <span class="dt">boolean</span> resolve)
+        <span class="kw">throws</span> <span class="bu">ClassNotFoundException</span>
 {
      <span class="co">// First, check if the class has already been loaded</span>
-     Class&lt;?&gt; c = <span class="fu">findLoadedClass</span>(name);
+     <span class="bu">Class</span>&lt;?&gt; c = <span class="fu">findLoadedClass</span>(name);
      <span class="kw">if</span> (c == <span class="kw">null</span>) {
          <span class="kw">try</span> {
              c = parent.<span class="fu">loadClass</span>(name, <span class="kw">false</span>);
-         } <span class="kw">catch</span> (ClassNotFoundException e) {
+         } <span class="kw">catch</span> (<span class="bu">ClassNotFoundException</span> e) {
              <span class="co">// ClassNotFoundException thrown if class not found</span>
              <span class="co">// from the non-null parent class loader</span>
          }
@@ -122,8 +122,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>调用 <code>resolveClass</code> 来连接(linking) 相关的依赖的类。这个也可能引入继续加载其他的类。</li>
 </ol>
 <p>默认的 findClass 直接抛出 <code>ClassNotFoundException</code></p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">protected</span> Class&lt;?&gt; <span class="fu">findClass</span>(String name) <span class="kw">throws</span> ClassNotFoundException {
-    <span class="kw">throw</span> <span class="kw">new</span> ClassNotFoundException(name);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">protected</span> <span class="bu">Class</span>&lt;?&gt; <span class="fu">findClass</span>(<span class="bu">String</span> name) <span class="kw">throws</span> <span class="bu">ClassNotFoundException</span> {
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="bu">ClassNotFoundException</span>(name);
 }</code></pre></div>
 <p>这意味着，如果我们自己写一个自定义的 class loader 类，那么我们最好重载 findClass 这个成员函数。</p>
 <p>如果我们定义一个 <code>findClass</code> 那么我们如何返回一个 <code>Class&lt;?&gt;</code> 对象呢？ 答案就是，调用 <code>defineClass</code>。</p>

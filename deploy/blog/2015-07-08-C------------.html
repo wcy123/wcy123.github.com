@@ -68,35 +68,109 @@
 <h2 id="谨慎使用这个功能">谨慎使用这个功能</h2>
 <p>C++ 的编译器已经十分聪明，在一般情况下，已经尽最大可能避免无谓的对象拷 贝。例如</p>
 <p>{% highlight c++ %} #include <iostream> using namespace std; struct A { A(); ~A(); A(const A&amp; a); int value; }; A::A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void<em>) this &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void</em>) this &lt;&lt; endl; }</p>
-<p>A::A(const A&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void<em>) this &lt;&lt; endl; } A bar() { A ret; cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void</em>) &amp;ret &lt;&lt; endl; return ret; } void foo(A x) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; (void<em>)&amp;x &lt;&lt;endl; } int main(int argc, char </em>argv[]) { foo(bar()); return 0; } {% endhighlight %}</p>
-<p>结果如下</p>
-<p>{% highlight bash %} clang++ -ggdb -O0 -Wall -Werror -std=c++11 rvalue0.cpp &amp;&amp; ./a.out A::A() 0x7ffff687a968 A bar() 0x7ffff687a968 void foo(A)0x7ffff687a968 A::~A() 0x7ffff687a968 {% endhighlight %}</p>
-<h2 id="左值引用是右值">左值引用是右值</h2>
-<p>{% highlight c++ %} void foo(A &amp;&amp; x){ ... x } {% endhighlight %}</p>
-<p>在函数体中，x 不是右值，而是左值，因为可以取到 x 的地址。</p>
-<h2 id="stdmove-的作用"><code>std::move</code> 的作用</h2>
-<p>这函数就是一个强制类型转换，把左值转换为左值，没有任何函数开销。如果没 有这个函数，一般很难调用转移构造函数(move constructor)。</p>
-<h2 id="可否返回一个临时对象的右值引用">可否返回一个临时对象的右值引用？</h2>
-<p>{% highlight c++ %} A&amp;&amp; foo() { A x; return std::move(A) // or return x; } {% endhighlight %}</p>
-<p>无论怎样，和返回普通引用一样，导致程序崩溃。</p>
-<h2 id="为什么有这个特性呢">为什么有这个特性呢？</h2>
-<ol style="list-style-type: decimal">
-<li>实现“可转移“ ， 和 std::move 相关</li>
-<li>提供完美转寄函数，和 std::forward 相关。（perfect forwarding function 怎么译？）</li>
-</ol>
-<h3 id="可转移">可转移</h3>
-<p>有很多时候，对象是可移动的而是不可以拷贝的。上面参考文献给出三个例子</p>
-<ol style="list-style-type: decimal">
-<li><code>fstream</code></li>
-<li><code>unique_ptr</code> (这里)[{{site.baseurl}}/{% post_url 2015-07-08-C-------feature--unique-ptr %}</li>
-<li>线程对象</li>
-</ol>
-<p>如果拷贝构造函数是私有函数，那么就是被禁止的。C++11 中有新特性，可以定 义 delete 函数。</p>
-<p>一般来讲，一个对象拥有某一资源，例如内存，文件，线程等等，这种所有权是 不能与其他对象共享的，因为析构函数会释放资源，如果和别人共享，”别人“被 析构了，析构函数会释放资源，那么你手里就拿着一个被释放的资源。类似这样 的对象就是不可以拷贝的</p>
-<p>但是_不可拷贝对象_并不是_不可转移对象_，假如拷贝了一个对象之后，但是源 对象放弃了所有权，那么目标对象就可以拥有所有权了。这个时候，我们不叫做 拷贝(copy)，叫做转移(move)。</p>
-<p>{% highlight c++ %} ifstream foo() { ifstream fs(<strong>FILE</strong>); return fs; } {% endhighlight %}</p>
-<p>这个例子会有编译错误，因为 ifstream 没有可用的拷贝构造函数，即“不可拷 贝”。但是在新的标准里面，解决了这个问题。 可惜的是 GCC-4.8 还没有实现 这个 ifstream 的转移构造函数。为了凑数，下面用 <code>unique_ptr</code> 为例。</p>
-<p>{% highlight c++ %} #include <iostream> #include <fstream> #include <memory> #include <iterator> using namespace std; unique_ptr<ifstream> foo() { return std::move(unique_ptr<ifstream>(new ifstream(<strong>FILE</strong>))); } int main(int argc, char <em>argv[]) { unique_ptr<ifstream> fs = foo(); copy(istreambuf_iterator<char>(</em>fs),istreambuf_iterator<char>(), ostream_iterator<char>(cout)); return 0; } {% endhighlight %}</p>
+<p>A::A(const A&amp; a) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void<em>) this &lt;&lt; endl; } A bar() { A ret; cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; &quot; &quot; &lt;&lt; (void</em>) &amp;ret &lt;&lt; endl; return ret; } void foo(A x) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; (void<em>)&amp;x &lt;<endl;
+}
+int main(int argc, char *argv[])
+{
+    foo(bar());
+    return 0;
+}
+{% endhighlight %}
+
+
+结果如下
+
+
+{% highlight bash %}
+clang++ -ggdb -O0 -Wall -Werror -std=c++11 rvalue0.cpp && ./a.out
+A::A() 0x7ffff687a968
+A bar()
+ 0x7ffff687a968
+void foo(A)0x7ffff687a968
+A::~A() 0x7ffff687a968
+{% endhighlight %}
+
+
+## 左值引用是右值
+
+
+{% highlight c++ %}
+void foo(A && x){
+    ...
+    x
+}
+{% endhighlight %}
+
+在函数体中，x 不是右值，而是左值，因为可以取到 x 的地址。
+
+
+## `std::move` 的作用
+
+这函数就是一个强制类型转换，把左值转换为左值，没有任何函数开销。如果没
+有这个函数，一般很难调用转移构造函数(move constructor)。
+
+## 可否返回一个临时对象的右值引用？
+
+
+{% highlight c++ %}
+A&& foo()
+{
+     A x;
+     return std::move(A)
+     // or return x;
+}
+{% endhighlight %}
+
+无论怎样，和返回普通引用一样，导致程序崩溃。
+
+
+## 为什么有这个特性呢？
+
+1. 实现“可转移“ ， 和 std::move 相关
+2. 提供完美转寄函数，和 std::forward 相关。（perfect forwarding
+function 怎么译？）
+
+### 可转移
+
+有很多时候，对象是可移动的而是不可以拷贝的。上面参考文献给出三个例子
+
+
+1. `fstream`
+2. `unique_ptr` (这里)[{{site.baseurl}}/{% post_url 2015-07-08-C-------feature--unique-ptr %}
+3. 线程对象
+
+如果拷贝构造函数是私有函数，那么就是被禁止的。C++11 中有新特性，可以定
+义 delete 函数。
+
+
+一般来讲，一个对象拥有某一资源，例如内存，文件，线程等等，这种所有权是
+不能与其他对象共享的，因为析构函数会释放资源，如果和别人共享，”别人“被
+析构了，析构函数会释放资源，那么你手里就拿着一个被释放的资源。类似这样
+的对象就是不可以拷贝的
+
+
+
+但是_不可拷贝对象_并不是_不可转移对象_，假如拷贝了一个对象之后，但是源
+对象放弃了所有权，那么目标对象就可以拥有所有权了。这个时候，我们不叫做
+拷贝(copy)，叫做转移(move)。
+
+
+{% highlight c++ %}
+ifstream foo()
+{
+    ifstream fs(__FILE__);
+    return fs;
+}
+{% endhighlight %}
+
+
+这个例子会有编译错误，因为 ifstream 没有可用的拷贝构造函数，即“不可拷
+贝”。但是在新的标准里面，解决了这个问题。 可惜的是 GCC-4.8 还没有实现
+这个 ifstream 的转移构造函数。为了凑数，下面用 `unique_ptr` 为例。
+
+
+{% highlight c++ %}
+#include <iostream> #include <fstream> #include <memory> #include <iterator> using namespace std; unique_ptr<ifstream> foo() { return std::move(unique_ptr<ifstream>(new ifstream(<strong>FILE</strong>))); } int main(int argc, char </em>argv[]) { unique_ptr<ifstream> fs = foo(); copy(istreambuf_iterator<char>(*fs),istreambuf_iterator<char>(), ostream_iterator<char>(cout)); return 0; } {% endhighlight %}</p>
 <h2 id="完美转寄函数perfect-forward-function">完美转寄函数(Perfect Forward function)</h2>
 <p>假设我们写一个函数 <code>g(a1)</code> ，就和调用 <code>f(a1)</code> 一模一样。很容易吗？</p>
 <p>{% highlight c++ %} #include <iostream> #include <vector> using namespace std; class A { public: explicit A(int v); A(const A&amp; other); ~A(); public: int value; }; A::A(int v):value(v) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void<em>)this &lt;&lt; endl; } A::A(const A&amp; other):value(other.value) { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; ' ' &lt;&lt; (void<em>)&amp;other &lt;&lt; endl; } A::~A() { cout &lt;&lt; <strong>PRETTY_FUNCTION</strong> &lt;&lt; ' ' &lt;&lt; value &lt;&lt; ' ' &lt;&lt; (void</em>)this &lt;&lt; endl; } void f(A a) { cout &lt;&lt; a.value &lt;&lt; endl; } template<class T> void g(T a) { f(a); }</p>

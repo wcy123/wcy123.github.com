@@ -72,28 +72,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The calling convention of the System V AMD64 ABI[14] is followed on Solaris, Linux, FreeBSD, Mac OS X, and other UNIX-like or POSIX-compliant operating systems. The first six integer or pointer arguments are passed in registers RDI, RSI, RDX, RCX, R8, and R9, while XMM0, XMM1, XMM2, XMM3, XMM4, XMM5, XMM6 and XMM7 are used for floating point arguments. For system calls, R10 is used instead of RCX.[14] As in the Microsoft x64 calling convention, additional arguments are passed on the stack and the return value is stored in RAX.</p>
 <p>Registers RBP, RBX, and R12-R15 are callee-save registers; all others must be saved by the caller if they wish to preserve their values.[15]</p>
 </blockquote>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdint.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#include </span><span class="im">&lt;stdint.h&gt;</span>
 <span class="kw">typedef</span> <span class="dt">int64_t</span> i64;
 i64 foo(i64 a0,i64 a1,i64 a2,i64 a3,i64 a4,
     i64 a5,i64 a6,i64 a7,i64 a8,i64 a9)
 {
-    <span class="kw">return</span> a0 + a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9;
+    <span class="cf">return</span> a0 + a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8 + a9;
 }
 <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
 {
     foo(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>);
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="cf">return</span> <span class="dv">0</span>;
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode asm"><code class="sourceCode fasm"><span class="bn">   0x0000000000400526 </span>&lt;+<span class="dv">15</span>&gt;:    pushq  <span class="dv">$</span><span class="bn">0x9</span>
 <span class="bn">   0x0000000000400528 </span>&lt;+<span class="dv">17</span>&gt;:    pushq  <span class="dv">$</span><span class="bn">0x8</span>
 <span class="bn">   0x000000000040052a </span>&lt;+<span class="dv">19</span>&gt;:    pushq  <span class="dv">$</span><span class="bn">0x7</span>
 <span class="bn">   0x000000000040052c </span>&lt;+<span class="dv">21</span>&gt;:    pushq  <span class="dv">$</span><span class="bn">0x6</span>
-<span class="bn">   0x000000000040052e </span>&lt;+<span class="dv">23</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x5</span>,%r9d
-<span class="bn">   0x0000000000400534 </span>&lt;+<span class="dv">29</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x4</span>,%r8d
-<span class="bn">   0x000000000040053a </span>&lt;+<span class="dv">35</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x3</span>,%<span class="kw">ecx</span>
-<span class="bn">   0x000000000040053f </span>&lt;+<span class="dv">40</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x2</span>,%<span class="kw">edx</span>
-<span class="bn">   0x0000000000400544 </span>&lt;+<span class="dv">45</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x1</span>,%<span class="kw">esi</span>
-<span class="bn">   0x0000000000400549 </span>&lt;+<span class="dv">50</span>&gt;:    <span class="kw">mov</span>    <span class="dv">$</span><span class="bn">0x0</span>,%<span class="kw">edi</span>
+<span class="bn">   0x000000000040052e </span>&lt;+<span class="dv">23</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x5,</span>%r9d
+<span class="bn">   0x0000000000400534 </span>&lt;+<span class="dv">29</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x4,</span>%r8d
+<span class="bn">   0x000000000040053a </span>&lt;+<span class="dv">35</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x3,</span>%<span class="kw">ecx</span>
+<span class="bn">   0x000000000040053f </span>&lt;+<span class="dv">40</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x2,</span>%<span class="kw">edx</span>
+<span class="bn">   0x0000000000400544 </span>&lt;+<span class="dv">45</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x1,</span>%<span class="kw">esi</span>
+<span class="bn">   0x0000000000400549 </span>&lt;+<span class="dv">50</span>&gt;:    <span class="bu">mov</span>    <span class="dv">$</span><span class="bn">0x0,</span>%<span class="kw">edi</span>
 <span class="bn">   0x000000000040054e </span>&lt;+<span class="dv">55</span>&gt;:    callq<span class="bn">  0x4004b6 </span>&lt;foo&gt;</code></pre></div>
 </article>
 </main>

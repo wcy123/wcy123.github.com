@@ -2,7 +2,7 @@ TEMPLATE = ./template.tmp
 CSS = writ.min.css
 
 # Rule for converting github flavored markdown to html5
-MARKDOWN := pandoc --template $(TEMPLATE) --mathjax -c $(CSS)
+MARKDOWN := pandoc --filter pandoc-include --from markdown --template $(TEMPLATE) --mathjax -c $(CSS)
 
 DEPLOY = deploy
 # Deploy directory.
@@ -21,7 +21,11 @@ ALL_MP = $(shell find blog -type f -and -iname '*.mp')
 HTML_FROM_MD := $(patsubst %.md, $(DEPLOY_DIRECTORY)%.html,$(ALL_MD))
 PNG_FROM_MP := $(patsubst %.mp, $(DEPLOY_DIRECTORY)%.png,$(ALL_MP))
 
-OTHER += $(DEPLOY_DIRECTORY)writ.min.css
+ALL_SRC_JEPG := $(shell find blog -type f -and -iname '*.jpg')
+ALL_DST_JEPG := $(patsubst %.jpg, $(DEPLOY_DIRECTORY)%.jpg,$(ALL_SRC_JEPG))
+
+
+OTHER += $(DEPLOY_DIRECTORY)writ.min.css $(ALL_DST_JEPG)
 
 
 # First recipe is default. Nothing to do except dependency on all html files.
@@ -49,6 +53,13 @@ $(addprefix $(DEPLOY_DIRECTORY),%.css): %.css
 
 $(addprefix $(DEPLOY_DIRECTORY),%.png): %.1
 	@convert $< $@
+
+$(addprefix $(DEPLOY_DIRECTORY),%.jpg): %.jpg
+	@echo "copy $< to $@"
+	@cp $< $@
+
+$(addprefix $(DEPLOY_DIRECTORY),%.css): %.css
+	@cp $< $@
 
 %.1: %.mp
 	@(cd `dirname $<`;mpost `basename $<`)

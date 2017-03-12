@@ -80,22 +80,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>编写反转程序。</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">struct</span> list * reverse(<span class="kw">struct</span> list * L) {
     <span class="kw">struct</span> list * result = NULL;
-    <span class="kw">for</span>(<span class="kw">struct</span> list * i = L; i != NULL; i = i-&gt;next){
+    <span class="cf">for</span>(<span class="kw">struct</span> list * i = L; i != NULL; i = i-&gt;next){
         result = makeList(i-&gt;value, result);
     }
-    <span class="kw">return</span> result;
+    <span class="cf">return</span> result;
 }</code></pre></div>
 <p>OK，让我们测试一下。</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">void</span> printList(<span class="kw">struct</span> list * L)
 {
     printf(<span class="st">&quot;(&quot;</span>);
     <span class="dt">int</span> n = <span class="dv">0</span>;
-    <span class="kw">for</span>(<span class="kw">struct</span> list * i = L; i != NULL; i = i-&gt;next, ++n){
-        <span class="kw">if</span>(n != <span class="dv">0</span>){  printf(<span class="st">&quot;,&quot;</span>); };
+    <span class="cf">for</span>(<span class="kw">struct</span> list * i = L; i != NULL; i = i-&gt;next, ++n){
+        <span class="cf">if</span>(n != <span class="dv">0</span>){  printf(<span class="st">&quot;,&quot;</span>); };
         printf(<span class="st">&quot;%d&quot;</span>, i-&gt;value);
     }
     printf(<span class="st">&quot;)&quot;</span>);
-    <span class="kw">return</span>;
+    <span class="cf">return</span>;
 }
 <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
 {
@@ -104,16 +104,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     a = makeList(<span class="dv">3</span>, a);
     printf(<span class="st">&quot;before reverse:&quot;</span>);
     printList(a);
-    printf(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">after reverse:&quot;</span>);
+    printf(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">after reverse:&quot;</span>);
     printList(reverse(a));
-    printf(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>);
+    printf(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>);
 
     printf(<span class="st">&quot;before reverse:&quot;</span>);
     printList(NULL);
-    printf(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">after reverse:&quot;</span>);
+    printf(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">after reverse:&quot;</span>);
     printList(reverse(NULL));
-    printf(<span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>);
-    <span class="kw">return</span> <span class="dv">0</span>;
+    printf(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>);
+    <span class="cf">return</span> <span class="dv">0</span>;
 }</code></pre></div>
 <p>程序输出</p>
 <pre><code>before reverse:(3,2,1)
@@ -121,21 +121,21 @@ after reverse:(1,2,3)
 before reverse:()
 after reverse:()</code></pre>
 <p>这个程序的风格是 imperative 的，如果使用函数式编程，我们得换一个语言 Java 。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> <span class="kw">class</span> List&lt;T&gt; {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> <span class="kw">class</span> <span class="bu">List</span>&lt;T&gt; {
         <span class="kw">private</span> <span class="dt">final</span> T value;
-        <span class="kw">private</span> <span class="dt">final</span> List&lt;T&gt; next;
+        <span class="kw">private</span> <span class="dt">final</span> <span class="bu">List</span>&lt;T&gt; next;
 
-        <span class="kw">public</span> List(T value, List next) {
+        <span class="kw">public</span> <span class="bu">List</span>(T value, <span class="bu">List</span> next) {
             <span class="kw">this</span>.<span class="fu">value</span> = value;
             <span class="kw">this</span>.<span class="fu">next</span> = next;
         }
 
-        <span class="fu">@Override</span>
-        <span class="kw">public</span> String <span class="fu">toString</span>() {
+        <span class="at">@Override</span>
+        <span class="kw">public</span> <span class="bu">String</span> <span class="fu">toString</span>() {
             <span class="dt">int</span> n = <span class="dv">0</span>;
-            StringBuilder sb = <span class="kw">new</span> StringBuilder();
+            <span class="bu">StringBuilder</span> sb = <span class="kw">new</span> <span class="bu">StringBuilder</span>();
             sb.<span class="fu">append</span>(<span class="st">&quot;(&quot;</span>);
-            <span class="kw">for</span>(List i = <span class="kw">this</span>; i!=<span class="kw">null</span>; i = i.<span class="fu">next</span>, n ++){
+            <span class="kw">for</span>(<span class="bu">List</span> i = <span class="kw">this</span>; i!=<span class="kw">null</span>; i = i.<span class="fu">next</span>, n ++){
                 <span class="kw">if</span>(n!=<span class="dv">0</span>) {
                     sb.<span class="fu">append</span>(<span class="st">&quot;,&quot;</span>);
                 }
@@ -146,60 +146,60 @@ after reverse:()</code></pre>
         }
     }</code></pre></div>
 <p>构造函数</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T&gt; List&lt;T&gt; <span class="fu">cons</span>(T value, List&lt;T&gt; next) {
-        <span class="kw">return</span> <span class="kw">new</span> List(value, next);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T&gt; <span class="bu">List</span>&lt;T&gt; <span class="fu">cons</span>(T value, <span class="bu">List</span>&lt;T&gt; next) {
+        <span class="kw">return</span> <span class="kw">new</span> <span class="bu">List</span>(value, next);
     }</code></pre></div>
 <p>著名的 foldl 函数，一切一次遍历循环的抽象。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T,R&gt; R <span class="fu">foldl</span>(BiFunction&lt;T,R,R&gt; f, R r, List&lt;T&gt; l){
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T,R&gt; R <span class="fu">foldl</span>(BiFunction&lt;T,R,R&gt; f, R r, <span class="bu">List</span>&lt;T&gt; l){
         <span class="kw">if</span>(l == <span class="kw">null</span>){
             <span class="kw">return</span> r;
         }<span class="kw">else</span>{
-            <span class="kw">return</span> <span class="fu">foldl</span>(f, f.<span class="fu">apply</span>(l.<span class="fu">value</span>, r), (List&lt;T&gt;)l.<span class="fu">next</span>);
+            <span class="kw">return</span> <span class="fu">foldl</span>(f, f.<span class="fu">apply</span>(l.<span class="fu">value</span>, r), (<span class="bu">List</span>&lt;T&gt;)l.<span class="fu">next</span>);
         }
     }</code></pre></div>
 <p>可惜 java 不支持 TCO (Tail Call Optimization) ，这种写法会爆栈的。于是，用命令式的编程风格再写一次。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T,R&gt; R <span class="fu">foldl</span>(BiFunction&lt;T,R,R&gt; f, R init, List&lt;T&gt; l){
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">public</span> <span class="dt">static</span> &lt;T,R&gt; R <span class="fu">foldl</span>(BiFunction&lt;T,R,R&gt; f, R init, <span class="bu">List</span>&lt;T&gt; l){
         R result = init;
-        <span class="kw">for</span>(List&lt;T&gt; i = l; i!=<span class="kw">null</span>; i = i.<span class="fu">next</span>){
+        <span class="kw">for</span>(<span class="bu">List</span>&lt;T&gt; i = l; i!=<span class="kw">null</span>; i = i.<span class="fu">next</span>){
             result = f.<span class="fu">apply</span>(i.<span class="fu">value</span>, result);
         }
         <span class="kw">return</span> result;
     }</code></pre></div>
 <p>反转列表的函数</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T&gt; List&lt;T&gt; <span class="fu">reverse</span>(List&lt;T&gt; l) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T&gt; <span class="bu">List</span>&lt;T&gt; <span class="fu">reverse</span>(<span class="bu">List</span>&lt;T&gt; l) {
         <span class="kw">return</span> <span class="fu">foldl</span>(ListTest::cons, <span class="kw">null</span>, l);
     }</code></pre></div>
 <p>测试代码</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="fu">@Test</span>
-    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main</span>() <span class="kw">throws</span> Exception {
-        List a = <span class="kw">new</span> List(<span class="dv">1</span>, <span class="kw">null</span>);
-        a = <span class="kw">new</span> List(<span class="dv">2</span>, a);
-        a = <span class="kw">new</span> List(<span class="dv">3</span>, a);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="at">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main</span>() <span class="kw">throws</span> <span class="bu">Exception</span> {
+        <span class="bu">List</span> a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">1</span>, <span class="kw">null</span>);
+        a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">2</span>, a);
+        a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">3</span>, a);
 
-        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;before reverse: &quot;</span> + a);
+        <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;before reverse: &quot;</span> + a);
 
-        List b = <span class="fu">reverse</span>(a);
-        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;after reverse: &quot;</span> + b);
+        <span class="bu">List</span> b = <span class="fu">reverse</span>(a);
+        <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;after reverse: &quot;</span> + b);
     }</code></pre></div>
 <p>输出结果</p>
 <pre><code>before reverse: (3,2,1)
 after reverse: (1,2,3)</code></pre>
 <p><code>foldl</code> 可以抽象很多一次遍历的循环，例如，<code>max</code> 可以如下</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> T&gt;&gt; T <span class="fu">max</span>(List&lt;T&gt; l){
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T <span class="kw">extends</span> <span class="bu">Comparable</span>&lt;? <span class="kw">super</span> T&gt;&gt; T <span class="fu">max</span>(<span class="bu">List</span>&lt;T&gt; l){
         <span class="kw">if</span>(l == <span class="kw">null</span>) <span class="kw">return</span> <span class="kw">null</span>;
-        <span class="kw">return</span> <span class="fu">foldl</span>((r1,r2) -&gt; Comparator.&lt;T&gt;<span class="fu">naturalOrder</span>().<span class="fu">compare</span>(r1,r2) &gt; <span class="dv">0</span>?r1:r2,l.<span class="fu">value</span>, l);
+        <span class="kw">return</span> <span class="fu">foldl</span>((r1,r2) -&gt; <span class="bu">Comparator</span>.&lt;T&gt;<span class="fu">naturalOrder</span>().<span class="fu">compare</span>(r1,r2) &gt; <span class="dv">0</span>?r1:r2,l.<span class="fu">value</span>, l);
     }</code></pre></div>
 <p>在函数式编程中，<code>reverse-foldl</code> 是一个俗语。例如 <code>map</code> 可以写成下面的形式。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T,R&gt; List&lt;R&gt; <span class="fu">map</span>(Function&lt;T,R&gt; f, List&lt;T&gt; l) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="dt">static</span> &lt;T,R&gt; <span class="bu">List</span>&lt;R&gt; <span class="fu">map</span>(Function&lt;T,R&gt; f, <span class="bu">List</span>&lt;T&gt; l) {
         <span class="kw">return</span> <span class="fu">reverse</span>(<span class="fu">foldl</span>((r,n) -&gt; <span class="fu">cons</span>(f.<span class="fu">apply</span>(r),n), <span class="kw">null</span>,l));
     }</code></pre></div>
 <p>测试代码</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="fu">@Test</span>
-    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main2</span>() <span class="kw">throws</span> Exception {
-        List&lt;Integer&gt; a = <span class="kw">new</span> List(<span class="dv">1</span>, <span class="kw">null</span>);
-        a = <span class="kw">new</span> List(<span class="dv">2</span>, a);
-        a = <span class="kw">new</span> List(<span class="dv">3</span>, a);
-        System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;map: &quot;</span> + <span class="fu">map</span>(v-&gt; v + <span class="dv">100</span>, a));
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="at">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main2</span>() <span class="kw">throws</span> <span class="bu">Exception</span> {
+        <span class="bu">List</span>&lt;<span class="bu">Integer</span>&gt; a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">1</span>, <span class="kw">null</span>);
+        a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">2</span>, a);
+        a = <span class="kw">new</span> <span class="bu">List</span>(<span class="dv">3</span>, a);
+        <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">&quot;map: &quot;</span> + <span class="fu">map</span>(v-&gt; v + <span class="dv">100</span>, a));
     }</code></pre></div>
 <p>输出结果</p>
 <pre><code>map: (103,102,101)</code></pre>

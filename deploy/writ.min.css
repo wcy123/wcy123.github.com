@@ -1,6 +1,28 @@
 @import url(http://fonts.googleapis.com/css?family=Inconsolata);
 @import url(http://fonts.googleapis.com/css?family=PT+Sans);
 @import url(http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700);
+
+.math {
+    font-size: 1.0em;
+}
+.axis {
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: "Helvetica", "Arial", sans-serif;
+    font-size: 11px;
+}
+.axis line, .axis path {
+    stroke: grey;
+}
+
+.axisLabel {
+  font-size: 18px;
+  font-family: "Helvetica", "Arial", sans-serif;
+  font-style: italic;
+  font-weight: bold;
+}
+
 article,
 aside,
 details,
@@ -89,6 +111,8 @@ sub {
   bottom: -0.25em;
 }
 img {
+  width: 600px;
+  height: 400px;
   border: 0;
 }
 svg:not(:root) {
@@ -300,8 +324,4 @@ h6 {
   -moz-border-radius: 0.2em;
   border-radius: 0.2em;
   background-color: #859900;
-}
-
-.math {
-    font-size: 1.0em;
 }

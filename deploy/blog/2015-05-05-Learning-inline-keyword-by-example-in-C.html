@@ -73,12 +73,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="kw">typedef</span> <span class="dt">void</span> (*func_t)(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f);
 <span class="dt">static</span> <span class="kw">inline</span> <span class="dt">void</span> print_me(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
 {
-   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="sc">\n</span><span class="st">&quot;</span>,msg,f);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in main.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &lt;stdlib.h&gt;</span>
-<span class="ot">#include &lt;assert.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span>
 
 <span class="kw">extern</span> <span class="dt">void</span> m1();
 <span class="kw">extern</span> <span class="dt">void</span> m2();
@@ -86,19 +86,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 {
     m1();
     m2();
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="cf">return</span> <span class="dv">0</span>;
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
     foo(<span class="st">&quot;from a1&quot;</span>, NULL);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m2()
 {
@@ -216,16 +216,16 @@ Disassembly of section .text:
 </code></pre>
 <h3 id="inline-functions-are-not-always-inlined">inline functions are not always inlined</h3>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
     foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) foo);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m2()
 {
@@ -270,24 +270,24 @@ Disassembly of section .text:
 <p>As same as other static function, every transform unit has its own implementation, so that <code>foo</code> is the local function. <code>t</code> in <code>nm</code> output indicates that <code>foo</code> is a private symbol.</p>
 <p>The address of function <code>foo</code> is <code>0x400530</code> and <code>0x400570</code> for <code>a1.o</code> and <code>a2.o</code> respectively.</p>
 <h2 id="non-external-inline-function.">non-external inline function.</h2>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#pragma once</span>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#pragma once</span>
 <span class="co">// in foo.h</span>
 <span class="kw">inline</span> __attribute__((always_inline))
 <span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
 {
-   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="sc">\n</span><span class="st">&quot;</span>,msg,f);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
     foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m2()
 {
@@ -312,24 +312,24 @@ collect2: error: ld returned 1 exit status
 <p>We can see both <code>a1.o</code> and <code>a2.o</code> emits function definition of <code>foo</code>, so that the linker complains that <code>multile definition</code>.</p>
 <p>It means that the non-external inline function can only be used in one transform unit. This is rather rather limited use, it could be replace with <code>static inline</code> functions mentioned above.</p>
 <h2 id="extern-inline-functions">extern inline functions</h2>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#pragma once</span>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#pragma once</span>
 <span class="co">// in foo.h</span>
 <span class="kw">extern</span> <span class="kw">inline</span>
 <span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f)
 {
-   printf(<span class="st">&quot;%s: pointer is %p</span><span class="ch">\n</span><span class="st">&quot;</span>,msg,f);
+   printf(<span class="st">&quot;%s: pointer is %p</span><span class="sc">\n</span><span class="st">&quot;</span>,msg,f);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
     foo(<span class="st">&quot;from a1&quot;</span>, (<span class="dt">void</span>*) NULL);
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a2.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m2()
 {
@@ -370,8 +370,8 @@ Disassembly of section .text:
 <p>Stand-alone object code is never emitted.</p>
 <p>In order to fix the above error, we use non-external inline function in <code>a1.c</code></p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
@@ -398,8 +398,8 @@ from a1: pointer is (nil)
 <h3 id="function-address">function address</h3>
 <p>If we change <code>a1.c</code> and <code>a2.c</code> as below, to print the address of function <code>foo</code>.</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="co">// in a1.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m1()
 {
@@ -409,8 +409,8 @@ from a1: pointer is (nil)
 <span class="kw">inline</span> <span class="dt">void</span> foo(<span class="dt">const</span> <span class="dt">char</span> * msg, <span class="dt">void</span> * f);
 
 <span class="co">// in a2.c</span>
-<span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &quot;foo.h&quot;</span>
+<span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&quot;foo.h&quot;</span>
 
 <span class="dt">void</span> m2()
 {

@@ -67,49 +67,49 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </header>
 <article>
 <p><a href="http://www.jianshu.com/p/a927dfb384e9">上一篇文章</a> 写了一个极其简化的 Rxjava Observable ，现在，我试图添加一个 <code>map</code> 操作符。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> &lt;R&gt; Observable&lt;R&gt; <span class="fu">map</span>(Func1&lt;T, R&gt; func1) {
-  <span class="kw">return</span> <span class="kw">new</span> Observable&lt;R&gt;(subscriber -&gt; <span class="kw">this</span>.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
-      <span class="fu">@Override</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> &lt;R&gt; <span class="bu">Observable</span>&lt;R&gt; <span class="fu">map</span>(Func1&lt;T, R&gt; func1) {
+  <span class="kw">return</span> <span class="kw">new</span> <span class="bu">Observable</span>&lt;R&gt;(subscriber -&gt; <span class="kw">this</span>.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
+      <span class="at">@Override</span>
       <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onCompleted</span>() {
           subscriber.<span class="fu">onCompleted</span>();
       }
 
-      <span class="fu">@Override</span>
-      <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(Throwable e) {
+      <span class="at">@Override</span>
+      <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(<span class="bu">Throwable</span> e) {
           subscriber.<span class="fu">onError</span>(e);
       }
 
-      <span class="fu">@Override</span>
+      <span class="at">@Override</span>
        <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(T t) {
            R r = <span class="kw">null</span>;
            <span class="kw">try</span> {
                r = func1.<span class="fu">call</span>(t);
-           } <span class="kw">catch</span> (Throwable e) {
+           } <span class="kw">catch</span> (<span class="bu">Throwable</span> e) {
                <span class="fu">unsubscribe</span>();
                <span class="kw">return</span>;
            }
            subscriber.<span class="fu">onNext</span>(r);
        }
 
-      <span class="fu">@Override</span>
+      <span class="at">@Override</span>
       <span class="kw">public</span> <span class="dt">void</span> <span class="fu">unsubscribe</span>() {
           subscriber.<span class="fu">unsubscribe</span>();
       }
 
-      <span class="fu">@Override</span>
+      <span class="at">@Override</span>
       <span class="kw">public</span> <span class="dt">boolean</span> <span class="fu">isUnsubscribed</span>() {
           <span class="kw">return</span> subscriber.<span class="fu">isUnsubscribed</span>();
       }
   }));
 }</code></pre></div>
 <p>Java 本身语言限制，导致代码臃肿。代码的核心部分就是</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">return</span> <span class="kw">new</span> Observable&lt;R&gt;(subscriber -&gt; <span class="kw">this</span>.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
-    <span class="fu">@Override</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">return</span> <span class="kw">new</span> <span class="bu">Observable</span>&lt;R&gt;(subscriber -&gt; <span class="kw">this</span>.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
+    <span class="at">@Override</span>
      <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(T t) {
            R r = <span class="kw">null</span>;
            <span class="kw">try</span> {
                r = func1.<span class="fu">call</span>(t);
-           } <span class="kw">catch</span> (Throwable e) {
+           } <span class="kw">catch</span> (<span class="bu">Throwable</span> e) {
                <span class="fu">unsubscribe</span>();
                <span class="kw">return</span>;
            }
@@ -129,12 +129,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
      -&gt; {
         <span class="co">/* this 是上层的 Observable，订阅上层 */</span>
         <span class="kw">this</span>.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
-        <span class="fu">@Override</span>
+        <span class="at">@Override</span>
         <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(T t) {
            R r = <span class="kw">null</span>;
            <span class="kw">try</span> {
                r = func1.<span class="fu">call</span>(t);
-           } <span class="kw">catch</span> (Throwable e) {
+           } <span class="kw">catch</span> (<span class="bu">Throwable</span> e) {
                <span class="fu">unsubscribe</span>();
                <span class="kw">return</span>;
            }
@@ -142,7 +142,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
            subscriber.<span class="fu">onNext</span>(r);
        }
       };
-Observable&lt;R&gt; ret = <span class="kw">new</span> Observable&lt;R&gt;(onSubscribe);
+<span class="bu">Observable</span>&lt;R&gt; ret = <span class="kw">new</span> <span class="bu">Observable</span>&lt;R&gt;(onSubscribe);
 <span class="kw">return</span> ret;
 }</code></pre></div>
 </article>

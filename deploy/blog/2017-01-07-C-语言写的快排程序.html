@@ -66,26 +66,26 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3 class="date">2017/01/07 22:49:52</h3>
 </header>
 <article>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &lt;stdlib.h&gt;</span>
-<span class="ot">#include &lt;assert.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span>
 
 <span class="dt">void</span> quickSort(<span class="dt">int</span> a[], <span class="dt">int</span> len)
 {
-    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
-        <span class="kw">return</span>;
+    <span class="cf">if</span>(len &lt;= <span class="dv">0</span>) {
+        <span class="cf">return</span>;
     }
     <span class="dt">int</span> c = a[<span class="dv">0</span>];
     <span class="dt">int</span> mid = <span class="dv">0</span>;
-    <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">1</span>; i &lt; len; ++i){
-        <span class="kw">if</span>(a[i] &lt; c){
+    <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">1</span>; i &lt; len; ++i){
+        <span class="cf">if</span>(a[i] &lt; c){
             a[mid++] = a[i];
         }
     }
     a[mid] = c;
     quickSort(a, mid);
     quickSort(a + mid, len - mid - <span class="dv">1</span>);
-    <span class="kw">return</span>;
+    <span class="cf">return</span>;
 }
 
 <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
@@ -93,10 +93,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <span class="dt">int</span> a[] = {<span class="dv">5</span>,<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>};
     <span class="dt">int</span> len = <span class="kw">sizeof</span>(a)/<span class="kw">sizeof</span>(<span class="dt">int</span>);
     quickSort(a, len);
-    <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; len; ++i){
-        printf(<span class="st">&quot;a[%d] = %d</span><span class="ch">\n</span><span class="st">&quot;</span>, i,a[i]);
+    <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; len; ++i){
+        printf(<span class="st">&quot;a[%d] = %d</span><span class="sc">\n</span><span class="st">&quot;</span>, i,a[i]);
     }
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="cf">return</span> <span class="dv">0</span>;
 }</code></pre></div>
 <p>首先找到第一个元素 c ，然后找到中点的位置，mid ，同时保证 <code>a[0]</code> 到 <code>a[mid-1]</code> 都小于 <code>c</code> ，<code>a[mid+1]</code> 到 <code>a[len-1]</code> 都大于 <code>c</code> 。之后把 <code>c</code> 放在，<code>a[mid]</code> 的位置。</p>
 <p>最后，递归排序比 <code>c</code> 小的部分，和比 <code>c</code> 大的部分。</p>

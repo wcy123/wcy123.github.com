@@ -69,19 +69,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>写一个二分法查找的程序，也没有那么容易。我试验了一下，写了一个。</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span>* search(<span class="dt">int</span> a[], <span class="dt">int</span> len, <span class="dt">int</span> v)
 {
-    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
-        <span class="kw">return</span> NULL;
+    <span class="cf">if</span>(len &lt;= <span class="dv">0</span>) {
+        <span class="cf">return</span> NULL;
     }
     <span class="dt">int</span> mid = len/<span class="dv">2</span>;
     <span class="dt">int</span> c = a[mid];
-    <span class="kw">if</span>(c == v){
-        <span class="kw">return</span> a + mid;
-    }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
-        <span class="kw">return</span> search(a, mid, v);
-    }<span class="kw">else</span> {
-        <span class="kw">return</span> search(a + mid + <span class="dv">1</span>, len - mid - <span class="dv">1</span>, v);
+    <span class="cf">if</span>(c == v){
+        <span class="cf">return</span> a + mid;
+    }<span class="cf">else</span> <span class="cf">if</span>(c &gt; v) {
+        <span class="cf">return</span> search(a, mid, v);
+    }<span class="cf">else</span> {
+        <span class="cf">return</span> search(a + mid + <span class="dv">1</span>, len - mid - <span class="dv">1</span>, v);
     }
-    <span class="kw">return</span> NULL;
+    <span class="cf">return</span> NULL;
 }</code></pre></div>
 <p>验证程序如下：</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
@@ -91,16 +91,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <span class="dt">int</span> * p = NULL;
     <span class="dt">int</span> b[] = {<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">19</span>,<span class="dv">20</span>};
     <span class="dt">int</span> lenb = <span class="kw">sizeof</span>(b)/<span class="kw">sizeof</span>(<span class="dt">int</span>);
-    <span class="kw">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; lenb; ++i){
+    <span class="cf">for</span>(<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; lenb; ++i){
         p = search(a,len, b[i]);
-        <span class="kw">if</span>(p!=NULL){
+        <span class="cf">if</span>(p!=NULL){
             <span class="dt">int</span> d = p - a;
-            printf(<span class="st">&quot;found %d at a[%d]</span><span class="ch">\n</span><span class="st">&quot;</span>, b[i], d);
-        }<span class="kw">else</span> {
-            printf(<span class="st">&quot;%d not found</span><span class="ch">\n</span><span class="st">&quot;</span>, b[i]);
+            printf(<span class="st">&quot;found %d at a[%d]</span><span class="sc">\n</span><span class="st">&quot;</span>, b[i], d);
+        }<span class="cf">else</span> {
+            printf(<span class="st">&quot;%d not found</span><span class="sc">\n</span><span class="st">&quot;</span>, b[i]);
         }
     }
-    <span class="kw">return</span> <span class="dv">0</span>;
+    <span class="cf">return</span> <span class="dv">0</span>;
 }</code></pre></div>
 <p>程序输出结果如下:</p>
 <pre><code>4 not found
@@ -123,27 +123,27 @@ found 19 at a[4]
 <li>如果数组下标 <code>a[mid+1]</code> ，那么从 <code>a[mid+1]</code> 到数组结尾，一共有 <code>len - mid - 1</code> 个元素。即，不包含 <code>a[mid]</code> 的时候，一共有多少个元素。</li>
 </ol>
 <p>这个程序有一个很有争议的风格问题。</p>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="kw">if</span>(c==v) {
-    <span class="kw">return</span> a + mid
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="cf">if</span>(c==v) {
+    <span class="cf">return</span> a + mid
 }</code></pre></div>
 <p>是否可以在程序中间返回？ 另一种风格是如下，</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="dt">int</span>* search(<span class="dt">int</span> a[], <span class="dt">int</span> len, <span class="dt">int</span> v)
 {
     <span class="dt">int</span> * result = NULL;
-    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
+    <span class="cf">if</span>(len &lt;= <span class="dv">0</span>) {
         result = NULL;
-    }<span class="kw">else</span> {
+    }<span class="cf">else</span> {
         <span class="dt">int</span> mid = len/<span class="dv">2</span>;
         <span class="dt">int</span> c = a[mid];
-        <span class="kw">if</span>(c == v){
+        <span class="cf">if</span>(c == v){
             result = a + mid;
-        }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
+        }<span class="cf">else</span> <span class="cf">if</span>(c &gt; v) {
             result = search(a, mid, v);
-        }<span class="kw">else</span> {
+        }<span class="cf">else</span> {
             result = search(a + mid + <span class="dv">1</span>, len - mid - <span class="dv">1</span>, v);
         }
     }
-    <span class="kw">return</span> result;
+    <span class="cf">return</span> result;
 }</code></pre></div>
 <p>两种风格各有利弊，不做深聊了。</p>
 <p>这个程序还有一个问题，就是尾递归。c 语言的尾递归是一种优化，不是语义上支持的。也就是说，当 len 非常非常大的时候，是否 stack overflow ，全凭 c 编译器优化开关的心情。如果我们不依赖于 c 的编译器的话，可以手工写尾递归的风格。</p>
@@ -152,26 +152,26 @@ found 19 at a[4]
     <span class="dt">int</span> * result = NULL;
 
 TAIL_CALL:
-    <span class="kw">if</span>(len &lt;= <span class="dv">0</span>) {
+    <span class="cf">if</span>(len &lt;= <span class="dv">0</span>) {
         result = NULL;
-    }<span class="kw">else</span> {
+    }<span class="cf">else</span> {
         <span class="dt">int</span> mid = len/<span class="dv">2</span>;
         <span class="dt">int</span> c = a[mid];
-        <span class="kw">if</span>(c == v){
+        <span class="cf">if</span>(c == v){
             result = a + mid;
-        }<span class="kw">else</span> <span class="kw">if</span>(c &gt; v) {
+        }<span class="cf">else</span> <span class="cf">if</span>(c &gt; v) {
             a = a;
             len = mid;
             v = v;
-            <span class="kw">goto</span> TAIL_CALL;
-        }<span class="kw">else</span> {
+            <span class="cf">goto</span> TAIL_CALL;
+        }<span class="cf">else</span> {
             a = a + mid + <span class="dv">1</span>;
             len = len - mid - <span class="dv">1</span>;
             v = v;
-            <span class="kw">goto</span> TAIL_CALL;
+            <span class="cf">goto</span> TAIL_CALL;
         }
     }
-    <span class="kw">return</span> result;
+    <span class="cf">return</span> result;
 }</code></pre></div>
 <p>也就是说</p>
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">result = search(&lt;V1&gt;, &lt;V2&gt;, &lt;V3&gt;);</code></pre></div>
@@ -179,7 +179,7 @@ TAIL_CALL:
 <div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c">a = &lt;V1&gt;
 len = &lt;V2&gt;
 c = &lt;V3&gt;
-<span class="kw">goto</span> TAIL_CALL;</code></pre></div>
+<span class="cf">goto</span> TAIL_CALL;</code></pre></div>
 <p><code>v=v</code> 当然是没有必要的，这里为了强调是尾递归。</p>
 <p>这种风格的尾递归，违反了大公司定义的风格。</p>
 <ol style="list-style-type: decimal">

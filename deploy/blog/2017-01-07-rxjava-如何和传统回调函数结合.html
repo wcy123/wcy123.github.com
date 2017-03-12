@@ -70,18 +70,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <blockquote>
 <p>Provides an API (via a cold Observable) that bridges the reactive world with the callback-style, generally non-backpressured world. Example: You should call the AsyncEmitter's onNext, onError and onCompleted methods in a serialized fashion. The rest of its methods are thread-safe.</p>
 </blockquote>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Observable.&lt;Event&gt;<span class="fu">fromEmitter</span>(emitter -&gt; {
-Callback listener = <span class="kw">new</span> Callback() {
-<span class="fu">@Override</span>
-<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onEvent</span>(Event e) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="bu">Observable</span>.&lt;<span class="bu">Event</span>&gt;<span class="fu">fromEmitter</span>(emitter -&gt; {
+<span class="bu">Callback</span> listener = <span class="kw">new</span> <span class="bu">Callback</span>() {
+<span class="at">@Override</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onEvent</span>(<span class="bu">Event</span> e) {
 emitter.<span class="fu">onNext</span>(e);
 <span class="kw">if</span> (e.<span class="fu">isLast</span>()) {
 emitter.<span class="fu">onCompleted</span>();
 }
 }
 
-<span class="fu">@Override</span>
-<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onFailure</span>(Exception e) {
+<span class="at">@Override</span>
+<span class="kw">public</span> <span class="dt">void</span> <span class="fu">onFailure</span>(<span class="bu">Exception</span> e) {
 emitter.<span class="fu">onError</span>(e);
 }
 };
@@ -92,27 +92,27 @@ emitter.<span class="fu">setCancellation</span>(c::close);
 
 }, BackpressureMode.<span class="fu">BUFFER</span>);</code></pre></div>
 <p>这是一个实验性的功能，用于和传统回调模式的程序对接。为了理解这个机制，我写了一个完整的例子。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package org.wcy123.rxjava1;</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package</span><span class="im"> org.wcy123.rxjava1;</span>
 
-<span class="kw">import java.util.concurrent.CountDownLatch;</span>
-<span class="kw">import java.util.concurrent.ExecutorService;</span>
-<span class="kw">import java.util.concurrent.Executors;</span>
-<span class="kw">import java.util.stream.IntStream;</span>
+<span class="kw">import</span><span class="im"> java.util.concurrent.CountDownLatch;</span>
+<span class="kw">import</span><span class="im"> java.util.concurrent.ExecutorService;</span>
+<span class="kw">import</span><span class="im"> java.util.concurrent.Executors;</span>
+<span class="kw">import</span><span class="im"> java.util.stream.IntStream;</span>
 
-<span class="kw">import org.junit.Test;</span>
+<span class="kw">import</span><span class="im"> org.junit.Test;</span>
 
-<span class="kw">import lombok.extern.slf4j.Slf4j;</span>
-<span class="kw">import rx.AsyncEmitter;</span>
-<span class="kw">import rx.Observable;</span>
+<span class="kw">import</span><span class="im"> lombok.extern.slf4j.Slf4j;</span>
+<span class="kw">import</span><span class="im"> rx.AsyncEmitter;</span>
+<span class="kw">import</span><span class="im"> rx.Observable;</span>
 
-<span class="fu">@Slf4j</span>
+<span class="at">@Slf4j</span>
 <span class="kw">public</span> <span class="kw">class</span> FromEmitterTest {
 
-    <span class="fu">@Test</span>
-    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main1</span>() <span class="kw">throws</span> Exception {
-        <span class="dt">final</span> ExecutorService service = Executors.<span class="fu">newCachedThreadPool</span>();
-        <span class="dt">final</span> CountDownLatch latch = <span class="kw">new</span> CountDownLatch(<span class="dv">3</span> * <span class="dv">4</span>);
-        Observable.<span class="fu">fromEmitter</span>(
+    <span class="at">@Test</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">main1</span>() <span class="kw">throws</span> <span class="bu">Exception</span> {
+        <span class="dt">final</span> <span class="bu">ExecutorService</span> service = <span class="bu">Executors</span>.<span class="fu">newCachedThreadPool</span>();
+        <span class="dt">final</span> <span class="bu">CountDownLatch</span> latch = <span class="kw">new</span> <span class="bu">CountDownLatch</span>(<span class="dv">3</span> * <span class="dv">4</span>);
+        <span class="bu">Observable</span>.<span class="fu">fromEmitter</span>(
                  emitter -&gt; IntStream.<span class="fu">range</span>(<span class="dv">0</span>, <span class="dv">3</span>).<span class="fu">boxed</span>().<span class="fu">forEach</span>(
                         threadIndex -&gt; service.<span class="fu">submit</span>(
                                 () -&gt; {

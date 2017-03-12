@@ -31,7 +31,7 @@
 <article>
 <p>本文主要参考 <a href="http://en.cppreference.com/w/cpp/language/eval_order">Order of evaluation</a></p>
 <p>举例如下</p>
-<p>{% highlight c++ %} #include <stdio.h> #include <stdlib.h> #include <assert.h> int foo() { printf(&quot;calling foo&quot;); return 1; } int bar() { printf(&quot;calling bar&quot;); return 100; }</p>
+<p>{% highlight c++ %} #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;assert.h&gt; int foo() { printf(&quot;calling foo&quot;); return 1; } int bar() { printf(&quot;calling bar&quot;); return 100; }</p>
 <p>int main(int argc, char *argv[]) { printf(&quot;%d %d&quot;,foo(),bar()); return 0; } {% endhighlight %}</p>
 <p>在用 clang编译的时候，输出如下</p>
 <p>{% highlight bash %} clang seq.c &amp;&amp; ./a.out calling foo calling bar 1 100 {% endhighlight %}</p>

@@ -73,8 +73,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>任何非静态成员函数都可以看成一个函数，第一个参数是 <code>this</code> 。</p>
 <p>下面是一个例子</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> SortPersonTest {
-    <span class="kw">public</span> <span class="dt">static</span> List&lt;Person&gt; <span class="fu">createPeople</span>() {
-        <span class="kw">return</span> Arrays.<span class="fu">asList</span>(
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">List</span>&lt;Person&gt; <span class="fu">createPeople</span>() {
+        <span class="kw">return</span> <span class="bu">Arrays</span>.<span class="fu">asList</span>(
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Sara&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">20</span>),
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Sara&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">22</span>),
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Bob&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">MALE</span>, <span class="dv">20</span>),
@@ -85,14 +85,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Jill&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">12</span>));
     }
 
-    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(<span class="bu">String</span>[] args) {
 
         <span class="fu">createPeople</span>().<span class="fu">stream</span>().<span class="fu">sorted</span>(
-                Comparator.<span class="fu">comparing</span>(Person::getGender)
+                <span class="bu">Comparator</span>.<span class="fu">comparing</span>(Person::getGender)
                         .<span class="fu">reversed</span>()
                         .<span class="fu">thenComparing</span>(Person::getAge)
                         .<span class="fu">thenComparing</span>(Person::getName))
-                .<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);
+                .<span class="fu">forEach</span>(<span class="bu">System</span>.<span class="fu">out</span>::println);
     }
 }</code></pre></div>
 <p>程序输出</p>
@@ -106,8 +106,8 @@ Person(name=Paul, gender=MALE, age=32)
 Person(name=JACK, gender=MALE, age=72)</code></pre>
 <p><code>sorted</code> 是一个高阶函数，第一个参数是 <code>Stream this</code> 。第二个参数是一个 <code>Comparator</code> 接口，这个接口只有一个虚函数，所以可以认为把一个函数作为参数。</p>
 <p><code>Comparator::comparing</code> 也是一个高阶函数，第一个参数是一个函数(Function)，返回值也是一个函数(Comparator)。 类似实现可以是</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">interface</span> MyComparator&lt;T&gt; <span class="kw">extends</span> Comparator&lt;T&gt; {};
-    <span class="kw">public</span> <span class="dt">static</span> &lt;T, U <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> U&gt;&gt;
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">    <span class="kw">interface</span> MyComparator&lt;T&gt; <span class="kw">extends</span> <span class="bu">Comparator</span>&lt;T&gt; {};
+    <span class="kw">public</span> <span class="dt">static</span> &lt;T, U <span class="kw">extends</span> <span class="bu">Comparable</span>&lt;? <span class="kw">super</span> U&gt;&gt;
     MyComparator&lt;T&gt; <span class="fu">comparing</span>( Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
         <span class="kw">return</span> (t1, t2) -&gt; fKey.<span class="fu">apply</span>(t1).<span class="fu">compareTo</span>(fKey.<span class="fu">apply</span>(t2));
     }</code></pre></div>
@@ -117,21 +117,21 @@ Person(name=JACK, gender=MALE, age=72)</code></pre>
             <span class="kw">return</span> (t1,t2) -&gt; <span class="kw">this</span>.<span class="fu">compare</span>(t2,t1);
         }</code></pre></div>
 <p><code>thenComparing</code> 的实现类似下面的代码</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">         <span class="kw">default</span> &lt;U <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> U&gt;&gt; MyComparator&lt;T&gt; <span class="fu">myThenComparing</span>(Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">         <span class="kw">default</span> &lt;U <span class="kw">extends</span> <span class="bu">Comparable</span>&lt;? <span class="kw">super</span> U&gt;&gt; MyComparator&lt;T&gt; <span class="fu">myThenComparing</span>(Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
             <span class="kw">return</span> (t1, t2) -&gt; {
                 <span class="dt">final</span> <span class="dt">int</span> r1 = <span class="fu">compare</span>(t1, t2);
                 <span class="kw">return</span> r1 == <span class="dv">0</span> ? <span class="fu">myComparing</span>(fKey).<span class="fu">compare</span>(t1,t2): r1;
             };
         }</code></pre></div>
 <p>完整代码</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import java.util.Arrays;</span>
-<span class="kw">import java.util.Comparator;</span>
-<span class="kw">import java.util.List;</span>
-<span class="kw">import java.util.function.Function;</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import</span><span class="im"> java.util.Arrays;</span>
+<span class="kw">import</span><span class="im"> java.util.Comparator;</span>
+<span class="kw">import</span><span class="im"> java.util.List;</span>
+<span class="kw">import</span><span class="im"> java.util.function.Function;</span>
 
 <span class="kw">public</span> <span class="kw">class</span> SortPersonTest {
-    <span class="kw">public</span> <span class="dt">static</span> List&lt;Person&gt; <span class="fu">createPeople</span>() {
-        <span class="kw">return</span> Arrays.<span class="fu">asList</span>(
+    <span class="kw">public</span> <span class="dt">static</span> <span class="bu">List</span>&lt;Person&gt; <span class="fu">createPeople</span>() {
+        <span class="kw">return</span> <span class="bu">Arrays</span>.<span class="fu">asList</span>(
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Sara&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">20</span>),
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Sara&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">22</span>),
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Bob&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">MALE</span>, <span class="dv">20</span>),
@@ -141,11 +141,11 @@ Person(name=JACK, gender=MALE, age=72)</code></pre>
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;JACK&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">MALE</span>, <span class="dv">72</span>),
                 <span class="kw">new</span> <span class="fu">Person</span>(<span class="st">&quot;Jill&quot;</span>, Person.<span class="fu">Gender</span>.<span class="fu">FEMALE</span>, <span class="dv">12</span>));
     }
-    <span class="kw">interface</span> MyComparator&lt;T&gt; <span class="kw">extends</span> Comparator&lt;T&gt; {
+    <span class="kw">interface</span> MyComparator&lt;T&gt; <span class="kw">extends</span> <span class="bu">Comparator</span>&lt;T&gt; {
         <span class="kw">default</span> MyComparator&lt;T&gt; <span class="fu">myReversed</span>(){
             <span class="kw">return</span> (t1,t2) -&gt; <span class="kw">this</span>.<span class="fu">compare</span>(t2,t1);
         }
-        <span class="kw">default</span> &lt;U <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> U&gt;&gt; MyComparator&lt;T&gt; <span class="fu">myThenComparing</span>(Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
+        <span class="kw">default</span> &lt;U <span class="kw">extends</span> <span class="bu">Comparable</span>&lt;? <span class="kw">super</span> U&gt;&gt; MyComparator&lt;T&gt; <span class="fu">myThenComparing</span>(Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
             <span class="kw">return</span> (t1, t2) -&gt; {
                 <span class="dt">final</span> <span class="dt">int</span> r1 = <span class="fu">compare</span>(t1, t2);
                 <span class="kw">return</span> r1 == <span class="dv">0</span> ? <span class="fu">myComparing</span>(fKey).<span class="fu">compare</span>(t1,t2): r1;
@@ -153,18 +153,18 @@ Person(name=JACK, gender=MALE, age=72)</code></pre>
         }
     };
 
-    <span class="kw">public</span> <span class="dt">static</span> &lt;T, U <span class="kw">extends</span> Comparable&lt;? <span class="kw">super</span> U&gt;&gt;
+    <span class="kw">public</span> <span class="dt">static</span> &lt;T, U <span class="kw">extends</span> <span class="bu">Comparable</span>&lt;? <span class="kw">super</span> U&gt;&gt;
     MyComparator&lt;T&gt; <span class="fu">myComparing</span>(Function&lt;? <span class="kw">super</span> T, ? <span class="kw">extends</span> U&gt; fKey) {
         <span class="kw">return</span> (t1, t2) -&gt; fKey.<span class="fu">apply</span>(t1).<span class="fu">compareTo</span>(fKey.<span class="fu">apply</span>(t2));
     }
-    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) {
+    <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(<span class="bu">String</span>[] args) {
 
         <span class="fu">createPeople</span>().<span class="fu">stream</span>().<span class="fu">sorted</span>(
                 <span class="fu">myComparing</span>(Person::getGender)
                         .<span class="fu">myReversed</span>()
                         .<span class="fu">myThenComparing</span>(Person::getAge)
                         .<span class="fu">myThenComparing</span>(Person::getName))
-                .<span class="fu">forEach</span>(System.<span class="fu">out</span>::println);
+                .<span class="fu">forEach</span>(<span class="bu">System</span>.<span class="fu">out</span>::println);
     }
 }</code></pre></div>
 </article>

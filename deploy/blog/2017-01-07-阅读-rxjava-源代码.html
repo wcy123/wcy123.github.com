@@ -71,7 +71,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>基于异步调用和事件驱动的程序，经常陷入回调陷阱，导致程序的可读性下降，写出来的程序像意大利面条（callback hell, callback spaghetti）。参考 <a href="http://callbackhell.com。" class="uri">http://callbackhell.com。</a></p>
 <p>本文从源代码级别上，介绍了 rxjava 中最重要的几个接口和类。</p>
 <h1 id="obserable">Obserable</h1>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> Observable&lt;String&gt; observable = Observable.<span class="fu">empty</span>();</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> <span class="bu">Observable</span>&lt;<span class="bu">String</span>&gt; observable = <span class="bu">Observable</span>.<span class="fu">empty</span>();</code></pre></div>
 <p><code>Observable</code> 只有一个成员变量 <code>onSubscribe</code> <img src="http://upload-images.jianshu.io/upload_images/3759943-335ecbc6605629ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" /></p>
 <div class="figure">
 <img src="http://upload-images.jianshu.io/upload_images/3759943-ff2f874e1f2d0b42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" />
@@ -83,15 +83,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 </div>
 <h2 id="observer">Observer</h2>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> SimpleObserver <span class="kw">implements</span> Observer&lt;String&gt; {
-     <span class="fu">@Override</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> SimpleObserver <span class="kw">implements</span> <span class="bu">Observer</span>&lt;<span class="bu">String</span>&gt; {
+     <span class="at">@Override</span>
      <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onCompleted</span>() {}
-     <span class="fu">@Override</span>
-     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(Throwable e) {}
-     <span class="fu">@Override</span>
-     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(String s) {}
+     <span class="at">@Override</span>
+     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(<span class="bu">Throwable</span> e) {}
+     <span class="at">@Override</span>
+     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(<span class="bu">String</span> s) {}
 }
-<span class="dt">final</span> Observer&lt;String&gt; observer = <span class="kw">new</span> <span class="fu">SimpleObserver</span>();</code></pre></div>
+<span class="dt">final</span> <span class="bu">Observer</span>&lt;<span class="bu">String</span>&gt; observer = <span class="kw">new</span> <span class="fu">SimpleObserver</span>();</code></pre></div>
 <div class="figure">
 <img src="http://upload-images.jianshu.io/upload_images/3759943-a4fb9b3a1c39849e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" />
 
@@ -112,7 +112,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <p><code>subscription</code> 用来停止订阅 <code>unsubscribe</code>。</p>
 <p><code>subscribe</code> 比较矫情的一段代码，简化如下。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Observable&lt;T&gt; {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> <span class="bu">Observable</span>&lt;T&gt; {
   <span class="kw">public</span> <span class="dt">final</span> Subscription <span class="fu">subscribe</span>(Subscriber&lt;? <span class="kw">super</span> T&gt; subscriber) {
       onSubscribe.<span class="fu">call</span>(subscriber);
       <span class="kw">return</span> subscriber;
@@ -128,10 +128,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>一个超级简化版的 rxjava 可以是下面这个样子。</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">interface</span> OnSubscribe&lt;T&gt; <span class="kw">extends</span> Action1&lt;Subscriber&lt;? <span class="kw">super</span> T&gt;&gt; {
 }
-<span class="kw">public</span> <span class="kw">class</span> Observable&lt;T&gt; {
+<span class="kw">public</span> <span class="kw">class</span> <span class="bu">Observable</span>&lt;T&gt; {
     <span class="dt">final</span> OnSubscribe&lt;T&gt; onSubscribe;
 
-    <span class="kw">public</span> Observable(OnSubscribe&lt;T&gt; onSubscribe) {
+    <span class="kw">public</span> <span class="bu">Observable</span>(OnSubscribe&lt;T&gt; onSubscribe) {
         <span class="kw">this</span>.<span class="fu">onSubscribe</span> = onSubscribe;
     }
     <span class="kw">public</span> <span class="dt">final</span> Subscription <span class="fu">subscribe</span>(Subscriber&lt;? <span class="kw">super</span> T&gt; subscriber) {
@@ -140,16 +140,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     }
 
 }
-<span class="kw">public</span> <span class="kw">interface</span> Observer&lt;T&gt; {
+<span class="kw">public</span> <span class="kw">interface</span> <span class="bu">Observer</span>&lt;T&gt; {
     <span class="dt">void</span> <span class="fu">onCompleted</span>();
-    <span class="dt">void</span> <span class="fu">onError</span>(Throwable e);
+    <span class="dt">void</span> <span class="fu">onError</span>(<span class="bu">Throwable</span> e);
     <span class="dt">void</span> <span class="fu">onNext</span>(T t);
 }
 <span class="kw">public</span> <span class="kw">interface</span> Subscription {
     <span class="dt">void</span> <span class="fu">unsubscribe</span>();
     <span class="dt">boolean</span> <span class="fu">isUnsubscribed</span>();
 }
-<span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Subscriber&lt;T&gt; <span class="kw">implements</span> Observer&lt;T&gt;, Subscription {
+<span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Subscriber&lt;T&gt; <span class="kw">implements</span> <span class="bu">Observer</span>&lt;T&gt;, Subscription {
 }</code></pre></div>
 <p>尽管 <code>Subscriber</code> 类所占的篇幅很小，他确实核心的一个类。</p>
 <p>测试一下这段代码</p>

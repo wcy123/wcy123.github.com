@@ -51,7 +51,7 @@ name();<br />
 <p>And it will expanded into</p>
 <p>{% highlight c %} if (strcmp (argv[1], &quot;ls&quot;) == 0) { ls (); } else if (strcmp (argv[1], &quot;cp&quot;) == 0) { cp (); } else if (strcmp (argv[1], &quot;rm&quot;) == 0) { rm (); } else if (strcmp (argv[1], &quot;echo&quot;) == 0) { echo (); } else { printf (&quot;unknown commmand %s&quot;, argv[1]); } {% endhighlight %}</p>
 <p>The whole program is listed here.</p>
-<p>{% highlight c %} #include <stdio.h> #include <stdlib.h> #include <assert.h></p>
+<p>{% highlight c %} #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;assert.h&gt;</p>
 <h1 id="define-cmdxx-xxls-xxcp-xxrm-xxecho">define CMD(XX) XX(ls) XX(cp) XX(rm) XX(echo)</h1>
 <h1 id="define-define_common_templatename-void-name-printfname-is-not-implemented">define DEFINE_COMMON_TEMPLATE(name)<br />
 void name()<br />
@@ -69,7 +69,7 @@ name();<br />
 return 0;</code></pre>
 <p>} {% endhighlight %}</p>
 <h2 id="get-the-number-of-varadic-argument">get the number of varadic argument</h2>
-<p>{% highlight c %} #include <stdio.h> #include <stdlib.h> #include <assert.h> #define _GET_N_OF_ARGS(_0,_1,_2,_3,_4,N,...) N #define N_OF_ARGS(...) _GET_N_OF_ARGS(<strong>VA_ARGS</strong>,5,4,3,2,1,0) int main(int argc, char *argv[]) { printf(&quot;%d&quot;, N_OF_ARGS(a)); printf(&quot;%d&quot;,N_OF_ARGS(a,b)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c,d)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c,d,e)); return 0; } {% endhighlight %}</p>
+<p>{% highlight c %} #include &lt;stdio.h&gt; #include &lt;stdlib.h&gt; #include &lt;assert.h&gt; #define _GET_N_OF_ARGS(_0,_1,_2,_3,_4,N,...) N #define N_OF_ARGS(...) _GET_N_OF_ARGS(<strong>VA_ARGS</strong>,5,4,3,2,1,0) int main(int argc, char *argv[]) { printf(&quot;%d&quot;, N_OF_ARGS(a)); printf(&quot;%d&quot;,N_OF_ARGS(a,b)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c,d)); printf(&quot;%d&quot;,N_OF_ARGS(a,b,c,d,e)); return 0; } {% endhighlight %}</p>
 <p><code>N_OF_ARGS</code> can handle at most 5 arguments and at least 1, otherwise, it is unpredictable error.</p>
 <p>{% highlight c %} int main(int argc, char *argv[]) { printf(&quot;%d&quot;,1); printf(&quot;%d&quot;,2); printf(&quot;%d&quot;,3); printf(&quot;%d&quot;,4); printf(&quot;%d&quot;,5); return 0; } {% endhighlight %}</p>
 <p>But {% highlight c %} N_OF_ARGS() // =&gt; _GET_N_OF_ARGS(,5,4,3,2,1) // =&gt; 1 printf(&quot;%d&quot;,N_OF_ARGS(a,b,c,d,e,f)); // =&gt; _GET_N_OF_ARGS(a,b,c,d,e,f) // =&gt; f {% endhighlight %}</p>

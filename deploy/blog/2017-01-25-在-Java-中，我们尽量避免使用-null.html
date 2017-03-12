@@ -85,7 +85,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 }</code></pre></div>
 <p>但是，如果 <code>yyy</code> 也是 null ，这个判断结果是 <code>false</code> 。这个根据业务逻辑，某些情况下合理，某些情况下不合理。</p>
 <p>甚至下面的代码都会可能产生 NPE</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Boolean flag = <span class="fu">getFlag</span>();
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="bu">Boolean</span> flag = <span class="fu">getFlag</span>();
 <span class="kw">if</span>(flag) {
 ...
 }</code></pre></div>
@@ -104,22 +104,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 }</code></pre>
 <p>上面的代码采用了第一种方案，如果转换整数失败，那么抛出 <code>java.lang.NumberFormatException</code> 的异常。</p>
 <p>如果调用者不想处理异常，我们可以改成第二种方案。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Optional&lt;Integer&gt; <span class="fu">parseInteger</span>(String x) {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Optional&lt;<span class="bu">Integer</span>&gt; <span class="fu">parseInteger</span>(<span class="bu">String</span> x) {
     <span class="kw">try</span> {
-       <span class="kw">return</span> Optional.<span class="fu">of</span>(Integer.<span class="fu">valueOf</span>(x));
-    }<span class="kw">catch</span> (NumberFormatException e){
+       <span class="kw">return</span> Optional.<span class="fu">of</span>(<span class="bu">Integer</span>.<span class="fu">valueOf</span>(x));
+    }<span class="kw">catch</span> (<span class="bu">NumberFormatException</span> e){
        <span class="kw">return</span> Optional.<span class="fu">empty</span>();
     }
 }</code></pre></div>
 <p>这个时候，调用者就需要</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> Optional&lt;Integer&gt; aInt = <span class="fu">parseInteger</span>(<span class="st">&quot;123&quot;</span>);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="dt">final</span> Optional&lt;<span class="bu">Integer</span>&gt; aInt = <span class="fu">parseInteger</span>(<span class="st">&quot;123&quot;</span>);
 <span class="kw">if</span>(aInt.<span class="fu">isPresent</span>()){
     <span class="fu">doSomething</span>(aInt.<span class="fu">get</span>());
 } <span class="kw">else</span> {
     <span class="fu">doSomething</span>(<span class="dv">0</span>); <span class="co">// assume default value is 0.</span>
 }</code></pre></div>
 <p>这么写显得很笨重，如果 <code>Optional</code> 多嵌套基层，代码就很难看了。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Optional&lt;Double&gt; aDouble;
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">Optional&lt;<span class="bu">Double</span>&gt; aDouble;
 <span class="kw">if</span>(aInt.<span class="fu">isPresent</span>()){
     aDouble = <span class="fu">doSomethingWithInt</span>(aInt.<span class="fu">get</span>());
 }<span class="kw">else</span> {
@@ -131,20 +131,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <span class="fu">doSomethingWithDouble</span>(<span class="fl">0.0</span>);
 }</code></pre></div>
 <p>我们可以改进一下</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> Optional&lt;Double&gt; aDouble;
- Optional&lt;Double&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aInt.<span class="fu">orElse</span>(<span class="dv">0</span>));
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"> Optional&lt;<span class="bu">Double</span>&gt; aDouble;
+ Optional&lt;<span class="bu">Double</span>&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aInt.<span class="fu">orElse</span>(<span class="dv">0</span>));
  <span class="fu">doSomethingWithDouble</span>(aDouble.<span class="fu">orElse</span>(<span class="fl">0.0</span>));</code></pre></div>
 <p>也就是说，<code>orElse</code> 提供了缺省值的模式。</p>
 <p>如果说缺省值模式，不适合，例如，业务逻辑的需求是如果解析成功，做某事，否则什么都不做。</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">if</span>(aInt.<span class="fu">isPresent</span>()){
-    Optional&lt;Double&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aInt.<span class="fu">get</span>(<span class="dv">0</span>));
+    Optional&lt;<span class="bu">Double</span>&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aInt.<span class="fu">get</span>(<span class="dv">0</span>));
     <span class="kw">if</span>(aDouble.<span class="fu">isPresent</span>()) {
         <span class="fu">doSomethingWithDouble</span>(aDouble.<span class="fu">get</span>());
     }
 }</code></pre></div>
 <p>可以想象，每判断一次，程序向右缩进一次，代码也很难看，我们可以改进一下。</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">aInt.<span class="fu">ifPresent</span>(aIntegerValue -&gt; {
-    Optional&lt;Double&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aIntegerValue);
+    Optional&lt;<span class="bu">Double</span>&gt; aDouble = <span class="fu">doSomethingWithInt</span>(aIntegerValue);
     <span class="kw">return</span> aDouble.<span class="fu">ifPresent</span>(aDoubleValue -&gt;{
         <span class="fu">doSomethingWithDouble</span>(aDoubleValue);
     });

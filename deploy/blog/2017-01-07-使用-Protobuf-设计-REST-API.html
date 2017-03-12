@@ -85,17 +85,17 @@ message LoginResponse {
     LoginResult result  = 1;
 }</code></pre>
 <p>然后创建一个 Bean 用于转换 JSON 到 Java 对象</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Bean</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="at">@Bean</span>
 ProtobufHttpMessageConverter <span class="fu">protobufHttpMessageConverter</span>() {
   <span class="kw">return</span> <span class="kw">new</span> <span class="fu">ProtobufHttpMessageConverter</span>();
 }</code></pre></div>
 <p>然后创建 Controller</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@RestController</span>
-<span class="fu">@Slf4j</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="at">@RestController</span>
+<span class="at">@Slf4j</span>
 <span class="kw">public</span> <span class="kw">class</span> MyRestController {
-    <span class="fu">@RequestMapping</span>(path = <span class="st">&quot;/login&quot;</span>, method = POST)
+    <span class="at">@RequestMapping</span>(path = <span class="st">&quot;/login&quot;</span>, method = POST)
     <span class="kw">public</span> ResponseEntity&lt;Protos.<span class="fu">LoginResponse</span>&gt; <span class="fu">login</span>(HttpServletRequest request,
-            HttpServletResponse response, <span class="fu">@RequestBody</span> Protos.<span class="fu">LoginRequest</span> command) {
+            HttpServletResponse response, <span class="at">@RequestBody</span> Protos.<span class="fu">LoginRequest</span> command) {
         log.<span class="fu">info</span>(<span class="st">&quot;input is {}&quot;</span>, <span class="kw">new</span> <span class="fu">JsonFormat</span>().<span class="fu">printToString</span>(command));
         <span class="kw">return</span> ResponseEntity.<span class="fu">ok</span>().<span class="fu">body</span>(Protos.<span class="fu">LoginResponse</span>.<span class="fu">newBuilder</span>()
                 .<span class="fu">setResult</span>(Protos.<span class="fu">LoginResponse</span>.<span class="fu">LoginResult</span>.<span class="fu">OK</span>)

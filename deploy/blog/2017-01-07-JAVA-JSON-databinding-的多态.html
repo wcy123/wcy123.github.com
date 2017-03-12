@@ -69,21 +69,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>JSON 在 REST API 的调用中越来越多的应用，如何表达多态是经常碰到的一个问题。</p>
 <p>有三种方式解决这个问题 - <code>PROPERTY</code> ，<code>EXISTING_PROPERTY</code>， POJO 映射为 JSON Object ，某一个字段表示类型。 - <code>WRAPPER_OBJECT</code> POJO 映射为只有一个字段的 JSON Object ，字段名表示类型。 - <code>WRAPPER_ARRAY</code> POJO 映射为两个元素的数组 ，前面的表示类型，后面的表示指值。</p>
 <h1 id="背景">背景</h1>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Data</span>
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="at">@Data</span>
 <span class="dt">static</span> <span class="kw">class</span>  Zoo {
     <span class="kw">private</span> Animal leader;
     <span class="kw">private</span> Animal[] followers;
 }</code></pre></div>
 <p>假设有一个 <code>Zoo</code> 类，里面包含了一个特殊的动物 <code>leader</code>，和一些动物 <code>followers</code>。下面的代码试图转换 JSON</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String[] args) <span class="kw">throws</span> IOException {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(<span class="bu">String</span>[] args) <span class="kw">throws</span> <span class="bu">IOException</span> {
     Zoo zoo = <span class="kw">new</span> <span class="fu">Zoo</span>();
     zoo.<span class="fu">setLeader</span>(<span class="kw">new</span> <span class="fu">Dog</span>());
     zoo.<span class="fu">setFollowers</span>(<span class="kw">new</span> Animal[]{<span class="kw">new</span> <span class="fu">Dog</span>(), <span class="kw">new</span> <span class="fu">Cat</span>()});
     <span class="dt">final</span> ObjectMapper mapper = <span class="kw">new</span> <span class="fu">ObjectMapper</span>();
-    <span class="dt">final</span> String json = mapper.<span class="fu">writeValueAsString</span>(zoo);
-    System.<span class="fu">out</span>.<span class="fu">println</span>(json);
+    <span class="dt">final</span> <span class="bu">String</span> json = mapper.<span class="fu">writeValueAsString</span>(zoo);
+    <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(json);
     <span class="dt">final</span> Zoo zoo2 = mapper.<span class="fu">readValue</span>(json, Zoo.<span class="fu">class</span>);
-    System.<span class="fu">out</span>.<span class="fu">println</span>(zoo2);
+    <span class="bu">System</span>.<span class="fu">out</span>.<span class="fu">println</span>(zoo2);
 }</code></pre></div>
 <p>例子 <code>Dog</code> 和 <code>Cat</code> 类</p>
 <pre><code>static class Dog implements Animal {
@@ -138,16 +138,16 @@ static class Cat implements Animal {
     <span class="fu">}</span>
   <span class="ot">]</span>
 <span class="fu">}</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@JsonTypeInfo</span>(use = JsonTypeInfo.<span class="fu">Id</span>.<span class="fu">NAME</span>, include = JsonTypeInfo.<span class="fu">As</span>.<span class="fu">EXISTING_PROPERTY</span>,
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="at">@JsonTypeInfo</span>(use = JsonTypeInfo.<span class="fu">Id</span>.<span class="fu">NAME</span>, include = JsonTypeInfo.<span class="fu">As</span>.<span class="fu">EXISTING_PROPERTY</span>,
         property = <span class="st">&quot;animalType&quot;</span>)
-<span class="fu">@JsonSubTypes</span>({
-        <span class="fu">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Dog.<span class="fu">class</span>, name = <span class="st">&quot;dog&quot;</span>),
-        <span class="fu">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Cat.<span class="fu">class</span>, name = <span class="st">&quot;cat&quot;</span>)})
-<span class="fu">@JsonIgnoreProperties</span>(ignoreUnknown = <span class="kw">true</span>)
+<span class="at">@JsonSubTypes</span>({
+        <span class="at">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Dog.<span class="fu">class</span>, name = <span class="st">&quot;dog&quot;</span>),
+        <span class="at">@JsonSubTypes</span>.<span class="fu">Type</span>(value = Cat.<span class="fu">class</span>, name = <span class="st">&quot;cat&quot;</span>)})
+<span class="at">@JsonIgnoreProperties</span>(ignoreUnknown = <span class="kw">true</span>)
 <span class="kw">public</span> <span class="kw">interface</span> Animal {
-    String <span class="fu">getAnimalType</span>();
-    String <span class="fu">getName</span>();
-    <span class="dt">void</span> <span class="fu">setName</span>(String name);
+    <span class="bu">String</span> <span class="fu">getAnimalType</span>();
+    <span class="bu">String</span> <span class="fu">getName</span>();
+    <span class="dt">void</span> <span class="fu">setName</span>(<span class="bu">String</span> name);
 }</code></pre></div>
 <p>这种类型还有很多变种。例如 <code>use</code> 可以选择 <code>JsonTypeInfo.Id.CLASS</code> 之类的。</p>
 <h1 id="把-pojo-映射称为数组-include-jsontypeinfo.as.wrapper_array">把 POJO 映射称为数组 , <code>include = JsonTypeInfo.As.WRAPPER_ARRAY</code></h1>

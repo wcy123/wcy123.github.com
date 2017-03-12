@@ -74,9 +74,9 @@ Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</code></pre>
 <p>Here is a simple example.</p>
-<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &lt;stdlib.h&gt;</span>
-<span class="ot">#include &lt;assert.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode c"><code class="sourceCode c"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span>
 
 <span class="kw">struct</span> point {
     <span class="dt">int</span> x;
@@ -84,17 +84,17 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</cod
 };
 <span class="dt">const</span> <span class="kw">struct</span> point a_point = {.x = <span class="dv">0</span>, .y = <span class="dv">0</span>};
 <span class="dt">int</span> foo() {
-    <span class="kw">if</span>(a_point.x == <span class="dv">0</span>){
+    <span class="cf">if</span>(a_point.x == <span class="dv">0</span>){
         printf(<span class="st">&quot;x == 0&quot;</span>);
-        <span class="kw">return</span> <span class="dv">0</span>;
-    }<span class="kw">else</span>{
+        <span class="cf">return</span> <span class="dv">0</span>;
+    }<span class="cf">else</span>{
         printf(<span class="st">&quot;x == 1&quot;</span>);
-        <span class="kw">return</span> <span class="dv">1</span>;
+        <span class="cf">return</span> <span class="dv">1</span>;
     }
 }
 <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
 {
-    <span class="kw">return</span> foo();
+    <span class="cf">return</span> foo();
 }</code></pre></div>
 <p>We knew at compilation time, <code>a_point.x</code> is zero, so we could expected that <code>foo</code> is optimized into a single <code>printf</code>.</p>
 <pre><code>$ gcc -O3 a.c
@@ -113,28 +113,28 @@ End of assembler dump.
 0x4005bc:   &quot;x == 0&quot;</code></pre>
 <p>Very good! <code>foo</code> is optmized to print <code>x == 0</code> only.</p>
 <p>Let's see c++ version.</p>
-<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="ot">#include &lt;stdio.h&gt;</span>
-<span class="ot">#include &lt;stdlib.h&gt;</span>
-<span class="ot">#include &lt;assert.h&gt;</span>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;stdlib.h&gt;</span>
+<span class="pp">#include </span><span class="im">&lt;assert.h&gt;</span>
 
 <span class="kw">struct</span> point {
     point(<span class="dt">int</span> _x,<span class="dt">int</span> _y):x(_x),y(_y){}
     <span class="dt">int</span> x;
     <span class="dt">int</span> y;
 };
-<span class="dt">const</span> <span class="kw">struct</span> point a_point(<span class="dv">0</span>,<span class="dv">0</span>);
+<span class="at">const</span> <span class="kw">struct</span> point a_point(<span class="dv">0</span>,<span class="dv">0</span>);
 <span class="dt">int</span> foo() {
-    <span class="kw">if</span>(a_point.x == <span class="dv">0</span>){
+    <span class="cf">if</span>(a_point.x == <span class="dv">0</span>){
     printf(<span class="st">&quot;x == 0&quot;</span>);
-    <span class="kw">return</span> <span class="dv">0</span>;
-    }<span class="kw">else</span>{
+    <span class="cf">return</span> <span class="dv">0</span>;
+    }<span class="cf">else</span>{
     printf(<span class="st">&quot;x == 1&quot;</span>);
-    <span class="kw">return</span> <span class="dv">1</span>;
+    <span class="cf">return</span> <span class="dv">1</span>;
     }
 }
 <span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span> *argv[])
 {
-    <span class="kw">return</span> foo();
+    <span class="cf">return</span> foo();
 }</code></pre></div>
 <pre><code>$ g++ -O3 a.cc
 $ gdb a.out

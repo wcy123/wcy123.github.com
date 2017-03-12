@@ -82,9 +82,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ol>
 <p><code>headers = {&quot;Accept = application/json&quot;, &quot;Content-Type = application/json&quot;}</code> 否则返回值会无法解码</p>
 <h1 id="enable-debug">enable debug</h1>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="fu">@Bean</span>
-Logger.<span class="fu">Level</span> <span class="fu">logLevel</span>() {
-    <span class="kw">return</span> Logger.<span class="fu">Level</span>.<span class="fu">FULL</span>;
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="at">@Bean</span>
+<span class="bu">Logger</span>.<span class="fu">Level</span> <span class="fu">logLevel</span>() {
+    <span class="kw">return</span> <span class="bu">Logger</span>.<span class="fu">Level</span>.<span class="fu">FULL</span>;
 }</code></pre></div>
 <p>官方参考手册 http://cloud.spring.io/spring-cloud-netflix/spring-cloud-netflix.html</p>
 <pre><code>logging.level.&lt;YOURINTERFACE&gt;=trace</code></pre>

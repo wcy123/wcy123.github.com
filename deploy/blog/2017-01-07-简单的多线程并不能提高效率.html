@@ -67,11 +67,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </header>
 <article>
 <p>下面是一个最简单的多线程处理程序。这种多线程处理并不能提高效率</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">private</span> ExecutorService threadPool = Executors.<span class="fu">newFixedThreadPool</span>(<span class="dv">2</span>);
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">private</span> <span class="bu">ExecutorService</span> threadPool = <span class="bu">Executors</span>.<span class="fu">newFixedThreadPool</span>(<span class="dv">2</span>);
 
 <span class="co">//..</span>
 Output <span class="fu">process</span>(Input input) {
-    Future&lt;Output&gt; f =
+    <span class="bu">Future</span>&lt;Output&gt; f =
         threadPool.<span class="fu">submit</span>(() -&gt;
            <span class="fu">longTimeConsumingTask</span>(input));
   <span class="kw">return</span> f.<span class="fu">get</span>();

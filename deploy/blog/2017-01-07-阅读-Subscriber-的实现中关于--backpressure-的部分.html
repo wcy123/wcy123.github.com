@@ -75,22 +75,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>本文试图得到 “advanced knowledge” 。</p>
 <p>下面是 backpressure 的协议是如何建立的。</p>
 <div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java">someObservable.<span class="fu">subscribe</span>(<span class="kw">new</span> Subscriber&lt;T&gt;() {
-    <span class="fu">@Override</span>
+    <span class="at">@Override</span>
     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onStart</span>() {
       <span class="fu">request</span>(<span class="dv">1</span>);
     }
 
-    <span class="fu">@Override</span>
+    <span class="at">@Override</span>
     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onCompleted</span>() {
       <span class="co">// gracefully handle sequence-complete</span>
     }
 
-    <span class="fu">@Override</span>
-    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(Throwable e) {
+    <span class="at">@Override</span>
+    <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onError</span>(<span class="bu">Throwable</span> e) {
       <span class="co">// gracefully handle error</span>
     }
 
-    <span class="fu">@Override</span>
+    <span class="at">@Override</span>
     <span class="kw">public</span> <span class="dt">void</span> <span class="fu">onNext</span>(T n) {
       <span class="co">// do something with the emitted item &quot;n&quot;</span>
       <span class="co">// request another item:</span>
@@ -100,9 +100,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>可见底层 <code>subscriber</code> 在刚刚启动的时候，发起流控请求 <code>onStart</code> , <code>request(1)</code> 。告诉楼上的，哥们，别整太多，一个数据就够了，多了处理不了。 <code>onNext</code> 中，先处理数据，处理完了，告诉楼上的，接着往下放数据，别多，就一个。</p>
 <p>这里需要注意的是，不能再 <code>request(n)</code> 函数里面产生数据，否则递归调用 <code>onNext</code> ，可能导致爆栈了。</p>
 <p>我们看看 <code>Subscriber</code> 是如何实现这个协议的。</p>
-<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Subscriber&lt;T&gt; <span class="kw">implements</span> Observer&lt;T&gt;, Subscription {
+<div class="sourceCode"><pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Subscriber&lt;T&gt; <span class="kw">implements</span> <span class="bu">Observer</span>&lt;T&gt;, Subscription {
 <span class="co">// represents requested not set yet</span>
-<span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="dt">long</span> NOT_SET = Long.<span class="fu">MIN_VALUE</span>;
+<span class="kw">private</span> <span class="dt">static</span> <span class="dt">final</span> <span class="dt">long</span> NOT_SET = <span class="bu">Long</span>.<span class="fu">MIN_VALUE</span>;
 <span class="kw">private</span> <span class="dt">final</span> SubscriptionList subscriptions;
 <span class="kw">private</span> <span class="dt">final</span> Subscriber&lt;?&gt; subscriber;
 <span class="kw">private</span> Producer producer;
@@ -127,7 +127,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
         subscriber.<span class="fu">setProducer</span>(producer);
     } <span class="kw">else</span> {
         <span class="kw">if</span> (requested == NOT_SET) {
-            producer.<span class="fu">request</span>(Long.<span class="fu">MAX_VALUE</span>);
+            producer.<span class="fu">request</span>(<span class="bu">Long</span>.<span class="fu">MAX_VALUE</span>);
         } <span class="kw">else</span> {
             producer.<span class="fu">request</span>(requested);
         }
