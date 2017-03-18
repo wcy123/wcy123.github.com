@@ -1,4 +1,8 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-03-16-使用--cmake-管理项目.html">2017-03-16 "使用  cmake 管理项目"</a></h3>
+<h3><a href="blog/2017-03-16-使用-google-test-framework.html">2017-03-16 "使用 google test framework"</a></h3>
+<h3><a href="blog/2017-03-16-google-c---style-by-examples.html">2017-03-16 "google c++ style by examples"</a></h3>
+<h3><a href="blog/2017-03-13-TERMINAL-下的快捷操作.html">2017-03-13 TERMINAL 下的快捷操作</a></h3>
 <h3><a href="blog/2017-03-12-存款准备金.html">2017-03-12 存款准备金</a></h3>
 <h3><a href="blog/2017-03-12-小叮当效应.html">2017-03-12 小叮当效应</a></h3>
 <h3><a href="blog/2017-03-10-过拟合和正则化.html">2017-03-10 过拟合和正则化</a></h3>
