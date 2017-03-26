@@ -6,3 +6,7 @@ T = main::$_1;
 main::$_1& x;
 sizeof(x) 1
 
+T = std::__1::function<void ()>;
+std::__1::function<void ()>& x;
+sizeof(x) 48
+

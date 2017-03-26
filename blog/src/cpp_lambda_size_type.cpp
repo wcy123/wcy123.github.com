@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 #include <boost/type_index.hpp>
 using namespace std;
 
@@ -13,9 +14,13 @@ void show_type_and_size(T& x) {
 
 int main(int argc, char *argv[])
 {
-    auto x = []() { cout << "hello world" << endl; };
-    auto y = []() { cout << "hello world" << endl; };
+    auto x = []() { cout << "hello world 1" << endl; };
+    auto y = []() { cout << "hello world 2" << endl; };
     show_type_and_size(x);
     show_type_and_size(y);
+
+    function<void(void)> fx = x;
+    show_type_and_size(fx);
+
     return 0;
 }

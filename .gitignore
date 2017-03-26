@@ -4,4 +4,5 @@ mptextmp.mpx
 mpxerr.tex
 *.iml
 deploy
-\#.*
+.\#*
+\#*\#
