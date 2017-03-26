@@ -66,7 +66,7 @@ $(addprefix $(DEPLOY_DIRECTORY),%.css): %.css
 
 
 deploy: bake save
-	(cd deploy && git add . && git commit -m 'deploy'  && git push -u github master)
+	(cd deploy && git reset --soft v1.0 && git add . && git commit -m 'deploy'  && git push --force -u github master)
 
 save:
 	git add . ; git commit -m 'save'; git push origin pandoc
