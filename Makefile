@@ -39,7 +39,7 @@ clean:
 
 .PHONY:index.md
 index.md: scripts/generate-index.pl
-	@perl scripts/generate-index.pl $(ALL_BLOG) > $@
+	perl scripts/generate-index.pl $(ALL_BLOG) > $@
 
 $(addprefix $(DEPLOY_DIRECTORY),%.html): %.md template.tmp writ.min.css
 	@echo Converting: $< $@

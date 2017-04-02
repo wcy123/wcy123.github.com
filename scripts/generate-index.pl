@@ -64,6 +64,7 @@ sub read_info_attr {
 }
 sub generate_output {
     my ($info)= @_;
+    return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
     #print dump($info);
     my $title = $info->{attributes}{title};
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");

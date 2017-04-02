@@ -5,7 +5,6 @@
 <h3><a href="blog/2017-03-29-c---vector--operator---的一个坑点.html">2017-03-29 "c++ vector::operator[] 的一个坑点"</a></h3>
 <h3><a href="blog/2017-03-26-c---中-lambda-的类型和大小.html">2017-03-26 "c++ 中 lambda 的类型和大小"</a></h3>
 <h3><a href="blog/2017-03-26-c---模板的类型推导.html">2017-03-26 "c++ 模板的类型推导"</a></h3>
-<h3><a href="blog/a.html">2017-03-25 无主题</a></h3>
 <h3><a href="blog/2017-03-16-使用--cmake-管理项目.html">2017-03-16 "使用  cmake 管理项目"</a></h3>
 <h3><a href="blog/2017-03-16-使用-google-test-framework.html">2017-03-16 "使用 google test framework"</a></h3>
 <h3><a href="blog/2017-03-16-google-c---style-by-examples.html">2017-03-16 "google c++ style by examples"</a></h3>
