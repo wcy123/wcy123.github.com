@@ -34,4 +34,4 @@ quote plain blog/src/cpp_universal_reference_1.out
 ```
 
 
-这里需要注意，尽管 `rf` 的值是一个 rvalue reference ，但是他本身是一个 lvalue 。参考 [2015-07-08-C-----的右值引用问题.html]()
+这里需要注意，尽管 `rf` 的值是一个 rvalue reference ，但是他本身是一个 lvalue 。参考 [C++11 的右值引用问题](2015-07-08-C-----的右值引用问题.html)
