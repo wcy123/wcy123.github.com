@@ -1,0 +1,4 @@
+before invoke i2(move(i1)):  1 2 3 4
+after invoke i2(move(i1)): 
+    i1.size() = 0
+and i2:  1 2 3 4

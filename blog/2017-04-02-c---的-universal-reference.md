@@ -13,6 +13,9 @@ Meyers 自己创造的这个术语，参考
 。 C++ 标准里面没有这个术语，标准术语是 `Reference collapsing` 。但是
 这种解释是更难理解，尽管更加准确。
 
+[Herb Sutter](https://herbsutter.com) 同意这个东西应该有一个名字，但是应该叫做 forwarding reference。
+因为 universal reference 似乎建议这个东西是更加通用的东西，到处都可以用，其实不是这样。 forwarding reference 则强调
+这个东西只有在做 perfect forwarding 的时候才用。 关于 perfect forwarding ，[看这里](2015-07-08-C-----的右值引用问题.html)
 
 
 我理解 scott meyers 的文章的意思只是指当看起来像右值引用的 `T&&` 出现在 template 的中，他就是
