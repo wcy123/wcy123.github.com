@@ -1,4 +1,6 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-02-c---lambda-capture-by-value-的实验.html">2017-04-02 "c++ lambda capture by value 的实验"</a></h3>
+<h3><a href="blog/2017-03-29-c-----中的-uniform-initialization.html">2017-03-29 "c++11 中的 uniform initialization"</a></h3>
 <h3><a href="blog/2017-03-29-c---vector--operator---的一个坑点.html">2017-03-29 "c++ vector::operator[] 的一个坑点"</a></h3>
 <h3><a href="blog/2017-03-26-c---中-lambda-的类型和大小.html">2017-03-26 "c++ 中 lambda 的类型和大小"</a></h3>
 <h3><a href="blog/2017-03-26-c---模板的类型推导.html">2017-03-26 "c++ 模板的类型推导"</a></h3>
