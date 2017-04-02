@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-02-c---的-universal-reference.html">2017-04-02 "c++ 的 universal reference"</a></h3>
 <h3><a href="blog/2017-04-02-c---lambda-capture-by-value-的实验.html">2017-04-02 "c++ lambda capture by value 的实验"</a></h3>
 <h3><a href="blog/2017-03-29-c-----中的-uniform-initialization.html">2017-03-29 "c++11 中的 uniform initialization"</a></h3>
 <h3><a href="blog/2017-03-29-c---vector--operator---的一个坑点.html">2017-03-29 "c++ vector::operator[] 的一个坑点"</a></h3>
@@ -43,7 +44,7 @@
 <h3><a href="blog/2015-08-04-Erlang--passwing-initial-arguments-between-app--supervisor-and-gen-server.html">2015-08-04 "Erlang: passwing initial arguments between app, supervisor and gen_server"</a></h3>
 <h3><a href="blog/2015-07-29-Erlang-application-environment.html">2015-07-29 "Erlang application environment"</a></h3>
 <h3><a href="blog/2015-07-10-ZFS-----.html">2015-07-10 "ZFS 转移数据"</a></h3>
-<h3><a href="blog/2015-07-08-C------------.html">2015-07-08 "C++11 的右值引用问题"</a></h3>
+<h3><a href="blog/2015-07-08-C-----的右值引用问题.html">2015-07-08 "C++11 的右值引用问题"</a></h3>
 <h3><a href="blog/2015-07-08-C---vector-A----A--A------.html">2015-07-08 "C++ vector 调用多少次元素的构造函数"</a></h3>
 <h3><a href="blog/2015-07-08-C-------feature--unique-ptr.html">2015-07-08 "C++11 的 feature, unique_ptr"</a></h3>
 <h3><a href="blog/2015-07-08-C-C---------.html">2015-07-08 "C/C++ 中的求值顺序"</a></h3>
