@@ -9,7 +9,7 @@ comments: true
 
 估计很多人都没有听说过 universal reference ，这个不奇怪，因为是 Scott
 Meyers 自己创造的这个术语，参考
-[](https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers)
+[https://isocpp.org/blog/2012/11/universal-references-in-c11-scott-meyers]()
 。 C++ 标准里面没有这个术语，标准术语是 `Reference collapsing` 。但是
 这种解释是更难理解，尽管更加准确。
 
