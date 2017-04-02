@@ -32,7 +32,6 @@ ostream& operator<<(ostream& out, const Foo & obj)
 void
 CreateLambda() {
     Foo foo;
-    std::function<void(void)> ret1;
     {
         cout << "before create lambda1" << endl;
         auto lambda1 =  [foo](){ cout << foo.i << endl;};
@@ -58,7 +57,6 @@ CreateLambda() {
         }
         cout << "after lambda2 out of scope" << endl;
     }
-    //return ret1;
 }
 int main(int argc, char *argv[])
 {
