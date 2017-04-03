@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-03-有了c-----的-unique-ptr，也许就不应该再使用-new-delete-关键字了.html">2017-04-03 "有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了"</a></h3>
 <h3><a href="blog/2017-04-02-c---的-universal-reference.html">2017-04-02 "c++ 的 universal reference"</a></h3>
 <h3><a href="blog/2017-04-02-c---lambda-capture-by-value-的实验.html">2017-04-02 "c++ lambda capture by value 的实验"</a></h3>
 <h3><a href="blog/2017-03-29-c-----中的-uniform-initialization.html">2017-03-29 "c++11 中的 uniform initialization"</a></h3>
