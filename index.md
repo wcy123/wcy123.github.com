@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-29-c-----的-extern-template.html">2017-04-29 "c++11 的 extern template"</a></h3>
 <h3><a href="blog/2017-04-29-配置-haskell-的开发环境.html">2017-04-29 "配置 haskell 的开发环境"</a></h3>
 <h3><a href="blog/2017-04-29-c-c---的编译和链接的问题.html">2017-04-29 "c/c++ 的编译和链接的问题"</a></h3>
 <h3><a href="blog/2017-04-23-c---的类变量传递性.html">2017-04-23 "c++ non copyable 的传递性"</a></h3>
