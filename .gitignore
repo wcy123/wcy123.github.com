@@ -6,4 +6,7 @@ mpxerr.tex
 deploy
 .\#*
 \#*\#
-a.out*
+a.out**.o
+lib*
+a.out
+
