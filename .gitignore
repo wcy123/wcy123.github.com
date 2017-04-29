@@ -9,4 +9,5 @@ deploy
 a.out**.o
 lib*
 a.out
+*.o
 
