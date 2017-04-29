@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-29-c-c---的编译和链接的问题.html">2017-04-29 "c/c++ 的编译和链接的问题"</a></h3>
 <h3><a href="blog/2017-04-06-ssh-key-转发.html">2017-04-06 "ssh 的无密码登陆"</a></h3>
 <h3><a href="blog/2017-04-04-c---GSL-中的-owner.html">2017-04-04 "c++ GSL 中的 owner"</a></h3>
 <h3><a href="blog/2017-04-04-c---的-const-reference-extend-lifetime-rvalue.html">2017-04-04 "c++ 的 const reference extend lifetime rvalue"</a></h3>
