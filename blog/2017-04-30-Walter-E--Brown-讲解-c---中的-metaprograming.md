@@ -296,4 +296,80 @@ struct is_copy_assignable : true_type {
 }
 ```
 
-通常，起名字是程序员最头痛的事情，如果你不引用一个东西，就不要给他起名字。例如上面的例子，`U` 就是没有用的。于是，我们可以这样写。
+恩，这个看起来很简单，不是吗？实例化的部分就有难度了。
+
+首先，我们定义一个简单的东西，`declval`
+
+```cpp
+template<typename T>
+T declval();
+```
+
+声明一个模板函数，`declval<T>()` 的返回值的类型是 `T` 。这个函数没有定义，我们无法运行期调用这个函数。
+
+编译期，我们可以使用 `decltype(declval<T>())` 得到类型 `T` 。 `decltype` 是 c++11 的特性。
+
+
+如果一个类定义了赋值操作符重载，那么下面的表达式就是成立的。
+
+```cpp
+decltype( declval<U&>() = declval<U const&>() )
+```
+
+`declval<U const&>()` 返回一个 `U const&` 的对象 `x`，`declval<U&>()` 返回一个 `U&` 的对象 `y` ，然后试图调用赋值语句，`x=y` 。
+
+等等，这里我们并没有真正的执行求值(evaluate) 的动作，无论是编译期还是运行期。`decltype` 就像 `sizeof`, `noexcept` 和 `typeid` 一样，并不真正执行求值的动作。一切发生在想象中。
+
+无论如何，如果 `U` 没有定义 `=` 操作符重载的话，上面的语句就会失败(failure) ，注意，我没有使用出错(error) 这个表达方式。 SFINAE (Substitue Failure Is Not An Error) 。就是说，如果上面的表达式是不合法的 (ill-formed) ，那么编译器不认为是错误，继续尝试匹配其他的表达式。
+
+```cpp
+template<typename T>
+struct is_copy_assignable {
+  private:
+    template<class U, class = decltype( declval<U&>() = declval<U const&>() )>
+    static true_type try_assignment(U&& );
+
+    static false_type try_assignment(...);
+  public:
+    using type = decltype( try_assignment(declval<T>()));
+    static constexpr bool value = type::value;
+};
+```
+
+这里在多余解释一些东西。
+
+通常，起名字是程序员最头痛的事情，如果你不引用一个东西，就不要给他起名字。例如上面的例子，`class = ...` 就没有起名字，尽管没有名字，这个模板参数可以有一个默认值。默认值就是那一长串 `decltype( declval<U&>() = declval<U const&>()` 。
+
+
+```cpp
+static false_type try_assignment(...);
+```
+
+这个是一个十分不常用的语法，`...` ，来自于 C 语言的历史遗产，`printf(...)` 。 这个在 C++ 中极力不提倡使用，推荐使用可变长模板。原因是这个没有 type safe ，多少 c 语言的 bug 倒在这个上面。 这里使用了 C++ 中，函数重载 (overload) 的一个不常用的特性，可变长的参数，在函数重载(overload) 中，是最后一个选项。只有其他匹配不成功的时候，才会匹配这个函数。
+
+
+把两个重载的 `try_assigment` 连起来看，我们理解一下 SFINAE 。如果 `U` 定义了 `=` 操作符重载，那么  `decltype( declval<U&>() = declval<U const&>()` 就是一个合理的表达式，匹配成功，于是 `try_assigment()` 的返回值的类型是 `true_type` 。否则，匹配失败，但是失败不是错误，继续匹配，匹配到了第二个 `try_assigment`，这时，返回值的类型是  `false_type` 。
+
+如果我们在重复利用 `delctype` 和  `declval` 的技巧，就可以得到 `type` 的定义。
+
+```cpp
+using type = decltype( try_assignment(declval<T>()));
+```
+
+后面的 `static constexpr bool value` 就不难理解了。
+
+
+这段代码极其不好理解，因为看起来十分的奇怪。这也是为什么 template 让大家觉得陌生。
+
+
+完整代码
+
+```include
+quote cpp cpp_src/is_copy_assignable_0.cpp
+```
+
+程序输出
+
+```include
+quote plain cpp_src/is_copy_assignable_0.out
+```
