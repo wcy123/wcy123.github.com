@@ -16,10 +16,18 @@ struct false_type {
 template<typename T>
 T declval();
 
+// the imfamous void_t
+template<class...>
+using void_t = void;
+
 
 // primary defination.
-template<typename T>
-struct is_copy_assignable {
+template<typename T, class = void>
+struct is_copy_assignable : public true_type {
+};
+
+// partial specialization
+
   private:
     template<class U, class = decltype( declval<U&>() = declval<U const&>() )>
     static true_type try_assignment(U&& );
@@ -28,7 +36,7 @@ struct is_copy_assignable {
   public:
     using type = decltype( try_assignment(declval<T>()));
     static constexpr bool value = type::value;
-};
+
 
 
 int main(int argc, char *argv[])
