@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-04-30-c---中的-remove-erase-俗语.html">2017-04-30 "c++ 中的 remove-erase 俗语"</a></h3>
 <h3><a href="blog/2017-04-29-c-----的-extern-template.html">2017-04-29 "c++11 的 extern template"</a></h3>
 <h3><a href="blog/2017-04-29-配置-haskell-的开发环境.html">2017-04-29 "配置 haskell 的开发环境"</a></h3>
 <h3><a href="blog/2017-04-29-c-c---的编译和链接的问题.html">2017-04-29 "c/c++ 的编译和链接的问题"</a></h3>
