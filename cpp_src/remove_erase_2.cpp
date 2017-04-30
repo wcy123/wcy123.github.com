@@ -1,5 +1,5 @@
-#include <iostream>
 // remove_erase_2.cpp
+#include <iostream>
 #include <vector>
 using namespace std;
 int main(int argc, char *argv[])
