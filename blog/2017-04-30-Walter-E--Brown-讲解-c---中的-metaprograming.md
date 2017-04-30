@@ -66,7 +66,7 @@ quote plain cpp_src/is_same_0.out
  1. 定义 primary template 。
  2. 然后 partial specialization 。
 
-很多时候，我们都是遵循这个模式。 primary template 类似定义接口，表明我们的模板看起来像个什么样子。 有的时候，顺便定义默认实现。 第二步，我们定义什么时候，和默认定义不一样。
+很多时候，我们都是遵循这个模式。 primary template 类似定义接口，表明我们的模板看起来像个什么样子。 有的时候，顺便定义默认实现。 第二步，我们部分特例化，定义和默认定义不一样的案例。
 
 
 
@@ -103,7 +103,7 @@ struct is_void<void volatile> : public true_type {
 };
 ```
 
-这个看起来有点傻，但是可读性很好，几乎就是把我们的需求重新用 cpp 语言描述一遍。后面会有一个改进版本。
+这个看起来有点傻，但是可读性很好，几乎就是把我们的需求重新用 c++ 语言描述一遍。后面会有一个改进版本。
 
 
 完整代码
@@ -316,7 +316,7 @@ T declval();
 decltype( declval<U&>() = declval<U const&>() )
 ```
 
-`declval<U const&>()` 返回一个 `U const&` 的对象 `x`，`declval<U&>()` 返回一个 `U&` 的对象 `y` ，然后试图调用赋值语句，`x=y` 。
+`declval<U const&>()` 返回一个 `U const&` 的对象 `x`，`declval<U&>()` 返回一个 `U&` 的对象 `y` ，然后试图调用赋值语句，`y=x` 。
 
 等等，这里我们并没有真正的执行求值(evaluate) 的动作，无论是编译期还是运行期。`decltype` 就像 `sizeof`, `noexcept` 和 `typeid` 一样，并不真正执行求值的动作。一切发生在想象中。
 
@@ -336,8 +336,6 @@ struct is_copy_assignable {
 };
 ```
 
-这里在多余解释一些东西。
-
 通常，起名字是程序员最头痛的事情，如果你不引用一个东西，就不要给他起名字。例如上面的例子，`class = ...` 就没有起名字，尽管没有名字，这个模板参数可以有一个默认值。默认值就是那一长串 `decltype( declval<U&>() = declval<U const&>()` 。
 
 
@@ -345,10 +343,10 @@ struct is_copy_assignable {
 static false_type try_assignment(...);
 ```
 
-这个是一个十分不常用的语法，`...` ，来自于 C 语言的历史遗产，`printf(...)` 。 这个在 C++ 中极力不提倡使用，推荐使用可变长模板。原因是这个没有 type safe ，多少 c 语言的 bug 倒在这个上面。 这里使用了 C++ 中，函数重载 (overload) 的一个不常用的特性，可变长的参数，在函数重载(overload) 中，是最后一个选项。只有其他匹配不成功的时候，才会匹配这个函数。
+这个是一个十分不常用的语法，`...` ，来自于 C 语言的历史遗产，`printf(...)` 。 这个在 C++ 中极力不提倡使用，推荐使用可变长模板。原因是这个没有 type safe ，多少 c 语言的 bug 倒在这个上面。 这 C++ 中，可变长的参数的函数，在函数重载(overload) 中是最后一个选项。也就谁说，函数重载 (overload) 的时候，寻找合适的重载函数时候，只有所有其他匹配都不成功的时候，才会匹配这个可变长参数的同名函数。
 
 
-把两个重载的 `try_assigment` 连起来看，我们理解一下 SFINAE 。如果 `U` 定义了 `=` 操作符重载，那么  `decltype( declval<U&>() = declval<U const&>()` 就是一个合理的表达式，匹配成功，于是 `try_assigment()` 的返回值的类型是 `true_type` 。否则，匹配失败，但是失败不是错误，继续匹配，匹配到了第二个 `try_assigment`，这时，返回值的类型是  `false_type` 。
+把两个重载的 `try_assigment` 连起来看，我们理解一下 SFINAE 。如果 `U` 定义了 `=` 操作符重载，那么  `decltype( declval<U&>() = declval<U const&>()` 就是一个合理的表达式，匹配成功，于是 `try_assigment()` 的返回值的类型是 `true_type` 。否则，匹配失败，但是失败不是错误，继续匹配，匹配到了第二个可变长参数及的 `try_assigment`，这时，返回值的类型是  `false_type` 。
 
 如果我们在重复利用 `delctype` 和  `declval` 的技巧，就可以得到 `type` 的定义。
 
@@ -364,11 +362,11 @@ using type = decltype( try_assignment(declval<T>()));
 
 这段代码并不是最好的，因为用到太多的小技巧，后面 Walter E. Brown 会试图重写一下。
 
-有几个技术是值得学习的。 `decltype` ，这个十分有用。`decltype` 很独特，因为他的参数是一个表达式，而不是一个 type 。 为了配合使用 `decltype` ，我们才会引入一个 `declval<T>()` 的傻函数。 `decltype` + `declval` 的技术不是很难，十分有用，应该被掌握。
+有几个技术是值得学习的。 `decltype` ，这个十分有用。`decltype` 很独特，因为他的参数是一个表达式，而不是一个 type ，这个表达式即不在运行期求值，也不在编译器求值。 为了配合使用 `decltype` ，我们才会引入一个 `declval<T>()` 的傻函数。 `decltype` + `declval` 的技术不是很难，十分有用，应该被掌握。
 
 `...` 的可变参数，还有函数重载的复杂规则，我们应该敬而远之。尤其是函数重载。考虑到默认构造函数，默认类型转换函数，默认参数，模板函数等等语言特性，模板函数的重载规则是十分复杂的。如果大多数人都记不住这些复杂的规则，那么利用这些规则写出来的代码，就可读性很差了。
 
-这些例子远远没有到达库函数的质量，因为我们没有考虑很多边缘案例，例如，如果 T 有等号操作符重载，但是他的返回值不是 `T&` 。
+这些例子远远没有到达库函数的质量，因为我们没有考虑很多边缘案例，例如，如果 T 有等号操作符重载，但是等号操作符重载函数的返回值不是 `T&` 。
 
 
 完整代码
@@ -397,7 +395,7 @@ using void_t = void;
 
 你给他无论啥类型，他都返回一个 void 类型。
 
-关键点是，你给他的类型必须是有效的类型，不能是匹配失败的类型。
+关键点是，你给他的类型必须是有效的类型 (well-formed)，不能是非法的的类型(ill-formed)。
 
 这里还用的了 c++11 的一个新特性， `using` ，这个十分有用，让代码看起来十分简洁。
 
@@ -427,14 +425,15 @@ struct has_type_member : public true_type {
 
 注意 `class = void` 十分关键。 要理解他为什么十分关键，就需要理解 c++ 是如何找到匹配的 template specialization 的。这个比较长，我简单说一下我的理解。
 
- 1. 看用户给定的参数，如果有给定参数，那么用用户提供的参数。
+ 1. 首先确定模板参数。
+ 2. 看用户给定的参数，如果有给定参数，那么用用户提供的参数。
  2. 如果用户没有提供模板参数，那么用默认的。
- 3. 找到所有模板参数之后，看看哪一个是更加特殊的。
+ 3. 找到所有模板参数之后，看看哪一个实例化是更加匹配的，找到最匹配的那一个。
 
 
-对于 `has_type_member<int>`来说，`has_type_member` 的第一个模板参数是  int ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void 。
+对于 `has_type_member<int>`来说，`has_type_member` 的第一个模板参数是  int ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void ，这就是为什么 ` `class = void` 十分关键。
 
-头两条简单，我们很容易理解了。这个时候，编译器发现有两个匹配的模板。
+找到参数之后，这个时候，编译器发现有两个匹配的模板。
 
 部分特例化的 `struct has_type_member<T, void_t<typename T::type> > : public true_type` ，这个匹配不上，因为 `void_t<int::type>` 匹配失败。 匹配失败不是错误，继续匹配。匹配到了 primary template 。于是 `has_type_member<int>::value` 是 false 。
 
