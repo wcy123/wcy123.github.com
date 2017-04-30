@@ -23,19 +23,14 @@ using void_t = void;
 
 // primary defination.
 template<typename T, class = void>
-struct is_copy_assignable : public true_type {
+struct is_copy_assignable : public false_type {
 };
 
 // partial specialization
-
-  private:
-    template<class U, class = decltype( declval<U&>() = declval<U const&>() )>
-    static true_type try_assignment(U&& );
-
-    static false_type try_assignment(...);
-  public:
-    using type = decltype( try_assignment(declval<T>()));
-    static constexpr bool value = type::value;
+template<typename T>
+struct is_copy_assignable<T, void_t<decltype( declval<T&>() = declval<T const&>() )> >
+        : public true_type {
+};
 
 
 

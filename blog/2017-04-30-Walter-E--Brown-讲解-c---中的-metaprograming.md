@@ -458,3 +458,40 @@ quote cpp cpp_src/has_type_member_0.cpp
 ```include
 quote plain cpp_src/has_type_member_0.out
 ```
+
+# 重写 `is_copy_assignable`
+
+应用模式，写出 primary template
+
+```cpp
+// primary defination.
+template<typename T, class = void>
+struct is_copy_assignable : public false_type {
+};
+```
+
+默认都不能 copy assignable 。
+
+然后 partial specialization
+
+```cpp
+// partial specialization
+template<typename T>
+struct is_copy_assignable<T, void_t<decltype( declval<T&>() = declval<T const&>() )> >
+        : public true_type {
+};
+```
+
+这里 Brown 赢得的一片掌声。 的确精妙。 他的精妙之处，不在于解决了一个特定的问题，而在于他创造了一种模式，应用这种模式，让人们不再使用那些难懂的技巧，就可以写出可读性很好的模板编程。
+
+完整代码
+
+```include
+quote cpp cpp_src/is_copy_assignable_1.cpp
+```
+
+程序输出
+
+```include
+quote plain cpp_src/is_copy_assignable_1.out
+```

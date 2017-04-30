@@ -28,3 +28,6 @@ c++ -I/usr/local/include -std=c++11 -Wall -Werror is_copy_assignable_0.cpp
 
 c++ -I/usr/local/include -std=c++11 -Wall -Werror has_type_member_0.cpp
 ./a.out | tee has_type_member_0.out
+
+c++ -I/usr/local/include -std=c++11 -Wall -Werror is_copy_assignable_1.cpp
+./a.out | tee is_copy_assignable_1.out
