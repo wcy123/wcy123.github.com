@@ -6,8 +6,8 @@ categories:
 comments: true
 ---
 
-
-[](https://en.wikipedia.org/wiki/Erase–remove_idiom) 和 Scott Mayer 的 effective stl 都提到过这个俗语。
+[Erase–remove_idiom](https://en.wikipedia.org/wiki/Erase–remove_idiom)
+ 和 Scott Mayer 的 effective stl 都提到过这个俗语。
 
 类似下面的代码，删除所有偶数。
 
