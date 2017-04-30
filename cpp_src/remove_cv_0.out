@@ -1,0 +1,5 @@
+remove_cv<int> = int
+remove_cv<const int> = int
+remove_cv<int const> = int
+remove_cv<int volatile> = int
+remove_cv<int const volatile> = int
