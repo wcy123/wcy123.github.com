@@ -80,23 +80,21 @@ remove_if(_ForwardIterator __first, _ForwardIterator __last, _Predicate __pred)
 quote cpp cpp_src/remove_erase_3.cpp
 ```
 
-
-```
-c++ -std=c++11 remove_erase_3.cpp && ./a.out
-remove_erase_3.cpp:14: [operator=] other.value 3 value 2
-remove_erase_3.cpp:14: [operator=] other.value 7 value 0
-before erase
-i= 1
-i= 3
-i= 7
-i= 4
-i= 6
-i= 0
-i= 8
-after erase
-i= 1
-i= 3
-i= 7
+我们观察一下输出
+```include
+quote plain cpp_src/remove_erase_3.out
 ```
 
-上面的代码，在移动的过程中，打印调试信息，显式 `2` 的位置让给了 `3` 。然后 `3` 的位置设置为无效值 `value = 0` 。然后 `3` 位置上的无效值又让给了 `7` 。
+我试着解释一下输出结果。
+
+ 1. `{1,2,3...}` 调用 `Foo(int)` 构造了 7 个  Foo 对象
+ 2. vector 通过 `Foo(const Foo& x)` ，把 `initialize_list` 中的对象拷贝到 vector 中。
+ 3. 原来的 7  `initialize_list` 中的对象被析构掉了。
+ 4. `remove` 移动对象，调用了 `operator=(Foo&&)` ，后面具体解释。
+ 5. 在打印过程中，因为 `for(auto i:` 中，没有使用 `auto&` ，于是拷贝构造了临时对象 `1`, `3`, `7`, `4`, `6`, `0`, `8` ，然后打印，然后析构这些临时对象
+ 6. 调用 `vector.erase` 的时候，会调用 `~Foo` 析构掉 `8,0,6,4` 。可以看到，vector 是倒着析构这些对象的。不过这个无关紧要，标准没有强调析构顺序。
+ 7. 然后类似步骤 5 打印过程中，构造，析构 临时对象 。 `1,3,7`
+ 8. main 函数结束，析构 `vector` 对象，`vector` 对象倒着析构了 `7,3,1` 三个对象。
+
+
+上面的代码，第4步中，在移动的过程中，打印调试信息，显式 `2` 的位置让给了 `3` 。然后 `3` 的位置设置为无效值 `value = 0` 。 `3` 位置上已经是带有了无效值，这个位置让给了 `7` ，同时 `7` 的位置被设置成为了无效值。
