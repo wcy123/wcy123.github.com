@@ -362,6 +362,15 @@ using type = decltype( try_assignment(declval<T>()));
 这段代码极其不好理解，因为看起来十分的奇怪。这也是为什么 template 让大家觉得陌生。
 
 
+这段代码并不是最好的，因为用到太多的小技巧，后面 Walter E. Brown 会试图重写一下。
+
+有几个技术是值得学习的。 `decltype` ，这个十分有用。`decltype` 很独特，因为他的参数是一个表达式，而不是一个 type 。 为了配合使用 `decltype` ，我们才会引入一个 `declval<T>()` 的傻函数。 `decltype` + `declval` 的技术不是很难，十分有用，应该被掌握。
+
+`...` 的可变参数，还有函数重载的复杂规则，我们应该敬而远之。尤其是函数重载。考虑到默认构造函数，默认类型转换函数，默认参数，模板函数等等语言特性，模板函数的重载规则是十分复杂的。如果大多数人都记不住这些复杂的规则，那么利用这些规则写出来的代码，就可读性很差了。
+
+这些例子远远没有到达库函数的质量，因为我们没有考虑很多边缘案例，例如，如果 T 有等号操作符重载，但是他的返回值不是 `T&` 。
+
+
 完整代码
 
 ```include
@@ -372,4 +381,80 @@ quote cpp cpp_src/is_copy_assignable_0.cpp
 
 ```include
 quote plain cpp_src/is_copy_assignable_0.out
+```
+
+# `void_t` 一个奇怪的，而有用的模板类
+
+```cpp
+template<class...>
+using void_t = void;
+```
+
+`void_t` 已经是 c++17 的标准了 [http://en.cppreference.com/w/cpp/types/void_t]() 。 但是大神讲这个视频的时候，还没有进去。
+
+
+这个类型看起来没啥用，很简单。
+
+你给他无论啥类型，他都返回一个 void 类型。
+
+关键点是，你给他的类型必须是有效的类型，不能是匹配失败的类型。
+
+这里还用的了 c++11 的一个新特性， `using` ，这个十分有用，让代码看起来十分简洁。
+
+
+
+后面大神讲到应用这个 `void_t` 重写 `is_copy_assignable` 的时候，现场一片掌声。
+
+
+# 使用 `void_t`，编写 `has_type_member`
+
+如果 `T::type` 是一个合法的表达式，那么 `has_type_member<T>::value` 是 true ，否则就是  false 。例如
+
+ 1. `has_type_member<enable_if<true> >::value` = true
+ 2. `has_type_member<int>::value` = false
+
+按照模式，我们首先定义 primary template
+
+```cpp
+// primary defination.
+template<class T, class = void >
+struct has_type_member : public true_type {
+};
+
+```
+
+很明显，大多数我们自定义的类，都没有 `T::type` 的定义，于是默认返回 false 。
+
+注意 `class = void` 十分关键。 要理解他为什么十分关键，就需要理解 c++ 是如何找到匹配的 template specialization 的。这个比较长，我简单说一下我的理解。
+
+ 1. 看用户给定的参数，如果有给定参数，那么用用户提供的参数。
+ 2. 如果用户没有提供模板参数，那么用默认的。
+ 3. 找到所有模板参数之后，看看哪一个是更加特殊的。
+
+
+对于 `has_type_member<int>`来说，`has_type_member` 的第一个模板参数是  int ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void 。
+
+头两条简单，我们很容易理解了。这个时候，编译器发现有两个匹配的模板。
+
+部分特例化的 `struct has_type_member<T, void_t<typename T::type> > : public true_type` ，这个匹配不上，因为 `void_t<int::type>` 匹配失败。 匹配失败不是错误，继续匹配。匹配到了 primary template 。于是 `has_type_member<int>::value` 是 false 。
+
+对于 `has_type_member<enable_if<true,void> >`来说，`has_type_member` 的第一个模板参数是 `enable_if<true,void>` ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void 。
+
+
+部分特例化的 `struct has_type_member<T, void_t<typename T::type> > : public true_type` ，这个匹配成功，因为 `void_t<int::type>` 是合理的表达式。于是 ` has_type_member<T, void_t<typename T::type>::value` 是  true 。
+
+
+这个模式十分有用，简单易懂。可以判断一个类是否有成员函数，静态成员变量，成员变量等等。我们就离实现 `concept` 不远了。
+
+
+完整代码
+
+```include
+quote cpp cpp_src/has_type_member_0.cpp
+```
+
+程序输出
+
+```include
+quote plain cpp_src/has_type_member_0.out
 ```
