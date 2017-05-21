@@ -1,18 +1,7 @@
+#include <time.h>
+
 #include <iostream>
 using namespace std;
-template <size_t dims, >
-struct ArrayIndex {
-    ArrayIndex(size_t size, const ArrayIndex<dims - 1>& next)
-        : size_(size), next_(next) {}
-    const ArrayIndex<dims - 1>& operator[](size_t index) {
-        index* next_.GetSize();
-    }
-    size_t GetSize() const {
-        return size_t;
-    }
-    const size_t size_;
-    const ArrayIndex<dims-1> next_;
-};
 
 class Video {
   public:
@@ -27,22 +16,17 @@ class Video {
            for (size_t w = 0; w < width; ++w) {
                for (size_t h = 0; h < height; ++h) {
                    for (size_t r = 0; r < num_of_colors; ++r) {
-                       (*this)(c,w,h,r) = 0.0;
+                       buf_[c*width*height*num_of_colors + w*height*num_of_colors + h*num_of_colors + r] = r;
                    }
                }
            }
        }
     }
-
-    char& operator()(size_t c, size_t w, size_t h, size_t r) {
-        return buf_[c * width_ * height_ * num_of_colors_ +
-                    w * height_ * num_of_colors_ + h * num_of_colors_ + r];
-    }
-
     ~Video() {
         delete[] buf_;
     }
-
+    float SumOfFirstColumn();
+    float SumOfFirstRow();
    private:
     const size_t num_of_channels_;
     const size_t width_;
@@ -51,9 +35,57 @@ class Video {
     char * buf_;
 };
 
+float Video::SumOfFirstColumn() {
+    float ret = 0.0f;
+    for (size_t c = 0; c < num_of_channels_; ++c) {
+        for (size_t w = 0; w < 1; ++w) {
+            for (size_t h = 0; h < height_; ++h) {
+                for (size_t r = 0; r < num_of_colors_; ++r) {
+                    ret += buf_[c * width_ * height_ * num_of_colors_ + w * height_ * num_of_colors_ + h * num_of_colors_ + r];
+                }
+            }
+        }
+    }
+    return ret;
+}
+float Video::SumOfFirstRow() {
+    float ret = 0.0f;
+    for (size_t c = 0; c < num_of_channels_; ++c) {
+        for (size_t w = 0; w < width_; ++w) {
+            for (size_t h = 0; h < 1; ++h) {
+                for (size_t r = 0; r < num_of_colors_; ++r) {
+                    ret += buf_[c * width_ * height_ * num_of_colors_ + w * height_ * num_of_colors_ + h * num_of_colors_ + r];
+                }
+            }
+        }
+    }
+    return ret;
+}
 
+int time_diff(const struct timespec& ts_end, const struct timespec& ts_start) {
+    return (ts_start.tv_sec - ts_end.tv_sec) * 1000 -
+           (ts_start.tv_nsec - ts_end.tv_nsec) / 1000;
+}
 int main(int argc, char *argv[])
 {
     Video v(10,1920,1080,3);
-    return 0;
+    struct timespec ts_start;
+    struct timespec ts_end;
+
+    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    float r1 = v.SumOfFirstColumn();
+    clock_gettime(CLOCK_MONOTONIC, &ts_end);
+    cout << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__ << "] "
+         << "r1 " << r1 << " "
+         << " it takes " << time_diff(ts_end, ts_start) << " ms"
+         << endl;
+
+    clock_gettime(CLOCK_MONOTONIC, &ts_start);
+    float r2 = v.SumOfFirstRow();
+    clock_gettime(CLOCK_MONOTONIC, &ts_end);
+    cout << __FILE__ << ":" << __LINE__ << ": [" << __FUNCTION__ << "] "
+         << "r2 " << r2 << " "
+         << " it takes " << time_diff(ts_end, ts_start) << " ms"
+         << endl;
+return 0;
 }
