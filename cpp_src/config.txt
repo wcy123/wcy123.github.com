@@ -1,0 +1,27 @@
+num_of_dpu_cores: 2
+mem.addr: 0x40000000
+mem.size: 0x40000000
+
+dpu[0].private.addr: 0
+dpu[0].private.size: 0x24000000
+dpu[0].param.addr:   0x64000000
+dpu[0].param.size:    0x2000000
+dpu[0].instr.addr:   0x66000000
+dpu[0].instr.size:    0x4000000
+dpu[0].prof.addr:    0x6a000000
+dpu[1].private.addr: 0
+dpu[1].private.size: 0x24000000
+dpu[1].param.addr:   0x64000000
+dpu[1].param.size:    0x2000000
+dpu[1].instr.addr:   0x66000000
+dpu[1].instr.size:    0x4000000
+dpu[1].prof.addr:    0x6a000000
+
+
+
+netposa_dpu0_00.core_index:  0
+netposa_dpu0_00.instr_dir:  /root/detectnet/netposa_dpu0_00
+netposa_dpu0_00.input.addr: 0
+netposa_dpu0_00.input.size : 6220800
+netposa_dpu0_00.output.addr: 175723840
+netposa_dpu0_00.output.size: 779680

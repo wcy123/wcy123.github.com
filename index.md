@@ -1,4 +1,5 @@
 ## wcy123 的主页 
+<h3><a href="blog/2017-06-18-用c---编写一个-list-操作程序-.html">2017-06-18 "用c/c++ 编写一个 list 操作程序 "</a></h3>
 <h3><a href="blog/2017-05-21-c---中的高维数组.html">2017-05-21 "c++ 中的高维数组(2)"</a></h3>
 <h3><a href="blog/2017-05-14-c---中的高维数组.html">2017-05-14 "c++ 中的高维数组(1)"</a></h3>
 <h3><a href="blog/2017-04-30-Walter-E--Brown-讲解-c---中的-metaprograming.html">2017-04-30 "Walter E. Brown 讲解 c++ 中的 metaprograming"</a></h3>
