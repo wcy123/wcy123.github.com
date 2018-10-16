@@ -13,6 +13,10 @@ sub read_info {
         'attributes' => read_info_attr($file)
     };
 }
+# 更新日期：
+#  1. 首先看文件内容，里面有没有 date 的属性。
+#  2. 然后看文件名
+#  3. 最后看文件的修改日期
 sub read_info_attr {
     my $file = shift(@_);
     my $sb = stat($file);
@@ -62,16 +66,25 @@ sub read_info_attr {
     close($fh);
     return \%ret;
 }
+
+
+my %opened_file = ();
 sub generate_output {
     my ($info)= @_;
     return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
     #print dump($info);
     my $title = $info->{attributes}{title};
+    my $index_file = $info->{attributes}{index} || "index.md";
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
     $title = "无主题" if !defined($title);
     my $file = $info->{filename};
     $file =~ s/\..*$/.html/;
-    print "<h3><a href=\"$file\">$date $title</a></h3>\n";
+    my $fh = $opened_file{$index_file};
+    if(!$fh) {
+        open($fh, '>', $index_file);
+        $opened_file{$index_file} = $fh;
+    }
+    print $fh "<h3><a href=\"$file\">$date $title</a></h3>\n";
 }
 my @info =
     sort { DateTime->compare( $b->{attributes}{pubtime}, $a->{attributes}{pubtime} )

@@ -14,7 +14,7 @@ SRC_CTL = ./.git%
 
 # All markdown files. Recursive search with `find`
 ALL_BLOG = $(shell find blog -type f -and -iname '*.md')
-ALL_MD = $(ALL_BLOG) index.md
+ALL_MD = $(ALL_BLOG) index.md daughter.md
 ALL_MP = $(shell find blog -type f -and -iname '*.mp')
 # For all known markdown files: change md extension to html and prepend the
 # deploy directory.
