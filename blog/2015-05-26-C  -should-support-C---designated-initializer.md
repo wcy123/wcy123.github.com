@@ -1,6 +1,6 @@
 ---
 layout: post
-vtitle:  "C++ should support C99 designated initializer"
+title:  "C++ should support C99 designated initializer"
 date:   2015/05/26 00:53:12
 categories:
 comments: true
@@ -66,7 +66,7 @@ Dump of assembler code for function foo:
    0x00000000004004fb <+11>:	callq  0x4003a0 <printf@plt>
    0x0000000000400500 <+16>:	xor    %eax,%eax
    0x0000000000400502 <+18>:	add    $0x8,%rsp
-   0x0000000000400506 <+22>:	retq   
+   0x0000000000400506 <+22>:	retq
 End of assembler dump.
 (gdb) x /s 0x4005bc
 0x4005bc:	"x == 0"
@@ -118,13 +118,13 @@ Dump of assembler code for function _Z3foov:
    0x00000000004005d7 <+23>:	callq  0x400460 <printf@plt>
    0x00000000004005dc <+28>:	mov    %ebx,%eax
    0x00000000004005de <+30>:	pop    %rbx
-   0x00000000004005df <+31>:	retq   
+   0x00000000004005df <+31>:	retq
    0x00000000004005e0 <+32>:	mov    $0x40069c,%edi
    0x00000000004005e5 <+37>:	xor    %eax,%eax
    0x00000000004005e7 <+39>:	callq  0x400460 <printf@plt>
    0x00000000004005ec <+44>:	mov    %ebx,%eax
    0x00000000004005ee <+46>:	pop    %rbx
-   0x00000000004005ef <+47>:	retq   
+   0x00000000004005ef <+47>:	retq
 End of assembler dump.
 ```
 
