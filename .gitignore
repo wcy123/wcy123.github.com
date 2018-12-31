@@ -13,3 +13,4 @@ a.out
 ./deploy
 daughter.md
 index.md
+*.log
