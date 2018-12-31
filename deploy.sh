@@ -7,4 +7,4 @@ git init
 git remote add origin $remote
 git add .
 git commit -m 'deploy'
-# git push --force origin master
+git push --force origin master
