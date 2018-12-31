@@ -20,14 +20,12 @@ c++11 中的 lambda 关键字对于程序的结构影响很大，其中的闭包
 
 例如代码
 
-```include
-quote cpp blog/src/cpp_lambda_capture_1.cpp
+```{.cpp include=cpp_src/cpp_lambda_capture_1.cpp}
 ```
 
 程序的输出如下
 
-```include
-quote plain blog/src/cpp_lambda_capture_1.out
+```{.plain include=cpp_src/cpp_lambda_capture_1.out}
 ```
 
 
@@ -42,14 +40,12 @@ quote plain blog/src/cpp_lambda_capture_1.out
 
 例如代码
 
-```include
-quote cpp blog/src/cpp_lambda_capture_2.cpp
+```{.cpp include=cpp_src/cpp_lambda_capture_2.cpp}
 ```
 
 程序的输出如下
 
-```include
-quote plain blog/src/cpp_lambda_capture_2.out
+```{.plain include=cpp_src/cpp_lambda_capture_2.out}
 ```
 
 可以看到，对象的大小就是 4 字节 ，和 Foo 本身的对象是一样大的。这说明

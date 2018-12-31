@@ -12,16 +12,14 @@ comments: true
 类似下面的代码，删除所有偶数。
 
 
-```include
-quote cpp cpp_src/remove_erase.cpp
+```{.cpp include=cpp_src/remove_erase.cpp}
 ```
 
 
 我们深入研究一下，`remove` 之后，vector 里面变成了什么。
 
 
-```include
-quote cpp cpp_src/remove_erase_2.cpp
+```{.cpp include=cpp_src/remove_erase_2.cpp}
 ```
 
 
@@ -76,13 +74,11 @@ remove_if(_ForwardIterator __first, _ForwardIterator __last, _Predicate __pred)
 
 我们验证一下移动的次数。
 
-```include
-quote cpp cpp_src/remove_erase_3.cpp
+```{.cpp include=cpp_src/remove_erase_3.cpp}
 ```
 
 我们观察一下输出
-```include
-quote plain cpp_src/remove_erase_3.out
+```{.plain include=cpp_src/remove_erase_3.out}
 ```
 
 我试着解释一下输出结果。

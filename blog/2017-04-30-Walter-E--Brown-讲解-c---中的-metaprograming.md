@@ -49,15 +49,13 @@ struct is_same<T,T> : public true_type {
 
 完整的例子如下 。
 
-```include
-quote cpp cpp_src/is_same_0.cpp
+```{.cpp include=cpp_src/is_same_0.cpp}
 ```
 
 输出
 
 
-```include
-quote plain cpp_src/is_same_0.out
+```{.plain include=cpp_src/is_same_0.out}
 ```
 
 
@@ -108,14 +106,12 @@ struct is_void<void volatile> : public true_type {
 
 完整代码
 
-```include
-quote cpp cpp_src/is_void_0.cpp
+```{.cpp include=cpp_src/is_void_0.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/is_void_0.out
+```{.plain include=cpp_src/is_void_0.out}
 ```
 
 # `remove_cv` 删除一个类的 const volatile 修饰
@@ -155,14 +151,12 @@ struct remove_cv<T volatile const> {
 
 完整代码
 
-```include
-quote cpp cpp_src/remove_cv_0.cpp
+```{.cpp include=cpp_src/remove_cv_0.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/remove_cv_0.out
+```{.plain include=cpp_src/remove_cv_0.out}
 ```
 
 ## 重写 `remove_cv`
@@ -174,14 +168,12 @@ quote plain cpp_src/remove_cv_0.out
 
 完整代码
 
-```include
-quote cpp cpp_src/remove_cv_1.cpp
+```{.cpp include=cpp_src/remove_cv_1.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/remove_cv_1.out
+```{.plain include=cpp_src/remove_cv_1.out}
 ```
 
 
@@ -199,14 +191,12 @@ struct is_void : public is_same<typename remove_cv<T>::type, void> {
 
 完整代码
 
-```include
-quote cpp cpp_src/is_void_1.cpp
+```{.cpp include=cpp_src/is_void_1.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/is_void_1.out
+```{.plain include=cpp_src/is_void_1.out}
 ```
 
 # `is_one_of` 判断一个类是否是某些类中的一个
@@ -265,14 +255,12 @@ struct is_one_of<T, U, P1toN...> {
 
 完整代码
 
-```include
-quote cpp cpp_src/is_one_of_0.cpp
+```{.cpp include=cpp_src/is_one_of_0.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/is_one_of_0.out
+```{.plain include=cpp_src/is_one_of_0.out}
 ```
 
 
@@ -371,14 +359,12 @@ using type = decltype( try_assignment(declval<T>()));
 
 完整代码
 
-```include
-quote cpp cpp_src/is_copy_assignable_0.cpp
+```{.cpp include=cpp_src/is_copy_assignable_0.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/is_copy_assignable_0.out
+```{.plain include=cpp_src/is_copy_assignable_0.out}
 ```
 
 # `void_t` 一个奇怪的，而有用的模板类
@@ -448,14 +434,12 @@ struct has_type_member : public true_type {
 
 完整代码
 
-```include
-quote cpp cpp_src/has_type_member_0.cpp
+```{.cpp include=cpp_src/has_type_member_0.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/has_type_member_0.out
+```{.plain include=cpp_src/has_type_member_0.out}
 ```
 
 # 重写 `is_copy_assignable`
@@ -485,12 +469,10 @@ struct is_copy_assignable<T, void_t<decltype( declval<T&>() = declval<T const&>(
 
 完整代码
 
-```include
-quote cpp cpp_src/is_copy_assignable_1.cpp
+```{.cpp include=cpp_src/is_copy_assignable_1.cpp}
 ```
 
 程序输出
 
-```include
-quote plain cpp_src/is_copy_assignable_1.out
+```{.plain include=cpp_src/is_copy_assignable_1.out}
 ```

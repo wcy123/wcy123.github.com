@@ -8,8 +8,7 @@ comments: true
 
 stackoverflow 上的讨论 [nitializer_list and default constructor overload resolution](http://stackoverflow.com/questions/9020513/initializer-list-and-default-constructor-overload-resolution)
 
-```include
-quote cpp blog/src/vector_init.cpp
+```{.cpp include=cpp_src/vector_init.cpp}
 ```
 
 最常见的疑惑是构造 `vector` 。

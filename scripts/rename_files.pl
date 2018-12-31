@@ -49,15 +49,7 @@ sub read_info_attr {
         if($flag == 1) {
             chomp;
             if(/^\s*([^[:space:]]*)\s*:\s*(.*)\s*$/) {
-                my $att = $1;
-                my $val = $2;
-                if ($att eq "title") {
-                    $val =~ s/"//g;
-                    $ret{$att} = $val;
-                }else {
-                    $ret{$att} = $val;
-                }
-                # print "$att => $val\n";
+                $ret{$1} = $2;
             }
         }
     }
@@ -75,21 +67,6 @@ sub read_info_attr {
     return \%ret;
 }
 
-my %header = (
-    "index.md" =>
-    "---\n" .
-    "title:  \"wcy123 的个人主页\"\n" .
-    "---\n" .
-    "\n" .
-    "# wcy123 的个人主页\n"
-    ,
-    "daughter.md" =>
-    "---\n" .
-    "title:  \"随机数学笔记\"\n" .
-    "---\n" .
-    "\n" .
-    "# 随机数学笔记\n"
-    );
 
 my %opened_file = ();
 sub generate_output {
@@ -101,14 +78,7 @@ sub generate_output {
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
     $title = "无主题" if !defined($title);
     my $file = $info->{filename};
-    $file =~ s/\..*$/.html/;
-    my $fh = $opened_file{$index_file};
-    if(!$fh) {
-        open($fh, '>', $index_file);
-        $opened_file{$index_file} = $fh;
-        print $fh $header{$index_file}||"";
-    }
-    print $fh "<h3><a href=\"$file\">$date $title</a></h3>\n";
+    print ($file, "$date-$title.md\n") || die("cannot rename $file to $date-$title.md");
 }
 my @info =
     sort { DateTime->compare( $b->{attributes}{pubtime}, $a->{attributes}{pubtime} )
@@ -116,7 +86,7 @@ my @info =
         not (exists $_->{attributes}{draft} && $_->{attributes}{draft} eq "true")
     } map {read_info $_} @args;
 
-#print "## wcy123 的主页 \n";
+print "## wcy123 的主页 \n\n";
 map {generate_output($_)} @info;
 
 #print dump($info);

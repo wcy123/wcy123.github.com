@@ -2,7 +2,7 @@ TEMPLATE = ./template.tmp
 CSS = writ.min.css
 
 # Rule for converting github flavored markdown to html5
-MARKDOWN := pandoc --filter pandoc-include --from markdown --template $(TEMPLATE) --mathjax -c $(CSS)
+MARKDOWN := pandoc --filter pandoc-include-code --from markdown --template $(TEMPLATE) --mathjax -c $(CSS)
 
 DEPLOY = deploy
 # Deploy directory.
@@ -39,7 +39,7 @@ clean:
 
 .PHONY:index.md
 index.md: scripts/generate-index.pl
-	perl scripts/generate-index.pl $(ALL_BLOG) > $@
+	perl scripts/generate-index.pl $(ALL_BLOG)
 
 $(addprefix $(DEPLOY_DIRECTORY),%.html): %.md template.tmp writ.min.css
 	@echo Converting: $< $@

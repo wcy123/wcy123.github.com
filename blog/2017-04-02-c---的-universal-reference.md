@@ -26,14 +26,12 @@ universal reference 的实际效果就是，你给他一个 lvalue reference 的
 
 看下面的例子
 
-```include
-quote cpp blog/src/cpp_universal_reference_1.cpp
+```{.cpp include=cpp_src/cpp_universal_reference_1.cpp}
 ```
 
 输出如下：
 
-```include
-quote plain blog/src/cpp_universal_reference_1.out
+```{.plain include=cpp_src/cpp_universal_reference_1.out}
 ```
 
 

@@ -10,4 +10,6 @@ a.out**.o
 lib*
 a.out
 *.o
-
+./deploy
+daughter.md
+index.md
