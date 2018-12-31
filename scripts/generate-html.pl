@@ -25,16 +25,21 @@ my @all_md = (all_files());
 for my $file (@all_md) {
     #print "$file =>\n";
     my $html = $file;
-    $html =~ s:blog/(.*)\.md$:deploy/$1.html:g;
+    $html =~ s:blog/(.*)\.md$:deploy/blog/$1.html:g;
     my @cmd = ('--filter', 'pandoc-include-code',
                '--from', 'markdown',
                '--template', './template.tmp',
                '--mathjax', '-c', 'writ.min.css',
                '--output', $html,
                $file);
-    if( stat($html)->mtime > stat($file)->mtime) {
+    my $dirname =  dirname($html);
+    if(not -d $dirname ) {
+        system('mkdir', '-p', $dirname) == 0 or die("cannot mkdir -p $dirname")
+    }
+    if( -f $html and stat($html)->mtime > stat($file)->mtime) {
         # print "pandoc " , join(" ", @cmd);
     } else {
+        print("convert $file\n");
         system('pandoc', @cmd) == 0 or die("cannot convert $file to $html");
     }
 }

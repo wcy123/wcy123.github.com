@@ -1,35 +1,23 @@
 TEMPLATE = ./template.tmp
 CSS = writ.min.css
-
+DEPLOY = deploy
 # Rule for converting github flavored markdown to html5
 MARKDOWN := pandoc --filter pandoc-include-code --from markdown --template $(TEMPLATE) --mathjax -c $(CSS)
 
-DEPLOY = deploy
-# Deploy directory.
-# Excluded from source search. Prepended to all output files
+
+#
 DEPLOY_DIRECTORY = ./$(DEPLOY)/
-
-# Source control directory, also excluded from source search
-SRC_CTL = ./.git%
-
-# All markdown files. Recursive search with `find`
-ALL_BLOG = $(shell find blog -type f -and -iname '*.md')
-ALL_MD = $(ALL_BLOG) index.md daughter.md
 ALL_MP = $(shell find blog -type f -and -iname '*.mp')
-# For all known markdown files: change md extension to html and prepend the
-# deploy directory.
-HTML_FROM_MD := $(patsubst %.md, $(DEPLOY_DIRECTORY)%.html,$(ALL_MD))
+
 PNG_FROM_MP := $(patsubst %.mp, $(DEPLOY_DIRECTORY)%.png,$(ALL_MP))
 
 ALL_SRC_JEPG := $(shell find blog -type f -and -iname '*.jpg')
 ALL_DST_JEPG := $(patsubst %.jpg, $(DEPLOY_DIRECTORY)%.jpg,$(ALL_SRC_JEPG))
-
-
 OTHER += $(DEPLOY_DIRECTORY)writ.min.css $(ALL_DST_JEPG)
 
 
 # First recipe is default. Nothing to do except dependency on all html files.
-bake: $(HTML_FROM_MD) $(OTHER) $(PNG_FROM_MP)
+bake: generate $(PNG_FROM_MP) $(OTHER)
 
 clean:
 	rm -rf $(DEPLOY_DIRECTORY) `find . -iname '*.1' -or -iname 'mptextmp.tmp'`
@@ -37,9 +25,13 @@ clean:
 # Recipe for html files in the deploy directory for a corresponding markdown
 # file
 
-.PHONY:index.md
-index.md: scripts/generate-index.pl
-	perl scripts/generate-index.pl $(ALL_BLOG)
+.PHONY: generate
+generate:
+	perl scripts/generate-index.pl
+	perl scripts/generate-html.pl
+	$(MARKDOWN) index.md --output $(DEPLOY_DIRECTORY)/index.html
+	$(MARKDOWN) daughter.md --output $(DEPLOY_DIRECTORY)/daughter.html
+
 
 $(addprefix $(DEPLOY_DIRECTORY),%.html): %.md template.tmp writ.min.css
 	@echo Converting: $< $@
