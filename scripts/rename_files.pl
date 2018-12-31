@@ -96,8 +96,8 @@ my %header = (
 my %opened_file = ();
 sub rename_file {
     my ($info)= @_;
-    return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
-    #print dump($info);
+    # return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
+    print dump($info);
     my $title = $info->{attributes}{title};
     my $index_file = $info->{attributes}{index} || "index.md";
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
@@ -128,9 +128,7 @@ sub all_files {
 
 my @info =
     sort { DateTime->compare( $b->{attributes}{pubtime}, $a->{attributes}{pubtime} )
-    } grep {
-        not (exists $_->{attributes}{draft} && $_->{attributes}{draft} eq "true")
-} map {read_info $_} all_files();
+    }  map {read_info $_} all_files();
 
 
 #print "## wcy123 的主页 \n";
