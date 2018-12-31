@@ -1,3 +1,7 @@
+---
+title: "backpropagation"
+---
+
 # 链式求导法则
 
 单变量的复合函数
@@ -106,7 +110,7 @@ $$
 类似的
 
 $$
-\begin{align}  
+\begin{align}
 \frac{\partial{C}}{\partial{b_{l,j}}}
 &= \frac{\partial{C}}{\partial{z_{l,j}}}
    \frac{\partial{z_{l,j}}}{\partial{b_{l,j}}} \\
@@ -122,7 +126,7 @@ $$
 首先考虑第 $L - 1$ 层，即最后一层。
 
 $$
-\begin{align}  
+\begin{align}
 C &= \frac{1}{2} \sum_{k=0}^{N_{L-1}-1} (y_{k}-a_{L-1,k})^2 \\
 \delta_{L-1,j}
  &= \frac{\partial{C}}{\partial{z_{L-1,j}}}
@@ -133,7 +137,7 @@ $$
 根据链式求导法则
 
 $$
-\begin{align}  
+\begin{align}
 \delta_{L-1,j} &=
 \frac{\partial{C}}{\partial{a_{L-1,j}}}
 \frac{\partial{a_{L-1,j}}}{\partial{z_{L-1,j}}} \\

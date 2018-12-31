@@ -107,9 +107,9 @@ sub rename_file {
     my $new_name = dirname($file) . "/" . $date . "-" . $title . ".md";
     if(not $file eq $new_name) {
         rename($file,$new_name) || die("cannot rename $file => $new_name");
-        print "rename($file,$new_name)\n" ;
+        # print "rename($file,$new_name)\n" ;
     } else {
-        print "-rename($file,$new_name)\n" ;
+        # print "-rename($file,$new_name)\n" ;
     }
 
 }
