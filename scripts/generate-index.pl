@@ -3,6 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Data::Dump qw(dump);
 use File::stat;
+use File::Find;
 use DateTime;
 use POSIX 'strftime';
 my @args = @ARGV;
@@ -81,14 +82,14 @@ my %header = (
     "title:  \"wcy123 的个人主页\"\n" .
     "---\n" .
     "\n" .
-    "# wcy123 的个人主页\n"
+    "\n"
     ,
     "daughter.md" =>
     "---\n" .
     "title:  \"随机数学笔记\"\n" .
     "---\n" .
     "\n" .
-    "# 随机数学笔记\n"
+    "\n"
     );
 
 my %opened_file = ();
@@ -110,11 +111,25 @@ sub generate_output {
     }
     print $fh "<h3><a href=\"$file\">$date $title</a></h3>\n";
 }
+
+sub all_files {
+    my @ret= ();
+    find({
+        wanted => sub {
+            if(/\.md$/) {
+            push @ret, $File::Find::name;
+            }
+        }
+         }, "blog");
+    return @ret;
+}
+
 my @info =
     sort { DateTime->compare( $b->{attributes}{pubtime}, $a->{attributes}{pubtime} )
     } grep {
         not (exists $_->{attributes}{draft} && $_->{attributes}{draft} eq "true")
-    } map {read_info $_} @args;
+} map {read_info $_} all_files();
+
 
 #print "## wcy123 的主页 \n";
 map {generate_output($_)} @info;

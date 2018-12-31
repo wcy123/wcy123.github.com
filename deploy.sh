@@ -1,12 +1,10 @@
 #!/bin/bash
 set -e
-export GIT_DIR=$PWD/.git
-tmp_deploy=/tmp/deply_$USER
-mkdir -p $tmp_deploy
-cp -a deploy $tmp_deploy
-cd $tmp_deploy/deploy
-# git pull
-git reset --soft v1.0
+remote=`git remote -v show | head -n1 | awk '{print $2}'`
+cd deploy
+[ -d .git ] && rm -fr .git
+git init
+git remote add origin $remote
 git add .
 git commit -m 'deploy'
-git push --force -u origin master
+# git push --force origin master
