@@ -97,7 +97,7 @@ my %opened_file = ();
 sub rename_file {
     my ($info)= @_;
     return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
-    # print dump($info);
+    #print dump($info);
     my $title = $info->{attributes}{title};
     my $index_file = $info->{attributes}{index} || "index.md";
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
@@ -105,11 +105,11 @@ sub rename_file {
     $title =~ s:[/]:_:g;
     my $file = $info->{filename};
     my $new_name = dirname($file) . "/" . $date . "-" . $title . ".md";
-    if(! $file eq $new_name) {
+    if(not $file eq $new_name) {
         rename($file,$new_name) || die("cannot rename $file => $new_name");
         print "rename($file,$new_name)\n" ;
     } else {
-        #print "rename($file,$new_name)\n" ;
+        print "-rename($file,$new_name)\n" ;
     }
 
 }
