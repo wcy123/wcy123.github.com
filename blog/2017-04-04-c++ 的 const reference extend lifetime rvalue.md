@@ -12,7 +12,7 @@ c++ 中，如果一个函数返回一个对象，那么这个对象是如果返�
 
 本文用 OSX 下的 llvm 来汇编理解这个定义。
 
-```{.cpp include=cpp_src/life_expansion.cpp}
+```{.cpp include=blog/2017-04-04/life_expansion.cpp}
 ```
 
 

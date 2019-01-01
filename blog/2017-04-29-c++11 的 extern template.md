@@ -11,20 +11,20 @@ c++98 的 template 有些问题，代码会膨胀，而且不容易定位到底�
 
 我设计了一个例子，展现这两个问题。
 
-```{.cpp include=./cpp_src/extn_tmpl.hpp}
+```{.cpp include=blog/2017-04-29/extn_tmpl.hpp}
 ```
 
 这里可以看到，根据预处理的宏定义 `EXTRA` 的不同，会产生不同的实例。当然，这个例子看起来十分傻，但是在真实的项目中，由于多人开发，项目复杂，这种例子还真有可能会出现。
 
-```{.cpp include=./cpp_src/extn_tmpl_1.cpp}
+```{.cpp include=blog/2017-04-29/extn_tmpl_1.cpp}
 ```
 
-```{.cpp include=./cpp_src/extn_tmpl_2.cpp}
+```{.cpp include=blog/2017-04-29/extn_tmpl_2.cpp}
 ```
 
 这里是简单的使用 `extn_tmpl.hpp`
 
-```{.cpp include=./cpp_src/extn_tmpl_main.cpp}
+```{.cpp include=blog/2017-04-29/extn_tmpl_main.cpp}
 ```
 
 我们采用下面的命令编译程序

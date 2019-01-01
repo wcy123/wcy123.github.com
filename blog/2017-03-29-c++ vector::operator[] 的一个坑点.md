@@ -7,7 +7,7 @@ comments: true
 ---
 
 
-```{.cpp include=cpp_src/vector_reference_1.cpp}
+```{.cpp include=blog/2017-03-29/vector_reference_1.cpp}
 ```
 
 上面的代码输出是
@@ -30,7 +30,7 @@ after change r1: 999 100
 
 我们增加一些调试信息
 
-```{.cpp include=cpp_src/vector_reference_2.cpp}
+```{.cpp include=blog/2017-03-29/vector_reference_2.cpp}
 ```
 
 输出结果是

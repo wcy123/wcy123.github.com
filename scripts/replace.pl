@@ -43,8 +43,10 @@ for my $f (@ret) {
             my $type = $1;
             my $include = $2;
             my $newname =  $workspace . "/" . basename($include);
-            if ( not $newname eq $include ) {
-                rename($include, $newname) or die "Could not rename $include to $newname";
+            if (not $newname eq $include ) {
+                if ( -f $include ) {
+                    rename($include, $newname) or die "Could not rename $include to $newname: $!";
+                }
                 print $fh2 "```{.$type include=$newname}\n";
             }else {
                 print $fh2 $_;
