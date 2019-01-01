@@ -102,7 +102,7 @@ sub generate_output {
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
     $title = "无主题" if !defined($title);
     my $file = $info->{filename};
-    $file =~ s/\..*$/.html/;
+    $file =~ s/(.*)\.md$/$1.html/;
     my $fh = $opened_file{$index_file};
     if(!$fh) {
         open($fh, '>', $index_file);
