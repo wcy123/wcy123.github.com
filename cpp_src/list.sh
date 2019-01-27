@@ -1,3 +1,5 @@
+c++ -std=c++14 list_6.cpp && ./a.out | tee list_6.out
+c++ -std=c++14 list_5.cpp && ./a.out | tee list_5.out
 c++ -std=c++14 list_4.cpp && ./a.out | tee list_4.out
 c++ -std=c++14 list_3.cpp && ./a.out | tee list_3.out
 c++ -std=c++14 list_2.cpp && ./a.out | tee list_2.out
