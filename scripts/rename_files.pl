@@ -5,6 +5,7 @@ use Data::Dump qw(dump);
 use File::stat;
 use File::Find;
 use DateTime;
+use File::Basename;
 use POSIX 'strftime';
 my @args = @ARGV;
 sub read_info {
@@ -93,23 +94,24 @@ my %header = (
     );
 
 my %opened_file = ();
-sub generate_output {
+sub rename_file {
     my ($info)= @_;
-    return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
-    #print dump($info);
+    # return 0  if exists $info->{attributes}{draft} and $info->{attributes}{draft} eq "true";
+    print dump($info);
     my $title = $info->{attributes}{title};
     my $index_file = $info->{attributes}{index} || "index.md";
     my $date = $info->{attributes}{pubtime}->strftime("%Y-%m-%d");
     $title = "无主题" if !defined($title);
+    $title =~ s:[/]:_:g;
     my $file = $info->{filename};
-    $file =~ s/(.*)\.md$/$1.html/;
-    my $fh = $opened_file{$index_file};
-    if(!$fh) {
-        open($fh, '>', $index_file);
-        $opened_file{$index_file} = $fh;
-        print $fh $header{$index_file}||"";
+    my $new_name = dirname($file) . "/" . $date . "-" . $title . ".md";
+    if(not $file eq $new_name) {
+        rename($file,$new_name) || die("cannot rename $file => $new_name");
+        # print "rename($file,$new_name)\n" ;
+    } else {
+        # print "-rename($file,$new_name)\n" ;
     }
-    print $fh "<h3><a href=\"$file\">$date $title</a></h3>\n";
+
 }
 
 sub all_files {
@@ -126,12 +128,10 @@ sub all_files {
 
 my @info =
     sort { DateTime->compare( $b->{attributes}{pubtime}, $a->{attributes}{pubtime} )
-    } grep {
-        not (exists $_->{attributes}{draft} && $_->{attributes}{draft} eq "true")
-} map {read_info $_} all_files();
+    }  map {read_info $_} all_files();
 
 
 #print "## wcy123 的主页 \n";
-map {generate_output($_)} @info;
+map {rename_file($_)} @info;
 
 #print dump($info);

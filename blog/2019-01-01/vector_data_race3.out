@@ -1,0 +1,10 @@
+vector_data_race.cpp:8: [Foo::Foo(int)]this 0x7fb2be400690 i 0 
+before push: v.capacity() = 1
+v.size() = 1
+vector_data_race.cpp:8: [Foo::Foo(int)]this 0x7fb2be4006a4 i 1 
+vector_data_race.cpp:15: [Foo::Foo(const Foo &)]this 0x7fb2be4006a0 other.i 0 
+vector_data_race.cpp:30: [Foo::~Foo()]this 0x7fb2be400690 i 0 
+after push: v.capacity() = 2
+&v0 is dangling pointer: 0x7fb2be400690
+vector_data_race.cpp:30: [Foo::~Foo()]this 0x7fb2be4006a4 i 1 
+vector_data_race.cpp:30: [Foo::~Foo()]this 0x7fb2be4006a0 i 0 
