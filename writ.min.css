@@ -86,6 +86,7 @@ pre,
 samp {
   font-family: monospace, serif;
   font-size: 1em;
+  line-height: 1.2em;
 }
 pre {
   white-space: pre-wrap;

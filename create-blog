@@ -2,7 +2,7 @@
 title=$1
 date=$(date "+%Y-%m-%d")
 file=blog/${date}-${title}.md
-mkdir -p  $date
+mkdir -p  "blog/$date"
 
 cat >"$file" <<EOF
 ---
