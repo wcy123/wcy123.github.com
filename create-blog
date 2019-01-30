@@ -1,0 +1,16 @@
+#!/bin/bash
+title=$1
+date=$(date "+%Y-%m-%d")
+file=blog/${date}-${title}.md
+mkdir -p  $date
+
+cat >"$file" <<EOF
+---
+layout: post
+title:  "$title"
+date:   $(date "+%Y/%m/%d %H:%M:%S")
+comments: true
+categories:
+---
+
+EOF
