@@ -108,7 +108,7 @@ vector::vector( std::initializer_list<T> init,
 
 参考 https://en.cppreference.com/w/cpp/container/vector/vector 。
 
-其中 `T` 是 `std::string` ，于是又调用 `
+其中 `T` 是 `std::string` ，于是又调用
 
 ```cpp
 basic_string( const CharT* s,
@@ -154,7 +154,7 @@ explicit vector( size_type count, const Allocator& alloc = Allocator() );
 
 1. 显式比隐式的要好
 2. 破坏了 C++ 中的类型安全机制。
-3. 考虑到函数重载 function overloading ，很容容易搞不清楚调用了哪一个版本的函数。
+3. 考虑到函数重载 function overloading ，很容易搞不清楚调用了哪一个版本的函数。
 4. 破坏了 POLA 原则，https://en.wikipedia.org/wiki/Principle_of_least_astonishment 。有些场景，会让用户很吃惊。
 
 实际上，大多数的只有一个参数的构造函数都应该加上了 `explicit` 关键字。
