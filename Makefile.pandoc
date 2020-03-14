@@ -2,7 +2,7 @@ TEMPLATE = ./template.tmp
 CSS = writ.min.css
 DEPLOY = deploy
 # Rule for converting github flavored markdown to html5
-MARKDOWN := rustdoc --output deploy/blog
+MARKDOWN := pandoc --filter pandoc-include-code --from markdown --template $(TEMPLATE) --mathjax -c $(CSS)
 
 
 #
@@ -27,11 +27,11 @@ clean:
 
 .PHONY: generate
 generate:
-	#perl scripts/generate-index.pl
-	#perl scripts/generate-html.pl
-	#$(MARKDOWN) index.md
-	#$(MARKDOWN) daughter.md
-	echo hi
+	perl scripts/generate-index.pl
+	perl scripts/generate-html.pl
+	$(MARKDOWN) index.md --output $(DEPLOY_DIRECTORY)/index.html
+	$(MARKDOWN) daughter.md --output $(DEPLOY_DIRECTORY)/daughter.html
+
 
 $(addprefix $(DEPLOY_DIRECTORY),%.html): %.md template.tmp writ.min.css
 	@echo Converting: $< $@
