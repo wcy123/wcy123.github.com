@@ -1,10 +1,5 @@
----
-layout: post
-title:  "c++ 的 const reference extend lifetime rvalue"
-date:   2017/04/04 13:13:05
-categories:
-comments: true
----
+#  c++ 的 const reference extend lifetime rvalue
+
 
 
 
@@ -12,21 +7,22 @@ c++ 中，如果一个函数返回一个对象，那么这个对象是如果返�
 
 本文用 OSX 下的 llvm 来汇编理解这个定义。
 
-```{.cpp include=blog/2017-04-04/life_expansion.cpp}
+```cpp
+{{#include ./2017-04-04/life_expansion.cpp}}
 ```
 
 
 我们看一下，产生的汇编
 
 
-```
-c++ -O3 -fno-inline -std=c++11 -o a.out life_expansion.cpp
+```console
+% c++ -O3 -fno-inline -std=c++11 -o a.out life_expansion.cpp
 otool -tV a.out | c++filt
 ```
 
 截取其中的汇编代码
 
-```asm
+```x86asm
 _main:
         pushq   %rbp
         movq    %rsp, %rbp
@@ -52,7 +48,7 @@ _main:
 ```
 
 
-```asm
+```x86asm
 calc():
         pushq   %rbp
         movq    %rsp, %rbp
