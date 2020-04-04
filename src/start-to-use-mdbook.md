@@ -101,3 +101,18 @@ edit `<PROJECT_ROOT>/.travis.yml`
 [GitHub Pages Deployment]: https://docs.travis-ci.com/user/deployment/pages/
 
 NOTE: we must set the `local-dir` to `book` which is the output directory of `mdbook`
+
+
+## theme
+
+```
+## get the default theme
+mkdir -p $HOME/tmp/book
+cd $HOME/tmp/book
+mdbook init --theme
+cd - # go back to your book directory
+cp -av $HOME/tmp/book/src/theme ./ # copy default theme
+curl -sLo src/theme/highlight.css  cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/solarized-light.min.css
+```
+
+NOTE: it is confusing whether the theme directory is `./theme` or `./src/theme`, it seems `./theme` is preferred.
