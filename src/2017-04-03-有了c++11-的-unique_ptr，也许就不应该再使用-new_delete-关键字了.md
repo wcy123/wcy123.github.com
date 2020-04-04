@@ -1,10 +1,5 @@
----
-layout: post
-title:  "有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了"
-date:   2017/04/03 18:35:58
-categories:
-comments: true
----
+#  有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了
+
 
 
 ```cpp

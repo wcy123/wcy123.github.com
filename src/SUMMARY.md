@@ -21,7 +21,7 @@
 - [2017-04-06 ssh 的无密码登陆](2017-04-06-ssh-的无密码登陆.md)
 - [2017-04-04 c++ GSL 中的 owner](2017-04-04-c++-GSL-中的-owner.md)
 - [2017-04-04 c++ 的 const reference extend lifetime rvalue](2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.md)
-<!-- - [2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了](2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.md) -->
+- [2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了](2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.md)
 <!-- - [2017-04-02 c++ 的 universal reference](2017-04-02-c++-的-universal-reference.md) -->
 <!-- - [2017-04-02 c++ lambda capture by value 的实验](2017-04-02-c++-lambda-capture-by-value-的实验.md) -->
 <!-- - [2017-03-29 c++11 中的 uniform initialization](2017-03-29-c++11-中的-uniform-initialization.md) -->
