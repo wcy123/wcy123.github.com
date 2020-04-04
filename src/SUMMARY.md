@@ -14,7 +14,7 @@
 - [2017-05-14 c++ 中的高维数组(1)](2017-05-14-c++-中的高维数组-1-.md)
 - [2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming](2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.md)
 - [2017-04-30 c++ 中的 remove-erase 俗语](2017-04-30-c++-中的-remove-erase-俗语.md)
-<!-- - [2017-04-29 c++11 的 extern template](2017-04-29-c++11-的-extern-template.md) -->
+- [2017-04-29 c++11 的 extern template](2017-04-29-c++11-的-extern-template.md)
 <!-- - [2017-04-29 配置 haskell 的开发环境](2017-04-29-配置-haskell-的开发环境.md) -->
 <!-- - [2017-04-29 c/c++ 的编译和链接的问题](2017-04-29-c_c++-的编译和链接的问题.md) -->
 <!-- - [2017-04-23 c++ non copyable 的传递性](2017-04-23-c++-non-copyable-的传递性.md) -->
