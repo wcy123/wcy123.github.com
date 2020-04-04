@@ -1,13 +1,8 @@
----
-layout: post
-title:  "c++ lambda capture by value 的实验"
-date:   2017/04/02 17:38:53
-categories:
-comments: true
----
+# c++ lambda capture by value 的实验
 
 
-[c++ 中 lambda 的类型和大小](2017-03-26-c---中-lambda-的类型和大小.html) 中可以看
+
+[c++ 中 lambda 的类型和大小](2017-03-26-c++-中-lambda-的类型和大小.html)
 到 lambda 生成一个匿名类。当没有 capture 任何变量的时候，大小几乎是 0
 。
 
@@ -20,12 +15,14 @@ c++11 中的 lambda 关键字对于程序的结构影响很大，其中的闭包
 
 例如代码
 
-```{.cpp include=blog/2017-04-02/cpp_lambda_capture_1.cpp}
+```cpp
+{{#include ./2017-04-02/cpp_lambda_capture_1.cpp}}
 ```
 
 程序的输出如下
 
-```{.plain include=blog/2017-04-02/cpp_lambda_capture_1.out}
+```text
+{{#include ./2017-04-02/cpp_lambda_capture_1.out}}
 ```
 
 
@@ -40,12 +37,14 @@ c++11 中的 lambda 关键字对于程序的结构影响很大，其中的闭包
 
 例如代码
 
-```{.cpp include=blog/2017-04-02/cpp_lambda_capture_2.cpp}
+```cpp
+{{#include ./2017-04-02/cpp_lambda_capture_2.cpp}}
 ```
 
 程序的输出如下
 
-```{.plain include=blog/2017-04-02/cpp_lambda_capture_2.out}
+```text
+{{#include ./2017-04-02/cpp_lambda_capture_2.out}}
 ```
 
 可以看到，对象的大小就是 4 字节 ，和 Foo 本身的对象是一样大的。这说明

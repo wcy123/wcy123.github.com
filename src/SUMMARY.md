@@ -23,10 +23,10 @@
 - [2017-04-04 c++ 的 const reference extend lifetime rvalue](2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.md)
 - [2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了](2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.md)
 - [2017-04-02 c++ 的 universal reference](2017-04-02-c++-的-universal-reference.md)
-<!-- - [2017-04-02 c++ lambda capture by value 的实验](2017-04-02-c++-lambda-capture-by-value-的实验.md) -->
+- [2017-04-02 c++ lambda capture by value 的实验](2017-04-02-c++-lambda-capture-by-value-的实验.md)
 <!-- - [2017-03-29 c++11 中的 uniform initialization](2017-03-29-c++11-中的-uniform-initialization.md) -->
 <!-- - [2017-03-29 c++ vector::operator[] 的一个坑点](2017-03-29-c++-vector::operator[]-的一个坑点.md) -->
-<!-- - [2017-03-26 c++ 中 lambda 的类型和大小](2017-03-26-c++-中-lambda-的类型和大小.md) -->
+- [2017-03-26 c++ 中 lambda 的类型和大小](2017-03-26-c++-中-lambda-的类型和大小.md)
 <!-- - [2017-03-26 c++ 模板的类型推导](2017-03-26-c++-模板的类型推导.md) -->
 <!-- - [2017-03-16 使用  cmake 管理项目](2017-03-16-使用--cmake-管理项目.md) -->
 <!-- - [2017-03-16 使用 google test framework](2017-03-16-使用-google-test-framework.md) -->
