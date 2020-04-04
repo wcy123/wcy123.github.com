@@ -79,4 +79,4 @@
 <!-- - [2015-05-18 Understand X86 64 calling convention](2015-05-18-Understand-X86-64-calling-convention.md) -->
 <!-- - [2015-05-05 Learning inline keyword by example in C](2015-05-05-Learning-inline-keyword-by-example-in-C.md) -->
 <!-- - [2015-04-30 Different key binding in Emacs transient mark mode](2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.md) -->
-<!-- - [2014-11-22 hello world in C](2014-11-22-hello-world-in-C.md) -->
+- [2014-11-22 hello world in C](2014-11-22-hello-world-in-C.md)

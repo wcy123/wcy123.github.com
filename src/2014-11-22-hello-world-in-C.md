@@ -1,10 +1,5 @@
----
-layout: post
-title:  "hello world in C"
-date:   2014/11/22 09:36:33
-comments: true
-categories: 
----
+#  "hello world in C"
+
 
 
 用 C 语言写一个 `hello world` 程序需要一下几个步骤：
@@ -34,8 +29,8 @@ int main(int argc, char *argv[])
 ## 编译
 在 linux 的命令行下，输入编译命令。如下。
 
-```
-bash$ gcc -O3 -c -S -o hello_world.S  hello_world.c
+```console
+% gcc -O3 -c -S -o hello_world.S  hello_world.c
 ```
 
 - `-c` 表示编译。
@@ -45,7 +40,7 @@ bash$ gcc -O3 -c -S -o hello_world.S  hello_world.c
 
 我们如果察看 `hello_world.S`， 有如下结果
 
-```S
+```x86asm
 	.file	"hello_world.c"
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC0:
@@ -82,16 +77,16 @@ main:
 
 ## 生成二进制目标文件
 
-```
-bash$ as -o hello_world.o hello_world.S
+```console
+% as -o hello_world.o hello_world.S
 ```
 
 `as` 是一个汇编器, 把汇编代码转换成为二进制目标代码。
 
 我们可以看看这个目标代码都有什么。
 
-```
-bash$ nm hello_world.o
+```console
+% nm hello_world.o
 0000000000000000 T main
                  U puts
 ```
@@ -102,11 +97,11 @@ bash$ nm hello_world.o
   `main` 来表示。这一块内存里面存储的就是`main` 函数的机器指令。
 
 - `U` 表示本目标文件没有引用了一个符号 `puts` 但是不知道这个符号定义在什么地方。
-  
+
 我们可以看一下这个目标文件的内容。
 
-```
-bash$ objdump -d hello_world.o
+```console
+% objdump -d hello_world.o
 
 hello_world.o:     file format elf64-x86-64
 
@@ -137,8 +132,8 @@ Disassembly of section .text.startup:
 一个可执行程序必须有入口，通常我们说是 `main` 函数。其实这个是可以指定的。`ld` 输出的可执行文件，都有一个入口函数。这个入口函数默认不是`main` 而是 `_start` 。 这个 `_start` 函数定一个在 `crt1.o` 的文件里
 面。`puts` 定义在 `libc.a` 里面。所以我们的链接命令是。
 
-```
-ld -o hello_world \
+```console
+% ld -o hello_world \
    -dynamic-linker "/lib64/ld-linux-x86-64.so.2"\
     hello_world.o \
     "/usr/lib/x86_64-linux-gnu/crt1.o"\
@@ -162,8 +157,8 @@ ld -o hello_world \
 
 我们看一下 `hello_world` 的内容。
 
-```
-bash$ objdump -d  hello_world
+```consoel
+% objdump -d  hello_world
 
 hello_world:     file format elf64-x86-64
 
@@ -183,7 +178,7 @@ Disassembly of section .text:
   4003a9:	e8 c2 ff ff ff       	callq  400370 <puts@plt>
   4003ae:	31 c0                	xor    %eax,%eax
   4003b0:	48 83 c4 08          	add    $0x8,%rsp
-  4003b4:	c3                   	retq   
+  4003b4:	c3                   	retq
 
 00000000004003b5 <_start>:
   4003b5:	31 ed                	xor    %ebp,%ebp
@@ -197,7 +192,7 @@ Disassembly of section .text:
   4003cb:	48 c7 c1 e0 03 40 00 	mov    $0x4003e0,%rcx
   4003d2:	48 c7 c7 a0 03 40 00 	mov    $0x4003a0,%rdi
   4003d9:	e8 a2 ff ff ff       	callq  400380 <__libc_start_main@plt>
-  4003de:	f4                   	hlt    
+  4003de:	f4                   	hlt
   4003df:	90                   	nop
   ...
 ```
@@ -208,13 +203,13 @@ Disassembly of section .text:
 址 `0x400470`。看到 `main` 函数数的定义，地址在 `0x4003a0`， 看调用
 `puts` 的语句变成了。
 
-```
+```text
 4003a9:	e8 c2 ff ff ff       	callq  400370 <puts@plt>
 ```
 
 `4003a9` 表示这条机器指令的绝对位置。`callq e` 也变成了 `callq 400370`，即 `puts` 的地址。
 
-```
+```text
 4003a4:	bf 58 04 40 00       	mov    $0x400458,%edi
 ```
 
@@ -226,8 +221,8 @@ Disassembly of section .text:
 
 ## 运行
 
-```
-bash$ ./hello_world 
+```console
+% ./hello_world
 hello world!
 ```
 
@@ -236,20 +231,17 @@ hello world!
 我们不必每一次都这么麻烦，指定这么多的细节命令，`gcc` 可以一次从头干到
 尾。实际上，很少有人直接这么一步一步地做，都是直接调用 `gcc` 一步到位。
 
-```
-bash$ gcc -o hello_world hello_world.c
-bash$ ./hello_world 
+```console
+% gcc -o hello_world hello_world.c
+% ./hello_world
 hello world!
 ```
 
 如果有多个文件，常用的作法是
 
-```
-bash$ gcc -c -o hello_world.o hello_world.c
-bash$ gcc -o hello_world hello_world.o
-bash$ ./hello_world 
+```console
+% gcc -c -o hello_world.o hello_world.c
+% gcc -o hello_world hello_world.o
+% ./hello_world
 hello world!
 ```
-
-
-
