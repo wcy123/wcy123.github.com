@@ -19,7 +19,7 @@
 - [2017-04-29 c/c++ 的编译和链接的问题](2017-04-29-c_c++-的编译和链接的问题.md)
 - [2017-04-23 c++ non copyable 的传递性](2017-04-23-c++-non-copyable-的传递性.md)
 - [2017-04-06 ssh 的无密码登陆](2017-04-06-ssh-的无密码登陆.md)
-<!-- - [2017-04-04 c++ GSL 中的 owner](2017-04-04-c++-GSL-中的-owner.md) -->
+- [2017-04-04 c++ GSL 中的 owner](2017-04-04-c++-GSL-中的-owner.md)
 <!-- - [2017-04-04 c++ 的 const reference extend lifetime rvalue](2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.md) -->
 <!-- - [2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了](2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.md) -->
 <!-- - [2017-04-02 c++ 的 universal reference](2017-04-02-c++-的-universal-reference.md) -->

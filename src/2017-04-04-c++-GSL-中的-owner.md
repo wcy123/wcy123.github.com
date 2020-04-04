@@ -1,10 +1,5 @@
----
-layout: post
-title:  "c++ GSL 中的 owner"
-date:   2017/04/04 15:23:13
-categories:
-comments: true
----
+#  "c++ GSL 中的 owner"
+
 
 `owner` 是一个底层机制，用于标记一个指针的是所指对象的所有者。
 
@@ -20,7 +15,7 @@ foo(owner<int*> p) {
 
 在 [GSL](https://github.com/Microsoft/GSL.git) 中， owner 的定义很简单。
 
-```
+```cpp
 template <class T>
 using owner = T;
 ```
