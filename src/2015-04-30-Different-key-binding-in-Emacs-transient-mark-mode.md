@@ -1,10 +1,5 @@
----
-layout: post
-title:  "Different key binding in Emacs transient mark mode"
-date:   2015/04/30 12:24:15
-comments: true
-categories: 
----
+#  Different key binding in Emacs transient mark mode
+
 
 [Emacs transient mark mode][] gives you much of the standard
 selection-highlighting behavior of other editors, but key binding is
@@ -17,7 +12,7 @@ There is an easy way to temporarily change the key binding when mark
 is active and restore the original key bind automatically when mark is
 inactive.
 
-```elisp
+```lisp
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (defconst wcy-transient-mode-map-alist
   `((mark-active
@@ -37,7 +32,7 @@ following the emacs convention.
 This example just illustrates the idea how to do it, maybe you might
 have your own preferred key bindings.
 
- 
+
 Emacs has a lot of key bindings, in such way, one key is able to bind
 to different emacs commands depending on whether the mark is active or
 not.
