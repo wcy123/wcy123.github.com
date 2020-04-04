@@ -1,10 +1,5 @@
----
-layout: post
-title:  "c++ 中的 remove-erase 俗语"
-date:   2017/04/30 16:35:02
-categories:
-comments: true
----
+# c++ 中的 remove-erase 俗语
+
 
 [Erase–remove_idiom](https://en.wikipedia.org/wiki/Erase–remove_idiom)
  和 Scott Mayer 的 effective stl 都提到过这个俗语。
@@ -12,18 +7,20 @@ comments: true
 类似下面的代码，删除所有偶数。
 
 
-```{.cpp include=blog/2017-04-30/remove_erase.cpp}
+```cpp
+{{#include ./2017-04-30/remove_erase.cpp}}
 ```
 
 
 我们深入研究一下，`remove` 之后，vector 里面变成了什么。
 
 
-```{.cpp include=blog/2017-04-30/remove_erase_2.cpp}
+```cpp
+{{#include ./2017-04-30/remove_erase_2.cpp}}
 ```
 
 
-```
+```text
 before erase
 i= 1
 i= 3
@@ -74,11 +71,13 @@ remove_if(_ForwardIterator __first, _ForwardIterator __last, _Predicate __pred)
 
 我们验证一下移动的次数。
 
-```{.cpp include=blog/2017-04-30/remove_erase_3.cpp}
+```cpp
+{{#include ./2017-04-30/remove_erase_3.cpp}}
 ```
 
 我们观察一下输出
-```{.plain include=blog/2017-04-30/remove_erase_3.out}
+```text
+{{#include ./2017-04-30/remove_erase_3.out}}
 ```
 
 我试着解释一下输出结果。
