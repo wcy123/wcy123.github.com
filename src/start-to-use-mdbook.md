@@ -99,3 +99,5 @@ edit `<PROJECT_ROOT>/.travis.yml`
 [Running mdbook in Continuous Integration]: https://github.com/rust-lang/mdBook/blob/master/book-example/src/continuous-integration.md
 
 [GitHub Pages Deployment]: https://docs.travis-ci.com/user/deployment/pages/
+
+NOTE: we must set the `local-dir` to `book` which is the output directory of `mdbook`
