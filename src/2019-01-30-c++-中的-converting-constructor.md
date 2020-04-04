@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 
 ## 错误的使用，代码会有隐藏的 bug
 
-```
+```plain
 // 这段代码会有编译错误
 vector<string> fun5() { return 10u; }
 ```

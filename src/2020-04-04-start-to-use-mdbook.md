@@ -105,8 +105,8 @@ NOTE: we must set the `local-dir` to `book` which is the output directory of `md
 
 ## theme
 
-```
-## get the default theme
+```bash
+# get the default theme
 mkdir -p $HOME/tmp/book
 cd $HOME/tmp/book
 mdbook init --theme

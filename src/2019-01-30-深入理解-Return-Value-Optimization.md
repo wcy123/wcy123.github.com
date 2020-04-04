@@ -23,7 +23,7 @@ end block
 
 我们知道 x86 平台下，堆栈是向下生长的，也就是说，堆栈上的地址分配如下。
 
-```
+```console
 # main 函数的堆栈空间
 0x7fff5476770c: &begin
 0x7fff54767708: &obj
@@ -39,9 +39,9 @@ end block
 
 我们试试关闭 RVO 。
 
-```
-+ g++ -fno-elide-constructors -std=c++11 test_rvo.cpp
-+ ./a.out
+```console
+% g++ -fno-elide-constructors -std=c++11 test_rvo.cpp
+% ./a.out
 begin block
 &mark 0x7fff52a1366c
 construct: Foo[0@0x7fff52a13668]
@@ -59,7 +59,7 @@ end block
 `-fno-elide-constructors` 表示关闭 RVO 优化开关。
 
 堆栈分析
-```
+```console
 # main 函数的堆栈空间
 0x7fff52a1370c: &begin
 0x7fff52a13708: &obj
