@@ -1,18 +1,11 @@
----
-layout: post
-title:  "google c++ style by examples"
-date:   2017/03/16 10:12:23
-categories:
-comments: true
----
+# google c++ style by examples
+
 
 详细参考 [https://google.github.io/styleguide/cppguide.html]()
 
 # 文件名
 
-* good
-
-```
+```text
 my_useful_class.cc
 my-useful-class.cc
 myusefulclass.cc

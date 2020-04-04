@@ -28,10 +28,10 @@
 <!-- - [2017-03-29 c++ vector::operator[] 的一个坑点](2017-03-29-c++-vector::operator[]-的一个坑点.md) -->
 - [2017-03-26 c++ 中 lambda 的类型和大小](2017-03-26-c++-中-lambda-的类型和大小.md)
 - [2017-03-26 c++ 模板的类型推导](2017-03-26-c++-模板的类型推导.md)
-<!-- - [2017-03-16 使用  cmake 管理项目](2017-03-16-使用--cmake-管理项目.md) -->
-<!-- - [2017-03-16 使用 google test framework](2017-03-16-使用-google-test-framework.md) -->
-<!-- - [2017-03-16 google c++ style by examples](2017-03-16-google-c++-style-by-examples.md) -->
-<!-- - [2017-03-13 TERMINAL 下的快捷操作](2017-03-13-TERMINAL-下的快捷操作.md) -->
+- [2017-03-16 使用  cmake 管理项目](2017-03-16-使用--cmake-管理项目.md)
+- [2017-03-16 使用 google test framework](2017-03-16-使用-google-test-framework.md)
+- [2017-03-16 google c++ style by examples](2017-03-16-google-c++-style-by-examples.md)
+- [2017-03-13 TERMINAL 下的快捷操作](2017-03-13-TERMINAL-下的快捷操作.md)
 <!-- - [2017-03-12 小叮当效应](2017-03-12-小叮当效应.md) -->
 <!-- - [2017-03-12 存款准备金的意义](2017-03-12-存款准备金的意义.md) -->
 <!-- - [2017-03-10 过拟合和正则化](2017-03-10-过拟合和正则化.md) -->

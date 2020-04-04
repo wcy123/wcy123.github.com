@@ -1,10 +1,5 @@
----
-layout: post
-title:  "使用 google test framework"
-date:   2017/03/16 10:38:34
-categories:
-comments: true
----
+# 使用 google test framework
+
 
 
 本文参考 [http://www.ibm.com/developerworks/aix/library/au-googletestingframework.html]()
