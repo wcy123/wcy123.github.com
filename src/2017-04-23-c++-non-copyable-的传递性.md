@@ -1,10 +1,5 @@
----
-layout: post
-title:  "c++ non copyable 的传递性"
-date:   2017/04/23 15:31:56
-categories:
-comments: true
-draft: false
+#  "c++ non copyable 的传递性"
+
 ---
 
 
@@ -16,13 +11,13 @@ draft: false
 
 例如 [lock_guard](http://en.cppreference.com/w/cpp/thread/lock_guard/lock_guard)
 
-```
+```cpp
 lock_guard( const lock_guard& ) = delete;	(3) 	(since C++11)
 ```
 
 这些 non-copyable 的类，他们的对象中，无法有 copy 的语义。于是，通常来说，他们的赋值操作符重载也被标记为删除了。
 
-```
+```cpp
 ... operator=(...) deleted; // not copy-assignable
 
 ```
@@ -57,7 +52,7 @@ int main(int argc, char *argv[])
 
 这个代码会有编译错误
 
-```
+```cpp
 simple_non_copyable.cpp:16:9: error: call to implicitly-deleted copy constructor of 'Foo'
     Foo b{a};
         ^~~~
