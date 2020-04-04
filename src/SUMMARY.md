@@ -22,7 +22,7 @@
 - [2017-04-04 c++ GSL 中的 owner](2017-04-04-c++-GSL-中的-owner.md)
 - [2017-04-04 c++ 的 const reference extend lifetime rvalue](2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.md)
 - [2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了](2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.md)
-<!-- - [2017-04-02 c++ 的 universal reference](2017-04-02-c++-的-universal-reference.md) -->
+- [2017-04-02 c++ 的 universal reference](2017-04-02-c++-的-universal-reference.md)
 <!-- - [2017-04-02 c++ lambda capture by value 的实验](2017-04-02-c++-lambda-capture-by-value-的实验.md) -->
 <!-- - [2017-03-29 c++11 中的 uniform initialization](2017-03-29-c++11-中的-uniform-initialization.md) -->
 <!-- - [2017-03-29 c++ vector::operator[] 的一个坑点](2017-03-29-c++-vector::operator[]-的一个坑点.md) -->
@@ -66,9 +66,9 @@
 <!-- - [2015-08-04 Erlang: passwing initial arguments between app, supervisor and gen_server](2015-08-04-Erlang:-passwing-initial-arguments-between-app,-supervisor-and-gen_server.md) -->
 <!-- - [2015-07-29 Erlang application environment](2015-07-29-Erlang-application-environment.md) -->
 <!-- - [2015-07-10 ZFS 转移数据](2015-07-10-ZFS-转移数据.md) -->
-<!-- - [2015-07-08 C++11 的右值引用问题](2015-07-08-C++11-的右值引用问题.md) -->
+- [2015-07-08 C++11 的右值引用问题](2015-07-08-C++11-的右值引用问题.md)
 <!-- - [2015-07-08 C++ vector 调用多少次元素的构造函数](2015-07-08-C++-vector-调用多少次元素的构造函数.md) -->
-<!-- - [2015-07-08 C++11 的 feature, unique_ptr](2015-07-08-C++11-的-feature,-unique_ptr.md) -->
+- [2015-07-08 C++11 的 feature, unique_ptr](2015-07-08-C++11-的-feature,-unique_ptr.md)
 <!-- - [2015-07-08 C/C++ 中的求值顺序](2015-07-08-C_C++-中的求值顺序.md) -->
 <!-- - [2015-07-08 C/C++ 编程风格: if-else](2015-07-08-C_C++-编程风格:-if-else.md) -->
 <!-- - [2015-07-08 编程风格： C++ 类的结构](2015-07-08-编程风格：-C++-类的结构.md) -->

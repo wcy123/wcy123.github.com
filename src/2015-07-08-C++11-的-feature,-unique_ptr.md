@@ -28,7 +28,7 @@ comments: true
 他是 `T* +1` 的唯一拥有者。
 
 
-{% highlight c++ %}
+```cpp
 #include <iostream>
 #include <memory>
 using namespace std;
@@ -59,18 +59,18 @@ int main(int argc, char *argv[])
          << endl;
     return 0;
 }
-{% endhighlight %}
+```
 
 程序输出
 
 
-{% highlight bash %}
-clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
+```console
+% clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
 unique_ptr.cpp:20: [main] begin call test1
 unique_ptr.cpp:6: [A]
 unique_ptr.cpp:10: [~A]
 unique_ptr.cpp:24: [main] done
-{% endhighlight %}
+```
 
 第二点就有点麻烦，需要借用 C++11 的其他特性才能实现，最重要的就是右值
 引用和 `std::move` 。
@@ -78,7 +78,7 @@ unique_ptr.cpp:24: [main] done
 ## 禁止拷贝构造函数
 
 
-{% highlight c++ %}
+```cpp
 void test2_1(unique_ptr<A> x)
 {
 }
@@ -87,12 +87,12 @@ void test1()
     unique_ptr<A> ptr(new A());
     test2_1(ptr);
 }
-{% endhighlight %}
+```
 
 这样会产生编译错误
 
-{% highlight bash %}
-clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
+```console
+% clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
 unique_ptr.cpp:20:13: error: call to deleted constructor of 'unique_ptr<A>'
     test2_1(ptr);
             ^~~
@@ -104,28 +104,28 @@ unique_ptr.cpp:14:28: note: passing argument to parameter 'x' here
 void test2_1(unique_ptr<A> x)
                            ^
 1 error generated.
-{% endhighlight %}
+```
 
 
 ## 禁止赋值操作符重载
 
 
-{% highlight c++ %}
+```cpp
 void test1()
 {
     unique_ptr<A> ptr(new A());
     unique_ptr<A> ptr2;
     ptr2 = ptr;
 }
-{% endhighlight %}
+```
 
 产生编译错误
 
-{% highlight bash %}
-clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
+```console
+% clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
 unique_ptr.cpp:18:10: error: overload resolution selected deleted operator '='
     ptr2 = ptr;
-{% endhighlight %}
+```
 
 ## 那他有啥用
 
@@ -140,7 +140,7 @@ unique_ptr.cpp:18:10: error: overload resolution selected deleted operator '='
 ### 放弃所有权
 
 
-{% highlight c++ %}
+```cpp
 #include <iostream>
 #include <memory>
 using namespace std;
@@ -170,13 +170,13 @@ int main(int argc, char *argv[])
     test1();
     return 0;
 }
-{% endhighlight %}
+```
 
 输出结果
 
 
-{% highlight bash %}
-clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
+```console
+% clang++ -std=c++11  -Wall -Werror unique_ptr.cpp && ./a.out
 A
 test1 give up ownership
 test2 grab ownership
@@ -184,7 +184,7 @@ test2 grab ownership
 test2 done
 ~A
 0
-{% endhighlight %}
+```
 
 
 可能有问题了，不是说不能调用拷贝构造函数吗？怎么
@@ -204,7 +204,7 @@ test2 done
 `unique_ptr` 可以很好的和容器一起工作。`vector<unique_ptr<A>`
 
 
-{% highlight c++ %}
+```cpp
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -234,23 +234,23 @@ int main(int argc, char *argv[])
     test1();
     return 0;
 }
-{% endhighlight %}
+```
 
 这里隐含使用了右值引用，如果没有右值引用，实现这个功能还不容易啊。
 `v.push_back` 实际上的函数原型是
 
 
-{% highlight c++ %}
+```cpp
 void push_back( T&& value );
-{% endhighlight %}
+```
 
 下面这个例子也行，使用到了转移构造函数(move constructor)
 
 
-{% highlight c++ %}
+```cpp
 unique_ptr<A> ptr(new A(i));
 v.push_back(std::move(ptr));
-{% endhighlight %}
+```
 
 
 ## 和 `shared_ptr` 的关系
@@ -272,4 +272,4 @@ v.push_back(std::move(ptr));
 
 ## 性能
 
-`unique_ptr` 的性能很好，几乎没有任何多余的开销。
+`unique_ptr` 的性能很好，几乎没有任何多余的开销。参考[2019-01-01-unique_ptr-的开销有多大](2019-01-01-unique_ptr-的开销有多大.html)
