@@ -22,5 +22,6 @@ deploy:
   github-token: $GITHUB_TOKEN
   local-dir: .
   keep-history: false
+  target_branch: master
   on:
-    branch: master
+    branch: pandoc

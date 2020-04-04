@@ -1,16 +1,1 @@
-.idea/
-mptextmp.mp
-mptextmp.mpx
-mpxerr.tex
-*.iml
-deploy
-.\#*
-\#*\#
-a.out**.o
-lib*
-a.out
-*.o
-./deploy
-daughter.md
-index.md
-*.log
+book
