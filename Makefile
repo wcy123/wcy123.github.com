@@ -27,7 +27,8 @@ clean:
 
 .PHONY: generate
 generate:
-	#perl scripts/generate-index.pl
+	# perl scripts/generate-index.pl
+	perl scripts/generate-index-mdbook.pl
 	#perl scripts/generate-html.pl
 	#$(MARKDOWN) index.md
 	#$(MARKDOWN) daughter.md
