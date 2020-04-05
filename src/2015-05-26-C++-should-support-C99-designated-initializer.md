@@ -1,10 +1,5 @@
----
-layout: post
-title:  "C++ should support C99 designated initializer"
-date:   2015/05/26 00:53:12
-categories:
-comments: true
----
+# C++ should support C99 designated initializer
+
 
 [Two Core C99 Features that C++11 Lacks][1] mentions "Designated
 Initializers and C++".
@@ -55,7 +50,7 @@ We knew at compilation time, `a_point.x` is zero, so we could expected
 that `foo` is optimized into a single `printf`.
 
 
-```
+```console
 $ gcc -O3 a.c
 $ gdb a.out
 (gdb) disassemble foo
@@ -103,7 +98,7 @@ int main(int argc, char *argv[])
 
 ```
 
-```
+```console
 $ g++ -O3 a.cc
 $ gdb a.out
 (gdb) disassemble foo

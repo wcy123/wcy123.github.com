@@ -1,10 +1,5 @@
----
-layout: post
-title:  "使用 Spring Integration Framework 写入 redis 队列"
-date:   2016/09/03 19:05:30
-categories:
-comments: true
----
+# 使用 Spring Integration Framework 写入 redis 队列
+
 
 
 [Spring Integration Framework][] 提供了应用集成的一种方式。各个应用程
@@ -91,13 +86,13 @@ comments: true
 
 引入 `spring-integration-stream` ，我们可以解析 xml 中的 namespace
 
-```
+```xml
 xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
 ```
 
 `spring-integration-stream` 的引入，我们可以解析 xml 中的 namespace
 
-```
+```xml
 xmlns:int-redis="http://www.springframework.org/schema/integration/redis">
 ```
 
@@ -126,7 +121,7 @@ public class SiRedisApplication {
 
 `@EnableIntegration` 标注一个 Configuration 类是 Spring Integration 的配置。
 
-```
+```xml
 @ImportResource("classpath:/META-INF/spring/si-components.xml")
 ```
 
@@ -171,7 +166,7 @@ src/main/resources/META-INF/spring/si-components.xml 的内容
 ```
 
 
-```
+```xml
     <int-stream:stdin-channel-adapter id="producer" channel="messageChannel"/>
 
     <int:poller id="defaultPoller" default="true"
@@ -181,13 +176,13 @@ src/main/resources/META-INF/spring/si-components.xml 的内容
 创建了一个 endpoint ，每隔 200 ms ，从标准输入读取数据，然后扔到
 `messageChannel` 中。
 
-```
+```xml
 <int:channel id="messageChannel"/>
 ```
 
 创建了一个 `messageChannel` 的 channel。
 
-```
+```xml
     <int-redis:queue-outbound-channel-adapter
             id="queue"
             channel="messageChannel" queue="a_queue"
@@ -202,7 +197,7 @@ src/main/resources/META-INF/spring/si-components.xml 的内容
 
 `queue-outbound-channel-adapter` 需要一个 redis connection factory
 
-```
+```xml
     <bean id="redisConnectionFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory" />
 ```

@@ -1,17 +1,12 @@
----
-layout: post
-title:  "Understand X86 64 calling convention"
-date:   2015/05/18 09:38:25
-categories: 
-comments: true
----
+# Understand X86 64 calling convention
+
 
 
 [Calling convention](http://en.wikipedia.org/wiki/X86_calling_conventions)
 
 
 > System V AMD64 ABI
-> 
+>
 > The calling convention of the System V AMD64 ABI[14] is followed on
 > Solaris, Linux, FreeBSD, Mac OS X, and other UNIX-like or
 > POSIX-compliant operating systems. The first six integer or pointer
@@ -21,7 +16,7 @@ comments: true
 > RCX.[14] As in the Microsoft x64 calling convention, additional
 > arguments are passed on the stack and the return value is stored in
 > RAX.
-> 
+>
 > Registers RBP, RBX, and R12-R15 are callee-save registers; all others
 > must be saved by the caller if they wish to preserve their values.[15]
 
@@ -41,7 +36,7 @@ int main(int argc, char *argv[])
 }
 ```
 
-```asm
+```x86asm
    0x0000000000400526 <+15>:	pushq  $0x9
    0x0000000000400528 <+17>:	pushq  $0x8
    0x000000000040052a <+19>:	pushq  $0x7
@@ -54,4 +49,3 @@ int main(int argc, char *argv[])
    0x0000000000400549 <+50>:	mov    $0x0,%edi
    0x000000000040054e <+55>:	callq  0x4004b6 <foo>
 ```
- 

@@ -1,10 +1,5 @@
----
-layout: post
-title:  "阅读 Subscriber 的实现中关于  backpressure 的部分"
-date:   2017/01/07 20:18:01
-categories:
-comments: true
----
+# 阅读 Subscriber 的实现中关于  backpressure 的部分
+
 
 rxjava 中最具有挑战性的设计就是 backpresure 。例如 `zip` 操作符，合并两个 `Observable` A 和 B 。如果  B 的产生速度比 A 快，那么就需要不停的缓存 B 多余生成出来的数据，这样内存就无限增长了。 backpressure 的机制就是让 B 生成慢一点。
 

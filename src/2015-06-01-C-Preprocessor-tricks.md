@@ -1,10 +1,5 @@
----
-layout: post
-title:  "C Preprocessor tricks"
-date:   2015/06/01 09:38:40
-categories:
-comments: true
----
+# C Preprocessor tricks
+
 
 
 In this blog, I will show some examples about advanced C Preprocessor
@@ -16,13 +11,13 @@ and error prone.
 I would like to use an example to illustrate the idea behind it. For
 example, I would like to implementat a set of unix command as below
 
-{% highlight c %}
+```c
 #define CMD(XX) XX(ls) XX(cp) XX(rm) XX(echo)
-{% endhighlight %}
+```
 
 Then I could be able to write a common template function as below.
 
-{% highlight c %}
+```c
 #define DEFINE_COMMON_TEMPLATE(name)            \
 void name()                                     \
 {                                               \
@@ -30,11 +25,11 @@ void name()                                     \
 }
 
 CMD(DEFINE_COMMON_TEMPLATE)
-{% endhighlight %}
+```
 
 It will expanded to
 
-{% highlight c %}
+```c
 void ls ()
 {
   printf ("ls" " is not implemented\n");
@@ -44,11 +39,11 @@ void cp ()
 {
   printf ("cp" " is not implemented\n");
 } // ...
-{% endhighlight %}
+```
 
 In the `main` function, we can use the similiar trick, as below
 
-{% highlight c %}
+```c
 #define COMMAND_SWITCH(name)                    \
     if (strcmp(argv[1], #name) == 0){           \
         name();                                 \
@@ -56,11 +51,11 @@ In the `main` function, we can use the similiar trick, as below
     CMD(COMMAND_SWITCH) {
         printf("unknown commmand %s\n", argv[1]);
     }
-{% endhighlight %}
+```
 
 And it will expanded into
 
-{% highlight c %}
+```c
   if (strcmp (argv[1], "ls") == 0)
     {
       ls ();
@@ -81,11 +76,11 @@ And it will expanded into
     {
       printf ("unknown commmand %s\n", argv[1]);
     }
-{% endhighlight %}
+```
 
 The whole program is listed here.
 
-{% highlight c %}
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -112,12 +107,12 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
-{% endhighlight %}
+```
 
 
 ## get the number of varadic argument
 
-{% highlight c %}
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -132,13 +127,13 @@ int main(int argc, char *argv[])
     printf("%d\n",N_OF_ARGS(a,b,c,d,e));
     return 0;
 }
-{% endhighlight %}
+```
 
 
 `N_OF_ARGS` can handle at most 5 arguments and at least 1, otherwise,
 it is unpredictable error.
 
-{% highlight c %}
+```c
 int main(int argc, char *argv[])
 {
     printf("%d\n",1);
@@ -148,17 +143,17 @@ int main(int argc, char *argv[])
     printf("%d\n",5);
     return 0;
 }
-{% endhighlight %}
+```
 
 
 But
-{% highlight c %}
+```c
 N_OF_ARGS()
 // => _GET_N_OF_ARGS(,5,4,3,2,1)
 // => 1
 printf("%d\n",N_OF_ARGS(a,b,c,d,e,f));
 // => _GET_N_OF_ARGS(a,b,c,d,e,f)
 // => f
-{% endhighlight %}
+```
 
 ## get the nth element of arguments

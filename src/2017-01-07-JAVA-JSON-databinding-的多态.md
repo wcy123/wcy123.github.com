@@ -1,10 +1,5 @@
----
-layout: post
-title:  "JAVA JSON databinding 的多态"
-date:   2017/01/07 20:18:26
-categories:
-comments: true
----
+# JAVA JSON databinding 的多态
+
 JSON 在 REST API 的调用中越来越多的应用，如何表达多态是经常碰到的一个问题。
 
 有三种方式解决这个问题
@@ -38,7 +33,7 @@ public static void main(String[] args) throws IOException {
 ```
 例子 `Dog` 和  `Cat` 类
 
-```
+```java
 static class Dog implements Animal {
     private String name = "wangwang";
     @Override
@@ -118,7 +113,7 @@ public interface Animal {
 
 # 把 POJO 映射称为数组 , `include = JsonTypeInfo.As.WRAPPER_ARRAY`
 
-```
+```json
 {
   "leader": [
     "dog",

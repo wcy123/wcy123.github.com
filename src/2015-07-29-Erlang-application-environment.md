@@ -1,17 +1,12 @@
----
-layout: post
-title:  "Erlang application environment"
-date:   2015/07/29 13:46:06
-categories:
-comments: true
----
+# Erlang application environment
+
 
 
 我们知道 Erlang 的函数 `application:get_env/2` 可以返回 app 的配置信息。
 例如我们有一个简单的 app 文件，放在 `./ebin/myapp.ebin` 中。
 
 
-{% highlight erlang %}
+```erlang
 {application,myapp,
              [{description,[]},
               {vsn,"1"},
@@ -20,10 +15,10 @@ comments: true
               {mod,{myapp_app,[]}},
               {env,[{a,1},{b,2}]},
               {modules,[myapp_app,myapp_server,myapp_sup]}]}.
-{% endhighlight %}
-
-
 ```
+
+
+```erlang-repl
 bash$ erl -pa ebin
 Erlang/OTP 18 [erts-7.0] [source] [64-bit] [async-threads:10] [hipe] [kernel-poll:false]
 
@@ -39,7 +34,7 @@ ok
 
 除此之外，我们可以通过命令行来修改 app env 。
 
-```
+```erlang-repl
 bash$ erl -pa ebin -myapp a first b second
 Erlang/OTP 18 [erts-7.0] [source] [64-bit] [async-threads:10] [hipe] [kernel-poll:false]
 
@@ -61,7 +56,7 @@ ok
 
 还有一种办法可以指定 app 环境，就是利用配置文件。例如，我们写一个配置文件 `a.config`，如下
 
-```
+```erlang
 [{myapp,
   [{a,one},
    {b,two},
@@ -71,7 +66,7 @@ ok
 然后执行命令
 
 
-```
+```erlang-repl
 bash$ erl -pa ebin -config a.config
 Erlang/OTP 18 [erts-7.0] [source] [64-bit] [async-threads:10] [hipe] [kernel-poll:false]
 
@@ -96,7 +91,7 @@ ok
 yi` 可以覆盖配置文件中的设置。
 
 
-```
+```erlang-repl
 bash$ erl -pa ebin -config a.config -myapp a yi
 Erlang/OTP 18 [erts-7.0] [source] [64-bit] [async-threads:10] [hipe] [kernel-poll:false]
 

@@ -1,10 +1,5 @@
----
-layout: post
-title:  "C++11 的 feature, unique_ptr"
-date:   2015/07/08 16:39:21
-categories:
-comments: true
----
+# C++11 的 feature, unique_ptr
+
 
 
 参考链接

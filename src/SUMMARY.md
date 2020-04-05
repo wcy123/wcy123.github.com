@@ -42,41 +42,40 @@
 - [2017-03-05 backpropagation](2017-03-05-backpropagation.md)
 - [2017-02-07 理解 java 的 classloader](2017-02-07-理解-java-的-classloader.md)
 - [2017-01-25 在 Java 中，我们尽量避免使用 null](2017-01-25-在-Java-中，我们尽量避免使用-null.md)
-<!-- - [2017-01-14 Java 8 函数式编程例子](2017-01-14-Java-8-函数式编程例子.md) -->
-<!-- - [2017-01-08 二分法查找](2017-01-08-二分法查找.md) -->
-<!-- - [2017-01-08 最重要的设计原则](2017-01-08-最重要的设计原则.md) -->
-<!-- - [2017-01-07 C 语言写的快排程序](2017-01-07-C-语言写的快排程序.md) -->
-<!-- - [2017-01-07 编写单链表反转的程序](2017-01-07-编写单链表反转的程序.md) -->
-<!-- - [2017-01-07 Feign client](2017-01-07-Feign-client.md) -->
-<!-- - [2017-01-07 关于协议设计语言](2017-01-07-关于协议设计语言.md) -->
-<!-- - [2017-01-07 简单的多线程并不能提高效率](2017-01-07-简单的多线程并不能提高效率.md) -->
-<!-- - [2017-01-07 JAVA8 中的高阶函数](2017-01-07-JAVA8-中的高阶函数.md) -->
-<!-- - [2017-01-07 JAVA JSON databinding 的多态](2017-01-07-JAVA-JSON-databinding-的多态.md) -->
-<!-- - [2017-01-07 rxjava2 有什么新东西](2017-01-07-rxjava2-有什么新东西.md) -->
-<!-- - [2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分](2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.md) -->
-<!-- - [2017-01-07 阅读 rxjava 源代码之  - map](2017-01-07-阅读-rxjava-源代码之----map.md) -->
-<!-- - [2017-01-07 rxjava 如何和传统回调函数结合](2017-01-07-rxjava-如何和传统回调函数结合.md) -->
-<!-- - [2017-01-07 阅读 rxjava 源代码](2017-01-07-阅读-rxjava-源代码.md) -->
-<!-- - [2017-01-07 使用 Protobuf 设计 REST API](2017-01-07-使用-Protobuf-设计-REST-API.md) -->
-<!-- - [2017-01-07 rabbitmq 中的概念](2017-01-07-rabbitmq-中的概念.md) -->
-<!-- - [2016-12-25 从零开始构造一个微服务](2016-12-25-从零开始构造一个微服务.md) -->
-<!-- - [2016-09-21 基于返回值的 java generic 类型推导](2016-09-21-基于返回值的-java-generic-类型推导.md) -->
-<!-- - [2016-09-03 使用 Spring Integration Framework 写入 redis 队列](2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.md) -->
-<!-- - [2016-08-27 开发自己的语言](2016-08-27-开发自己的语言.md) -->
-<!-- - [2015-08-04 Erlang: passwing initial arguments between app, supervisor and gen_server](2015-08-04-Erlang:-passwing-initial-arguments-between-app,-supervisor-and-gen_server.md) -->
-<!-- - [2015-07-29 Erlang application environment](2015-07-29-Erlang-application-environment.md) -->
-<!-- - [2015-07-10 ZFS 转移数据](2015-07-10-ZFS-转移数据.md) -->
+- [2017-01-14 Java 8 函数式编程例子](2017-01-14-Java-8-函数式编程例子.md)
+- [2017-01-08 二分法查找](2017-01-08-二分法查找.md)
+- [2017-01-08 最重要的设计原则](2017-01-08-最重要的设计原则.md)
+- [2017-01-07 C 语言写的快排程序](2017-01-07-C-语言写的快排程序.md)
+- [2017-01-07 编写单链表反转的程序](2017-01-07-编写单链表反转的程序.md)
+- [2017-01-07 Feign client](2017-01-07-Feign-client.md)
+- [2017-01-07 关于协议设计语言](2017-01-07-关于协议设计语言.md)
+- [2017-01-07 简单的多线程并不能提高效率](2017-01-07-简单的多线程并不能提高效率.md)
+- [2017-01-07 JAVA8 中的高阶函数](2017-01-07-JAVA8-中的高阶函数.md)
+- [2017-01-07 JAVA JSON databinding 的多态](2017-01-07-JAVA-JSON-databinding-的多态.md)
+- [2017-01-07 rxjava2 有什么新东西](2017-01-07-rxjava2-有什么新东西.md)
+- [2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分](2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.md)
+- [2017-01-07 阅读 rxjava 源代码之  - map](2017-01-07-阅读-rxjava-源代码之----map.md)
+- [2017-01-07 rxjava 如何和传统回调函数结合](2017-01-07-rxjava-如何和传统回调函数结合.md)
+- [2017-01-07 阅读 rxjava 源代码](2017-01-07-阅读-rxjava-源代码.md)
+- [2017-01-07 使用 Protobuf 设计 REST API](2017-01-07-使用-Protobuf-设计-REST-API.md)
+- [2017-01-07 rabbitmq 中的概念](2017-01-07-rabbitmq-中的概念.md)
+- [2016-12-25 从零开始构造一个微服务](2016-12-25-从零开始构造一个微服务.md)
+- [2016-09-21 基于返回值的 java generic 类型推导](2016-09-21-基于返回值的-java-generic-类型推导.md)
+- [2016-09-03 使用 Spring Integration Framework 写入 redis 队列](2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.md)
+- [2016-08-27 开发自己的语言](2016-08-27-开发自己的语言.md)
+- [2015-07-29 Erlang application environment](2015-07-29-Erlang-application-environment.md)
+- [2015-07-10 ZFS 转移数据](2015-07-10-ZFS-转移数据.md)
 - [2015-07-08 C++11 的右值引用问题](2015-07-08-C++11-的右值引用问题.md)
-<!-- - [2015-07-08 C++ vector 调用多少次元素的构造函数](2015-07-08-C++-vector-调用多少次元素的构造函数.md) -->
+- [2015-07-08 C++ vector 调用多少次元素的构造函数](2015-07-08-C++-vector-调用多少次元素的构造函数.md)
 - [2015-07-08 C++11 的 feature, unique_ptr](2015-07-08-C++11-的-feature,-unique_ptr.md)
 - [2015-07-08 C/C++ 中的求值顺序](2015-07-08-C_C++-中的求值顺序.md)
-<!-- - [2015-07-08 C/C++ 编程风格: if-else](2015-07-08-C_C++-编程风格:-if-else.md) -->
-<!-- - [2015-07-08 编程风格： C++ 类的结构](2015-07-08-编程风格：-C++-类的结构.md) -->
-<!-- - [2015-07-08 折腾 FreeBSD](2015-07-08-折腾-FreeBSD.md) -->
-<!-- - [2015-06-01 C Preprocessor tricks](2015-06-01-C-Preprocessor-tricks.md) -->
-<!-- - [2015-05-26 C++ should support C99 designated initializer](2015-05-26-C++-should-support-C99-designated-initializer.md) -->
-<!-- - [2015-05-20 C++ virtual function](2015-05-20-C++-virtual-function.md) -->
-<!-- - [2015-05-18 Understand X86 64 calling convention](2015-05-18-Understand-X86-64-calling-convention.md) -->
-<!-- - [2015-05-05 Learning inline keyword by example in C](2015-05-05-Learning-inline-keyword-by-example-in-C.md) -->
+- [2015-07-08 C/C++ 编程风格: if-else](2015-07-08-C_C++-编程风格:-if-else.md)
+- [2015-07-08 编程风格： C++ 类的结构](2015-07-08-编程风格：-C++-类的结构.md)
+- [2015-07-08 折腾 FreeBSD](2015-07-08-折腾-FreeBSD.md)
+- [2015-06-01 C Preprocessor tricks](2015-06-01-C-Preprocessor-tricks.md)
+- [2015-05-26 C++ should support C99 designated initializer](2015-05-26-C++-should-support-C99-designated-initializer.md)
+- [2015-05-20 C++ virtual function](2015-05-20-C++-virtual-function.md)
+- [2015-05-18 Understand X86 64 calling convention](2015-05-18-Understand-X86-64-calling-convention.md)
+- [2015-05-05 Learning inline keyword by example in C](2015-05-05-Learning-inline-keyword-by-example-in-C.md)
 - [2015-04-30 Different key binding in Emacs transient mark mode](2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.md)
 - [2014-11-22 hello world in C](2014-11-22-hello-world-in-C.md)

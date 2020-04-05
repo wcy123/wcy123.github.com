@@ -1,10 +1,5 @@
----
-layout: post
-title:  "Feign client"
-date:   2017/01/07 20:19:35
-categories:
-comments: true
----
+# Feign client
+
 
 1. `@EnableDiscoveryClient`
 2. pom 中包含
@@ -25,7 +20,10 @@ comments: true
 
 6. 记得加
 
-```headers = {"Accept = application/json", "Content-Type = application/json"}```
+```text
+headers = {"Accept = application/json", "Content-Type = application/json"}
+```
+
 否则返回值会无法解码
 
 # enable debug
@@ -39,13 +37,13 @@ Logger.Level logLevel() {
 
 官方参考手册 http://cloud.spring.io/spring-cloud-netflix/spring-cloud-netflix.html
 
-```
+```text
 logging.level.<YOURINTERFACE>=trace
 ```
 
 如果看到下面的日志，可以调试 rest 输入输出。
 
-```
+```log
 2016-12-29 19:20:49.460 DEBUG 56282 --- [CrmRestServer-2] com.easemob.weichat.rest.mvc.dep.CrmApi  : [CrmApi#queryCustomerInternal] ---> GET http://CrmRestServer/v1/crm/tenants/1/agents/aa986a74-bf25-4f64-85be-e1fcf9726069/customers HTTP/1.1
 2016-12-29 19:20:49.462 DEBUG 56282 --- [CrmRestServer-2] com.easemob.weichat.rest.mvc.dep.CrmApi  : [CrmApi#queryCustomerInternal] Accept : application/json
 2016-12-29 19:20:49.462 DEBUG 56282 --- [CrmRestServer-2] com.easemob.weichat.rest.mvc.dep.CrmApi  : [CrmApi#queryCustomerInternal] Content-Type : application/json
@@ -68,36 +66,36 @@ logging.level.<YOURINTERFACE>=trace
 2016-12-29 19:20:52.361 DEBUG 56282 --- [CrmRestServer-2] com.easemob.weichat.rest.mvc.dep.CrmApi  : [CrmApi#queryCustomerInternal] <--- END HTTP (174-byte body)
 ```
 
-```
+```config
 logging.level.com.netflix.loadbalancer=debug
 ```
 
 例如，可以看到下面的东西，就是错的。很有可能 spring.cloud.consul.enabled=true 没有配置
 
-```
+```log
 2016-12-29 19:17:00.202 DEBUG 55945 --- [CrmRestServer-2] c.n.l.DynamicServerListLoadBalancer      : List of Servers for CrmRestServer obtained from Discovery client: []
 ```
 
 如果看到下面这样，那么 consul 就是对的。
 
-```
+```log
 2016-12-29 19:20:51.015 DEBUG 56282 --- [erListUpdater-0] c.n.l.DynamicServerListLoadBalancer      : Filtered List of Servers for CrmRestServer obtained from Discovery client: [172.17.1.201:8590]
 ```
 
 设置超时阈值
 
-```
+```config
 hystri‌x.command.default.ex‌ecution.isolation.th‌read.timeoutInMillis‌econds=5000
 ```
 
 这个只供调试用。因为把默认的超时都改成了 5s
 
-```
+```config
 hystri‌x.command.<methodName>.ex‌ecution.isolation.th‌read.timeoutInMillis‌econds=30000
 ```
 
 设置参数使Fallback可用
 
-```
+```config
 feign.hystrix.enabled=true
 ```

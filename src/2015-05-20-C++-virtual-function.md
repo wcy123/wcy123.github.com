@@ -1,10 +1,5 @@
----
-layout: post
-title:  "C++ virtual function"
-date:   2015/05/20 09:47:56
-categories: 
-comments: true
----
+# C++ virtual function
+
 
 How C++ virtual function is implemented? Compilers have their own
 implementations. I am interested to see the implementation of `gcc`.
@@ -37,7 +32,7 @@ int bar(B * obj)
 
 Here is the output of the assemble code.
 
-```
+```console
 $ gcc -O3 -S -c -o - vf.cc
         .file   "vf.cc"
         .text
@@ -60,7 +55,7 @@ _Z3barP1B:
 
 The interesting part is
 
-```asm
+```x86asm
         movq    (%rdi), %rax
         movq    16(%rax), %rax
         jmp     *%rax
@@ -72,4 +67,3 @@ pointer of `vtable`, so firstly, we load the `vtable` into
 `%rax`. `gcc` knows that `foo3` is the third virtual function, so that
 the offset of `foo3` is `16`, and we load the virtual function pointer
 `foo3` into `%rax`. Finally, jumping to the virtual function.
-

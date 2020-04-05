@@ -1,10 +1,5 @@
----
-layout: post
-title:  "基于返回值的 java generic 类型推导"
-date:   2016/09/21 10:40:09
-categories:
-comments: true
----
+# 基于返回值的 java generic 类型推导
+
 
 ```java
 public class  HelloWorld {
@@ -26,7 +21,7 @@ public class  HelloWorld {
 这里遇到几个问题. 在类型推到的过程中, T 到底是什么类型,
 我没有找到好的方法, 于是用看字节码的方法看.
 
-```
+```text
 javap -s -c ./HelloWorld.class
 Compiled from "HelloWorld.java"
 public class HelloWorld {

@@ -1,10 +1,5 @@
----
-layout: post
-title:  "使用 Protobuf 设计 REST API"
-date:   2017/01/07 20:16:22
-categories:
-comments: true
----
+# 使用 Protobuf 设计 REST API
+
 
 # 概述
 
@@ -12,7 +7,7 @@ comments: true
 
 创建文件，`main/proto/Login.proto`
 
-```proto
+```protobuf
 syntax = "proto3";
 package org.wcy123.api;
 option java_outer_classname = "Protos";
@@ -60,7 +55,7 @@ public class MyRestController {
 
 测试程序
 
-```
+```http
 curl -v -s -H 'Content-Type: application/json' -H 'Accept: application/json' http://127.0.0.1:8080/login -d '{"name":"wcy123", "password":"123456"}'
 *   Trying 127.0.0.1...
 * Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
@@ -84,7 +79,7 @@ curl -v -s -H 'Content-Type: application/json' -H 'Accept: application/json' htt
 
 ## Protobuf 支持的常用数据类型和  JSON之间的转换关系。
 
-```proto
+```protobuf
 syntax = "proto3";
 package org.wcy123.api;
 message Root {

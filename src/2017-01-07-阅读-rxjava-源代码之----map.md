@@ -1,10 +1,5 @@
----
-layout: post
-title:  "阅读 rxjava 源代码之  - map"
-date:   2017/01/07 20:17:39
-categories:
-comments: true
----
+# 阅读 rxjava 源代码之  - map
+
 [上一篇文章](http://www.jianshu.com/p/a927dfb384e9) 写了一个极其简化的 Rxjava Observable ，现在，我试图添加一个 `map` 操作符。
 
 ```java

@@ -1,10 +1,5 @@
----
-layout: post
-title:  "Learning inline keyword by example in C"
-date:   2015/05/05 11:48:11
-comments: true
-categories: 
----
+# Learning inline keyword by example in C
+
 
 C also has `inline` keyword, the sementic is not as same as
 C++. [Inline Functions In C](http://www.greenend.org.uk/rjk/tech/inline.html)
@@ -52,7 +47,7 @@ void m1()
 ```
 
 ```c
-// in a2.c
+16M// in a2.c
 #include <stdio.h>
 #include "foo.h"
 
@@ -62,15 +57,15 @@ void m2()
 }
 ```
 
-```
-+ gcc -O3 -c -o a1.o a1.c
-+ gcc -O3 -c -o a2.o a2.c
-+ gcc -O3 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+% gcc -O3 -c -o a1.o a1.c
+% gcc -O3 -c -o a2.o a2.c
+% gcc -O3 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is (nil)
 from a1: pointer is (nil)
-+ objdump -d a1.o
+% objdump -d a1.o
 a1.o:     file format elf64-x86-64
 
 
@@ -82,7 +77,7 @@ Disassembly of section .text:
    7:	bf 00 00 00 00       	mov    $0x0,%edi
    c:	31 c0                	xor    %eax,%eax
    e:	e9 00 00 00 00       	jmpq   13 <m1+0x13>
-+ nm a1.o
+% nm a1.o
 0000000000000000 T m1
                  U printf
 
@@ -91,15 +86,15 @@ Disassembly of section .text:
 With optimzation, we can see `a1.o` does not have local symbol `foo`
 defined, and there is no function call `foo`, i.e. it is inlined.
 
-```
-+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+% gcc -O0 -c -o a1.o a1.c
+% gcc -O0 -c -o a2.o a2.c
+% gcc -O0 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is (nil)
 from a1: pointer is (nil)
-+ objdump -d a1.o
+% objdump -d a1.o
 
 a1.o:     file format elf64-x86-64
 
@@ -117,9 +112,9 @@ Disassembly of section .text:
   18:	48 89 c6             	mov    %rax,%rsi
   1b:	bf 00 00 00 00       	mov    $0x0,%edi
   20:	b8 00 00 00 00       	mov    $0x0,%eax
-  25:	e8 00 00 00 00       	callq  2a <foo+0x2a>
-  2a:	c9                   	leaveq 
-  2b:	c3                   	retq   
+  25:	e8 00 00 00 00       	callq  2a <foo%0x2a>
+  2a:	c9                   	leaveq
+  2b:	c3                   	retq
 
 000000000000002c <m1>:
   2c:	55                   	push   %rbp
@@ -128,8 +123,8 @@ Disassembly of section .text:
   35:	bf 00 00 00 00       	mov    $0x0,%edi
   3a:	e8 c1 ff ff ff       	callq  0 <foo>
   3f:	5d                   	pop    %rbp
-  40:	c3                   	retq   
-+ nm a1.o
+  40:	c3                   	retq
+% nm a1.o
 0000000000000000 t foo
 000000000000002c T m1
                  U printf
@@ -154,16 +149,16 @@ void foo(const char * msg, void * f)
 `__attribute__((always_inline))` force to inline the function, even
 when optimization is disabled.
 
-```
+```console
 sh build.sh
-+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+% gcc -O0 -c -o a1.o a1.c
+% gcc -O0 -c -o a2.o a2.c
+% gcc -O0 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is (nil)
 from a1: pointer is (nil)
-+ objdump -d a1.o
+% objdump -d a1.o
 
 a1.o:     file format elf64-x86-64
 
@@ -175,18 +170,18 @@ Disassembly of section .text:
    1:	48 89 e5             	mov    %rsp,%rbp
    4:	48 83 ec 10          	sub    $0x10,%rsp
    8:	48 c7 45 f8 00 00 00 	movq   $0x0,-0x8(%rbp)
-   f:	00 
+   f:	00
   10:	48 c7 45 f0 00 00 00 	movq   $0x0,-0x10(%rbp)
-  17:	00 
+  17:	00
   18:	48 8b 55 f0          	mov    -0x10(%rbp),%rdx
   1c:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
   20:	48 89 c6             	mov    %rax,%rsi
   23:	bf 00 00 00 00       	mov    $0x0,%edi
   28:	b8 00 00 00 00       	mov    $0x0,%eax
   2d:	e8 00 00 00 00       	callq  32 <m1+0x32>
-  32:	c9                   	leaveq 
-  33:	c3                   	retq   
-+ nm a1.o
+  32:	c9                   	leaveq
+  33:	c3                   	retq
+% nm a1.o
 0000000000000000 T m1
                  U printf
 
@@ -216,16 +211,16 @@ void m2()
 }
 ```
 
-```
+```console
 sh build.sh
-+ gcc -O3 -c -o a1.o a1.c
-+ gcc -O3 -c -o a2.o a2.c
-+ gcc -O3 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+% gcc -O3 -c -o a1.o a1.c
+% gcc -O3 -c -o a2.o a2.c
+% gcc -O3 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is 0x400530
 from a1: pointer is 0x400570
-+ objdump -d a1.o
+% objdump -d a1.o
 
 a1.o:     file format elf64-x86-64
 
@@ -239,7 +234,7 @@ Disassembly of section .text:
    8:	bf 00 00 00 00       	mov    $0x0,%edi
    d:	e9 00 00 00 00       	jmpq   12 <foo+0x12>
   12:	66 66 66 66 66 2e 0f 	data16 data16 data16 data16 nopw %cs:0x0(%rax,%rax,1)
-  19:	1f 84 00 00 00 00 00 
+  19:	1f 84 00 00 00 00 00
 
 0000000000000020 <m1>:
   20:	ba 00 00 00 00       	mov    $0x0,%edx
@@ -247,7 +242,7 @@ Disassembly of section .text:
   2a:	bf 00 00 00 00       	mov    $0x0,%edi
   2f:	31 c0                	xor    %eax,%eax
   31:	e9 00 00 00 00       	jmpq   36 <m1+0x16>
-+ nm a1.o
+%  nm a1.o
 0000000000000000 t foo
 0000000000000020 T m1
                  U printf
@@ -301,20 +296,20 @@ void m2()
 }
 ```
 
-```
-+ gcc -O3 -c -o a1.o a1.c
-+ gcc -O3 -c -o a2.o a2.c
-+ gcc -O3 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
+```console
+% gcc -O3 -c -o a1.o a1.c
+% gcc -O3 -c -o a2.o a2.c
+% gcc -O3 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
 a2.o: In function `foo':
 a2.c:(.text+0x0): multiple definition of `foo'
 a1.o:a1.c:(.text+0x0): first defined here
 collect2: error: ld returned 1 exit status
-+ nm a1.o
+% nm a1.o
 0000000000000000 T foo
 0000000000000020 T m1
                  U printf
-+ nm a2.o
+% nm a2.o
 0000000000000000 T foo
 0000000000000020 T m1
                  U printf
@@ -363,15 +358,15 @@ void m2()
 }
 ```
 
-```
-+ gcc -O3 -c -o a1.o a1.c
-+ gcc -O3 -c -o a2.o a2.c
-+ gcc -O3 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+% gcc -O3 -c -o a1.o a1.c
+% gcc -O3 -c -o a2.o a2.c
+% gcc -O3 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is (nil)
 from a1: pointer is (nil)
-+ objdump -d a1.o
+% objdump -d a1.o
 
 a1.o:     file format elf64-x86-64
 
@@ -384,7 +379,7 @@ Disassembly of section .text:
    7:	bf 00 00 00 00       	mov    $0x0,%edi
    c:	31 c0                	xor    %eax,%eax
    e:	e9 00 00 00 00       	jmpq   13 <m1+0x13>
-+ nm a1.o
+% nm a1.o
 0000000000000000 T m1
                  U printf
 ```
@@ -396,19 +391,18 @@ But with the same source code but different compilation options,
 i.e. `-O0`, which disable inline optimization, we've got a linking
 error as below.
 
-```
 
-
-```+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
+```console
+% gcc -O0 -c -o a1.o a1.c
+% gcc -O0 -c -o a2.o a2.c
+% gcc -O0 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
 a1.o: In function `m1':
 a1.c:(.text+0xf): undefined reference to `foo'
 a2.o: In function `m2':
 a2.c:(.text+0xf): undefined reference to `foo'
 collect2: error: ld returned 1 exit status
-+ objdump -d a1.o
+% objdump -d a1.o
 
 a1.o:     file format elf64-x86-64
 
@@ -422,8 +416,8 @@ Disassembly of section .text:
    9:	bf 00 00 00 00       	mov    $0x0,%edi
    e:	e8 00 00 00 00       	callq  13 <m1+0x13>
   13:	5d                   	pop    %rbp
-  14:	c3                   	retq   
-+ nm a1.o
+  14:	c3                   	retq
+% nm a1.o
                  U foo
 0000000000000000 T m1
 ```
@@ -450,20 +444,20 @@ void m1()
 inline void foo(const char * msg, void * f);
 ```
 
-```
-+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+% gcc -O0 -c -o a1.o a1.c
+% gcc -O0 -c -o a2.o a2.c
+% gcc -O0 -c -o main.o main.c
+% gcc -o a.out a1.o a2.o main.o
+% ./a.out
 from a1: pointer is (nil)
 from a1: pointer is (nil)
-+ nm a1.o
+% nm a1.o
 0000000000000000 T foo
 000000000000002c T m1
                  U printf
 
-+ nm a2.o
+% nm a2.o
                  U foo
 0000000000000000 T m2
 ```
@@ -501,19 +495,19 @@ void m2()
 
 
 
-```
-+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+% gcc -O0 -c -o a1.o a1.c
+% gcc -O0 -c -o a2.o a2.c
+% gcc -O0 -c -o main.o main.c
+%  gcc -o a.out a1.o a2.o main.o
+%  ./a.out
 from a1: pointer is 0x400506
 from a1: pointer is 0x400506
-+ nm a1.o
+%  nm a1.o
 0000000000000000 T foo
 000000000000002c T m1
                  U printf
-+ nm a2.o
+%  nm a2.o
                  U foo
 0000000000000000 T m2
 ```
@@ -522,7 +516,7 @@ We see the address of function `foo` is unique, i.e. `0x400506`.
 
 ### what if inline functions have with difinitions?
 
-```
+```c
 // in a1.c
 #include <stdio.h>
 extern inline
@@ -551,19 +545,19 @@ void m2()
 ```
 
 
-```
-+ gcc -O0 -c -o a1.o a1.c
-+ gcc -O0 -c -o a2.o a2.c
-+ gcc -O0 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+%  gcc -O0 -c -o a1.o a1.c
+%  gcc -O0 -c -o a2.o a2.c
+%  gcc -O0 -c -o main.o main.c
+%  gcc -o a.out a1.o a2.o main.o
+%  ./a.out
 foo in a1.c from a1: pointer is 0x400506
 foo in a1.c from a2: pointer is 0x400506
-+ nm a1.o
+%  nm a1.o
 0000000000000000 T foo
 000000000000002c T m1
                  U printf
-+ nm a2.o
+%  nm a2.o
                  U foo
 0000000000000000 T m2
 ```
@@ -576,19 +570,19 @@ defined in `a1.c` is used.
 
 But if we compile it with `-O3`.
 
-```
-+ gcc -O3 -c -o a1.o a1.c
-+ gcc -O3 -c -o a2.o a2.c
-+ gcc -O3 -c -o main.o main.c
-+ gcc -o a.out a1.o a2.o main.o
-+ ./a.out
+```console
+%  gcc -O3 -c -o a1.o a1.c
+%  gcc -O3 -c -o a2.o a2.c
+%  gcc -O3 -c -o main.o main.c
+%  gcc -o a.out a1.o a2.o main.o
+%  ./a.out
 foo in a1.c from a1: pointer is 0x400530
 foo in a2.c from a2: pointer is 0x400530
-+ nm a1.o
+%  nm a1.o
 0000000000000000 T foo
 0000000000000020 T m1
                  U printf
-+ nm a2.o
+%  nm a2.o
                  U foo
 0000000000000000 T m2
                  U printf
@@ -603,22 +597,3 @@ But in practice it might happen. For example, you modify `foo` in
 `foo.h`, but you only compile `a1.c` and forgot to re-compile
 `a2.c`. If the function is inlined, `a2.c` still use the old
 definition of `foo`.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
