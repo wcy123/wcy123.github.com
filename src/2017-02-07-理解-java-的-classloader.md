@@ -1,10 +1,5 @@
----
-layout: post
-title:  "理解 java 的 classloader"
-date:   2017/02/07 14:18:28
-categories:
-comments: true
----
+# 理解 java 的 classloader
+
 
 
 最近对 classloader 感兴趣, 于是研究了一下。下面是 classloader 的核心代码。

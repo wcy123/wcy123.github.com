@@ -40,7 +40,7 @@
 - [2017-03-08 成本函数与学习速度](2017-03-08-成本函数与学习速度.md)
 - [2017-03-08 用 Makefile + pandoc + markdown 写博客](2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.md)
 - [2017-03-05 backpropagation](2017-03-05-backpropagation.md)
-<!-- - [2017-02-07 理解 java 的 classloader](2017-02-07-理解-java-的-classloader.md) -->
+- [2017-02-07 理解 java 的 classloader](2017-02-07-理解-java-的-classloader.md)
 <!-- - [2017-01-25 在 Java 中，我们尽量避免使用 null](2017-01-25-在-Java-中，我们尽量避免使用-null.md) -->
 <!-- - [2017-01-14 Java 8 函数式编程例子](2017-01-14-Java-8-函数式编程例子.md) -->
 <!-- - [2017-01-08 二分法查找](2017-01-08-二分法查找.md) -->
