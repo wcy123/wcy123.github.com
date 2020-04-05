@@ -38,7 +38,8 @@ In elisp, we can easily convert any string into hex format as below
 (tmux-cc--convert-keys "ls\n") => ("6c" "73" "a")
 ```
 
-It becomes interesting when we invoke tmux `send-keys` from within emacs session.
+It becomes interesting when we invoke tmux `send-keys` from within a
+emacs session.
 
 ```lisp
 (setq strings "ls\n")
@@ -47,10 +48,10 @@ It becomes interesting when we invoke tmux `send-keys` from within emacs session
      "send-keys" "-t" "op" "-H" ,@(tmux-cc--convert-keys strings)))
 ```
 
-In this way, we can send arbitrary strings in a emacs buffer to a tmux
-session.
+In this way, we can send arbitrary strings from a emacs buffer to a
+tmux session.
 
-There is a complete implemenation in https://github.com/wcy123/tmux-cc.
+There is a complete implemenation in [https://github.com/wcy123/tmux-cc]()
 
 To install the package, you can put the following lines in your
 `~/.emacs`.
@@ -75,5 +76,5 @@ And it is recommended to bind `C-z` in `markdown-mode` or `shell-script-mode`.
               ("C-z" . tmux-cc-send-current-line))
 ```
 
-Or you can just install `https://github.com/wcy123/100ms_dot_emacs`,
+Or you can just install [https://github.com/wcy123/100ms_dot_emacs]()
 it works out of box.
