@@ -5,6 +5,8 @@ multilingual = true
 src = "src"
 title = "Wang Chunye"
 
+[output.markdown]
+
 [output.html]
 mathjax-support = true
 
