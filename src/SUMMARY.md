@@ -1,8 +1,9 @@
 # SUMMARY.md
 
-- [2019-04-05 use emacs to control tmux](2020-04-05-use-emacs-to-control-tmux.md)
-- [2019-04-04 start to use mdbook](2020-04-04-start-to-use-mdbook.md)
-- [2019-04-22 从一个求和函数谈起](2019-04-22-从一个求和函数谈起.md)
+- [2020-04-05 setup emacs IDE for Rust](2020-04-05-setup-rust-IDE-for-emacs.md)
+- [2020-04-05 use emacs to control tmux](2020-04-05-use-emacs-to-control-tmux.md)
+- [2020-04-04 start to use mdbook](2020-04-04-start-to-use-mdbook.md)
+- [2020-04-22 从一个求和函数谈起](2019-04-22-从一个求和函数谈起.md)
 - [2019-02-03 c++ 可否同时抛出两个异常](2019-02-03-c++-可否同时抛出两个异常.md)
 - [2019-01-30 c++ 中的 converting constructor](2019-01-30-c++-中的-converting-constructor.md)
 - [2019-01-30 深入理解 Return Value Optimization](2019-01-30-深入理解-Return-Value-Optimization.md)
