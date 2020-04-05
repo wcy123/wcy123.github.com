@@ -1,7 +1,6 @@
----
-title: 用 Makefile + pandoc + markdown 写博客
----
+# 用 Makefile + pandoc + markdown 写博客
 
+更新，已经移植到了 mdbook 工具了。[看这里](2020-04-04-start-to-use-mdbook.html)
 
 静态页面生成有很多工具，我用过 Jekyll, Hugo, Hexo 等等。我原来用 Jekyll
 写笔记，其实也够用了。最近想画图，这个东西不能自动集成 metapost ，也是挺麻烦的。
@@ -31,15 +30,15 @@ Hexo 类似的问题，升级完 nodejs ，一大堆问题。
 
  需要安装
 
- ```
- brew install mactex
- brew install pandoc
- apm install markdown-preview-plus
- ```
+```console
+%  brew install mactex
+% brew install pandoc
+% apm install markdown-preview-plus
+```
 
 Makefile 一般 unix 系统都自带的。
 
-```
+```makefile
 first_blog.html: first_blog.md
     pandoc -s --output $@ $<
 ```
@@ -48,9 +47,9 @@ first_blog.html: first_blog.md
 
 我的 Makefile 比这个复杂一些，也是抄别人的。 感兴趣的可以
 
-```
-git clone https://github.com/wcy123/wcy123.github.io
-git checkout pandoc
+```console
+% git clone https://github.com/wcy123/wcy123.github.io
+% git checkout pandoc
 ```
 
 这里面每段代码都很简单，类似浆糊弄在一起。

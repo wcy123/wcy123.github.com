@@ -38,7 +38,7 @@
 - [2017-03-09 Back Propagation 算法的向量表示](2017-03-09-Back-Propagation-算法的向量表示.md)
 - [2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数](2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.md)
 - [2017-03-08 成本函数与学习速度](2017-03-08-成本函数与学习速度.md)
-<!-- - [2017-03-08 用 Makefile + pandoc + markdown 写博客](2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.md) -->
+- [2017-03-08 用 Makefile + pandoc + markdown 写博客](2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.md)
 - [2017-03-05 backpropagation](2017-03-05-backpropagation.md)
 <!-- - [2017-02-07 理解 java 的 classloader](2017-02-07-理解-java-的-classloader.md) -->
 <!-- - [2017-01-25 在 Java 中，我们尽量避免使用 null](2017-01-25-在-Java-中，我们尽量避免使用-null.md) -->
