@@ -131,7 +131,7 @@ install racer
 
 You can input `std::io::B<TAB>` , to test whether it works or not.
 
-```
+```text
 To test go to definition: Place your cursor over a symbol and press M-. to jump to its definition.
 
 Press C-x 4 . to jump to its definition in another window.
