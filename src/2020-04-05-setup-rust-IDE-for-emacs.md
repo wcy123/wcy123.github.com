@@ -153,7 +153,7 @@ In this way, we can navigate in source code.
 (add-hook 'rust-mode-hook #'cargo-minor-mode)
 ```
 
-这个就打开了 `cargo-minor-mode` ，于是可以有常用的编译命令
+`cargo-minor-mode` is enabled in rust mode, now we can use the following cargo commands.
 
 ```text
 C-c C-c C-a     cargo-process-add
