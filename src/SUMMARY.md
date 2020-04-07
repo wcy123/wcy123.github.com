@@ -1,5 +1,5 @@
 # SUMMARY.md
-
+- [Table Of Contents](SUMMARY.md)
 - [2020-04-05 setup emacs IDE for Rust](2020-04-05-setup-rust-IDE-for-emacs.md)
 - [2020-04-05 use emacs to control tmux](2020-04-05-use-emacs-to-control-tmux.md)
 - [2020-04-04 start to use mdbook](2020-04-04-start-to-use-mdbook.md)
