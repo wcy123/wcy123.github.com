@@ -1,4 +1,5 @@
-# SUMMARY.md
+# Wang Chunye's BLOG
+
 - [Table Of Contents](SUMMARY.md)
 - [2020-04-05 setup emacs IDE for Rust](2020-04-05-setup-rust-IDE-for-emacs.md)
 - [2020-04-05 use emacs to control tmux](2020-04-05-use-emacs-to-control-tmux.md)
