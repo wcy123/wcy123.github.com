@@ -1,0 +1,2 @@
+has_type_member<int> = 0
+has_type_member<std::enable_if<true,void> > = 1

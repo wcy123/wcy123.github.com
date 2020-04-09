@@ -1,0 +1,4 @@
+is_copy_assignable<unique_ptr<int> > = 0
+is_copy_assignable<mutex> = 0
+is_copy_assignable<lock_guard> = 0
+is_copy_assignable<int > = 1

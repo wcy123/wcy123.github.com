@@ -1,0 +1,41 @@
++ g++ -Os -fno-exceptions -std=c++14 -c -o unique_ptr_overhead.o unique_ptr_overhead.cpp
++ objdump -D unique_ptr_overhead.o
+
+unique_ptr_overhead.o:	file format Mach-O 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+__Z9UniquePtrv:
+       0:	55 	pushq	%rbp
+       1:	48 89 e5 	movq	%rsp, %rbp
+       4:	53 	pushq	%rbx
+       5:	50 	pushq	%rax
+       6:	bf 01 00 00 00 	movl	$1, %edi
+       b:	e8 00 00 00 00 	callq	0 <__Z9UniquePtrv+0x10>
+      10:	48 89 c3 	movq	%rax, %rbx
+      13:	48 89 df 	movq	%rbx, %rdi
+      16:	e8 00 00 00 00 	callq	0 <__Z9UniquePtrv+0x1b>
+      1b:	48 89 df 	movq	%rbx, %rdi
+      1e:	e8 00 00 00 00 	callq	0 <__Z9UniquePtrv+0x23>
+      23:	48 89 df 	movq	%rbx, %rdi
+      26:	48 83 c4 08 	addq	$8, %rsp
+      2a:	5b 	popq	%rbx
+      2b:	5d 	popq	%rbp
+      2c:	e9 00 00 00 00 	jmp	0 <__Z6RawPtrv>
+
+__Z6RawPtrv:
+      31:	55 	pushq	%rbp
+      32:	48 89 e5 	movq	%rsp, %rbp
+      35:	53 	pushq	%rbx
+      36:	50 	pushq	%rax
+      37:	bf 01 00 00 00 	movl	$1, %edi
+      3c:	e8 00 00 00 00 	callq	0 <__Z6RawPtrv+0x10>
+      41:	48 89 c3 	movq	%rax, %rbx
+      44:	48 89 df 	movq	%rbx, %rdi
+      47:	e8 00 00 00 00 	callq	0 <__Z6RawPtrv+0x1b>
+      4c:	48 89 df 	movq	%rbx, %rdi
+      4f:	e8 00 00 00 00 	callq	0 <__Z6RawPtrv+0x23>
+      54:	48 89 df 	movq	%rbx, %rdi
+      57:	48 83 c4 08 	addq	$8, %rsp
+      5b:	5b 	popq	%rbx
+      5c:	5d 	popq	%rbp
+      5d:	e9 00 00 00 00 	jmp	0 <__Z6RawPtrv+0x31>

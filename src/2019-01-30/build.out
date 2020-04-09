@@ -1,0 +1,20 @@
+begin block
+&mark 0x7fff5476766c
+construct: Foo[0@0x7fff54767708]
+&begin 0x7fff5476770c
+obj = Foo[0@0x7fff54767708]
+&end 0x7fff54767704
+deconstructor: Foo[0@0x7fff54767708]
+end block
+begin block
+&mark 0x7fff52a1366c
+construct: Foo[0@0x7fff52a13668]
+copy from Foo[0@0x7fff52a13668]to Foo[0@0x7fff52a13700]
+deconstructor: Foo[0@0x7fff52a13668]
+copy from Foo[0@0x7fff52a13700]to Foo[0@0x7fff52a13708]
+deconstructor: Foo[0@0x7fff52a13700]
+&begin 0x7fff52a1370c
+obj = Foo[0@0x7fff52a13708]
+&end 0x7fff52a136f0
+deconstructor: Foo[0@0x7fff52a13708]
+end block
