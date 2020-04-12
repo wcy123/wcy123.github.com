@@ -8,6 +8,7 @@ title = "Wang Chunye"
 
 [output.html]
 mathjax-support = true
+google-analytics = "UA-98267158-1"
 
 [output.html.playpen]
 editable = true
