@@ -2,7 +2,7 @@
 
 ## download and install mdbook
 
-[mdbook@github](https://github.com/rust-lang/mdBook)
+refer to [mdbook@github](https://github.com/rust-lang/mdBook)
 
 ```bash
 cargo install mdbook

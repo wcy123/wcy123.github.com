@@ -183,6 +183,9 @@ C-c C-c C-S-u   cargo-process-upgrade
 
 ## language server support
 
+``` console
+% rustup component add rls rust-analysis rust-src
+```
 
 ```lisp
 (use-package lsp-mode
