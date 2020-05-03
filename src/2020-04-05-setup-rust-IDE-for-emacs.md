@@ -99,7 +99,7 @@ install racer
 
 ```console
 % cargo install racer
-% cargo toolchain add nightly
+% rustup toolchain add nightly
 % cargo +nightly install racer
 % rustup component add rust-src
 ```
