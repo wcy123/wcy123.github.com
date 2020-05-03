@@ -1,0 +1,386 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2020-04-05 setup emacs IDE for Rust - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html" class="active"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#setup-emacs-ide-for-rust" id="setup-emacs-ide-for-rust">setup emacs IDE for Rust</a></h1>
+<p>Objectives:</p>
+<ol>
+<li>generate a simple hello world in Rust.</li>
+<li>format on save</li>
+<li>auto completion</li>
+<li>code navigation</li>
+<li>cargo integration</li>
+</ol>
+<h2><a class="header" href="#use-100ms_dot_emacs" id="use-100ms_dot_emacs">use <code>100ms_dot_emacs</code></a></h2>
+<p>If you are not so patient, you can install
+<a href="https://github.com/wcy123/100ms_dot_emacs">100ms_dot_emacs</a>, it works
+out of box.</p>
+<h2><a class="header" href="#generate-a-new-project" id="generate-a-new-project">generate a new project</a></h2>
+<p><a href="">https://doc.rust-lang.org/cargo/guide/creating-a-new-project.html</a></p>
+<pre><code class="language-console">% cargo new hello_world --bin
+     Created binary (application) `hello_world` package
+% tree .
+.
+└── hello_world
+    ├── Cargo.toml
+    └── src
+        └── main.rs
+
+2 directories, 2 files
+chunywan@localhost:rust% cd hello_world/
+chunywan@localhost:hello_world% cargo build
+   Compiling hello_world v0.1.0 (/Users/chunywan/d/working/learn/rust/hello_world)
+    Finished dev [unoptimized + debuginfo] target(s) in 1.80s
+chunywan@localhost:hello_world% cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/hello_world`
+Hello, world!
+</code></pre>
+<h2><a class="header" href="#install-emacs-rust-mode" id="install-emacs-rust-mode">install emacs rust-mode</a></h2>
+<p><a href="">https://github.com/rust-lang/rust-mode</a></p>
+<h2><a class="header" href="#format-on-save" id="format-on-save">format on save</a></h2>
+<p>install  rustfmt</p>
+<p><a href="">https://github.com/rust-lang/rustfmt</a></p>
+<pre><code class="language-console">rustup component add rustfmt
+</code></pre>
+<pre><code class="language-console">M-x rust-format-buffer
+</code></pre>
+<p>you might need <code>exec-path-from-shell</code> if you are using mac os.</p>
+<p><a href="">https://github.com/purcell/exec-path-from-shell</a></p>
+<pre><code class="language-console">M-x package-install RET exec-path-from-shell RET.
+</code></pre>
+<pre><code class="language-elisp">(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (when (or (memq window-system '(mac ns x))
+            (memq system-type '(darwin)))
+    (exec-path-from-shell-initialize)))
+</code></pre>
+<pre><code class="language-elisp">(use-package rust-mode
+  :ensure t
+  :config
+  (setq rust-format-on-save t))
+</code></pre>
+<h2><a class="header" href="#auto-completion" id="auto-completion">auto completion</a></h2>
+<p>install racer</p>
+<p><a href="">https://github.com/racer-rust/racer#installation</a></p>
+<pre><code class="language-console">% cargo install racer
+% rustup toolchain add nightly
+% cargo +nightly install racer
+% rustup component add rust-src
+</code></pre>
+<p><a href="">https://github.com/racer-rust/emacs-racer</a></p>
+<pre><code class="language-elisp">(use-package rust-mode
+  :mode &quot;\\.rs\\'&quot;
+  :ensure t
+  :config
+  (setq rust-format-on-save t)
+  (add-hook 'rust-mode-hook #'cargo-minor-mode))
+(use-package racer
+  :ensure t
+  :config
+  :after (rust-mode)
+  :config
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode)
+  (define-key rust-mode-map (kbd &quot;TAB&quot;) #'company-indent-or-complete-common)
+  (setq company-tooltip-align-annotations t)
+  (setq racer-loaded 1))
+</code></pre>
+<p>You can input <code>std::io::B&lt;TAB&gt;</code> , to test whether it works or not.</p>
+<pre><code class="language-text">To test go to definition: Place your cursor over a symbol and press M-. to jump to its definition.
+
+Press C-x 4 . to jump to its definition in another window.
+
+Press C-x 5 . to jump to its definition in another frame.
+
+Press M-, to jump back to the previous cursor location.
+
+If it doesn't work, try M-x racer-debug to see what command was run and what output was returned.
+
+</code></pre>
+<p>In this way, we can navigate in source code.</p>
+<h2><a class="header" href="#cargo-integration" id="cargo-integration">cargo integration</a></h2>
+<pre><code class="language-lisp">(add-hook 'rust-mode-hook #'cargo-minor-mode)
+</code></pre>
+<p><code>cargo-minor-mode</code> is enabled in rust mode, now we can use the following cargo commands.</p>
+<pre><code class="language-text">C-c C-c C-a     cargo-process-add
+C-c C-c C-b     cargo-process-build
+C-c C-c C-c     cargo-process-repeat
+C-c C-c C-d     cargo-process-doc
+C-c C-c C-e     cargo-process-bench
+C-c C-c C-f     cargo-process-current-test
+C-c C-c TAB     cargo-process-init
+C-c C-c C-k     cargo-process-check
+C-c C-c C-l     cargo-process-clean
+C-c C-c RET     cargo-process-fmt
+C-c C-c C-n     cargo-process-new
+C-c C-c C-o     cargo-process-current-file-tests
+C-c C-c C-r     cargo-process-run
+C-c C-c C-s     cargo-process-search
+C-c C-c C-t     cargo-process-test
+C-c C-c C-u     cargo-process-update
+C-c C-c C-v     cargo-process-doc-open
+C-c C-c C-x     cargo-process-run-example
+C-c C-c C-S-a   cargo-process-audit
+C-c C-c C-S-d   cargo-process-rm
+C-c C-c C-S-k   cargo-process-clippy
+C-c C-c C-S-o   cargo-process-outdated
+C-c C-c C-S-u   cargo-process-upgrade
+</code></pre>
+<h2><a class="header" href="#language-server-support" id="language-server-support">language server support</a></h2>
+<pre><code class="language-console">% rustup component add rls rust-analysis rust-src
+</code></pre>
+<pre><code class="language-lisp">(use-package lsp-mode
+  :defines (lsp-keymap-prefix)
+  :commands (lsp lsp-deferred)
+  :init (setq lsp-keymap-prefix &quot;C-l&quot;)
+  :hook (((rust-mode)
+          . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration)))
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2020-04-09-setup-c-IDE-for-emacs.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2020-04-05-use-emacs-to-control-tmux.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2020-04-09-setup-c-IDE-for-emacs.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2020-04-05-use-emacs-to-control-tmux.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

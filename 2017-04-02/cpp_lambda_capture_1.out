@@ -1,0 +1,23 @@
+cpp_lambda_capture_1.cpp:8: [Foo::Foo()] i 100 
+before create lambda1
+cpp_lambda_capture_1.cpp:13: [Foo::Foo(const Foo &)] i 101 
+after create lambda1
+before create lambda2
+cpp_lambda_capture_1.cpp:13: [Foo::Foo(const Foo &)] i 102 
+after create lambda2
+before create lambda3
+cpp_lambda_capture_1.cpp:13: [Foo::Foo(const Foo &)] i 103 
+after create lambda3
+before create lambda3
+cpp_lambda_capture_1.cpp:13: [Foo::Foo(const Foo &)] i 104 
+after create lambda4
+before lambda4 out of scope
+cpp_lambda_capture_1.cpp:18: [Foo::~Foo()] i 104 
+after lambda4 out of scope
+cpp_lambda_capture_1.cpp:18: [Foo::~Foo()] i 103 
+after lambda3 out of scope
+before lambda2 out of scope
+cpp_lambda_capture_1.cpp:18: [Foo::~Foo()] i 102 
+after lambda2 out of scope
+cpp_lambda_capture_1.cpp:18: [Foo::~Foo()] i 101 
+cpp_lambda_capture_1.cpp:18: [Foo::~Foo()] i 100 

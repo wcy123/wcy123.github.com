@@ -1,0 +1,15 @@
+foo1(w1):T = Widget;Widget x;
+foo2(w1):T = Widget;Widget& x;
+foo3(w1):T = Widget;Widget const& x;
+
+foo1(rw):T = Widget;Widget x;
+foo2(rw):T = Widget;Widget& x;
+foo3(rw):T = Widget;Widget const& x;
+
+foo1(cw):T = Widget;Widget x;
+foo2(cw):T = Widget const;Widget const& x;
+foo3(cw):T = Widget;Widget const& x;
+
+foo1(crw1):T = Widget;Widget x;
+foo2(crw1):T = Widget const;Widget const& x;
+foo3(crw1):T = Widget;Widget const& x;

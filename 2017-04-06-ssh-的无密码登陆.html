@@ -1,0 +1,327 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2017-04-06 ssh 的无密码登陆 - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html" class="active"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#ssh-的无密码登陆" id="ssh-的无密码登陆">&quot;ssh 的无密码登陆&quot;</a></h1>
+<hr />
+<h1><a class="header" href="#无密码登陆" id="无密码登陆">无密码登陆</a></h1>
+<p>公钥就是锁，私钥就是钥匙。我们可以生成一对钥匙和锁，然后把给服务器上锁，把钥匙留着笔记本上，然后就可以无密码登陆了。</p>
+<h2><a class="header" href="#生成钥匙和锁" id="生成钥匙和锁">生成钥匙和锁</a></h2>
+<pre><code class="language-console">% ls -l ~/.ssh
+total 0
+% ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/wcy123/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/wcy123/.ssh/id_rsa.
+Your public key has been saved in /home/wcy123/.ssh/id_rsa.pub.
+The key fingerprint is:
+2b:03:51:b3:86:8c:44:9a:49:fe:ee:ff:0f:ef:77:d6 wcy123@hostname
+The key's randomart image is:
++--[ RSA 2048]----+
+| oo   o          |
+|o= o o o         |
+|+.. + o          |
+|  .  o           |
+|   ..   S        |
+|  .  .   .       |
+|   .  o..     .  |
+|  .    oo  . o E |
+|   .....o+. o    |
++-----------------+
+% ls -l ~/.ssh                                                                                                   1 ↵
+total 16
+-rw------- 1 wcy123 ubuntu 1679 Apr  8 09:44 id_rsa
+-rw-r--r-- 1 wcy123 ubuntu  396 Apr  8 09:44 id_rsa.pub
+</code></pre>
+<p>上面是在 linux 的笔记本上， windows 上的 putty 或者其他工具也是类似的。</p>
+<p><code>id_rsa</code> 是钥匙， <code>id_rsa.pub</code> 是锁。</p>
+<h2><a class="header" href="#给服务器上锁" id="给服务器上锁">给服务器上锁</a></h2>
+<pre><code class="language-console">% cat ~/.ssh/id_rsa.pub | ssh wangchunye@10.10.0.102 'chmod +w $HOME/.ssh/authorized_keys ; tee -a $HOME/.ssh/authorized_keys ; chmod 600 $HOME/.ssh/authorized_keys'
+wangchunye@10.10.0.102's password:
+chmod: cannot access '/home/wangchunye/.ssh/authorized_keys': No such file or directory
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDIPBvlQ0sfpPFmSsgi2odj/dS9GlaiYCXZOKKm9R2t4RpxWbQafUR7OmcGbNdJNBUyrauEKaH3v1Incaz//PAJ9zalABqBPwc7qzWZfwDYQ3ojsbQMO/mherkI5ZSMYhbnQCAt0k1KqDbZnmS6icAarXpVAvY1nHVWpya/FuepTFp/fPpoq3VN3BlBeX9F4KpeO5V329dKzZs3CCez5q7Woltdr4pwz6BHW8ddoBuQlueKrRru/86rAQxz/CYG5F0QgtTEqoyIcWHVpf01BayeB3vSnKH0URFkBrRTBbY0880XVa5U0skrYc7/tDUG/fIXdjvX8iIDMQGz3RnqtCp1 wangchunye@wangchunye.local
+</code></pre>
+<p>这个命令看起来有些复杂，有些机器上有  <code>ssh-copy-id</code> 可以完成一样的功能。</p>
+<pre><code class="language-console">% ssh-copy-id wangchunye@10.10.0.102
+</code></pre>
+<p>每次 <code>ssh-agent</code> 是本地的一个守护进程，他记录了本地的钥匙。<code>ssh-add</code> 用于添加删除这些钥匙</p>
+<pre><code class="language-console">% ssh-agent
+....
+
+%
+</code></pre>
+<p>这样登陆主机就不用密码了。</p>
+<h1><a class="header" href="#随身带着钥匙" id="随身带着钥匙">随身带着钥匙</a></h1>
+<p>假设你配置好了笔记本 N, 然后登陆主机 A ，不用密码了，很好。然后从  A 登陆 B ，这个时候你还是需要输入密码。</p>
+<p>你可以把 <code>~/.ssh/id_rsa</code> 也就是你的钥匙，拷贝到主机 A 的 HOME 目录下，但是，这样明显有问题。主机 A 上的管理员账号 <code>root</code> 可以看你的钥匙，偷你的钥匙。</p>
+<p>有一个简单的办法</p>
+<pre><code class="language-console">ssh -A hostA
+</code></pre>
+<p><code>-A</code> 这样登陆 hostA 之后，再登陆其他主机，就不用再次输入密码了，因为 hostB 会问 hostA 上的 ssh 进程，钥匙是啥，ssh 进程再问笔记本上的 <code>ssh-agent</code> 进程，钥匙是啥。<code>ssh-add</code> 已经加进去了钥匙，在你安全的笔记本上。所以这个办法很好。</p>
+<h1><a class="header" href="#tmux" id="tmux">tmux</a></h1>
+<p>我们都知道 tmux 是一个好东西。 配合使用 tmux attach 的时候，上面wangchunye@wangchunye:~ » ssh-agent
+SSH_AUTH_SOCK=/var/folders/_g/t1l2srf912b7yg4qnw8k5jr00000gn/T//ssh-CS0a1Qh3satx/agent.95237; export SSH_AUTH_SOCK;
+SSH_AGENT_PID=95238; export SSH_AGENT_PID;
+echo Agent pid 95238;的连续穿梭的办法就有问题了。第一次在 hostA 上创建 tmux 会话的时候，可以不用密码穿梭到 hostB 上，然后我们 <code>tmux attach</code> 重新连接的时候，就还需要输入密码了，原因是进程不能共享一些环境变量。下面的方法可以搞定这个问题。</p>
+<p><a href="http://unix.stackexchange.com/questions/114558/how-can-i-forward-a-already-forwarded-ssh-key-into-tmux">stackoverflow</a></p>
+<pre><code class="language-sh">#!/bin/sh
+SSHVARS=&quot;SSH_CLIENT SSH_TTY SSH_AUTH_SOCK SSH_CONNECTION DISPLAY&quot;
+
+for var in ${SSHVARS} ; do
+  echo &quot;export $var=\&quot;$(eval echo '$'$var)\&quot;&quot;
+done 1&gt;$HOME/.ssh/latestagent
+
+</code></pre>
+<p><code>tmux attach</code> 之后，运行下面的命令就可以继续无密码穿梭了。</p>
+<pre><code class="language-sh">source  ~/.ssh/saveagent
+</code></pre>
+<p>这个命令很长，可以把这个放到 <code>~/.bashrc</code> 中</p>
+<pre><code class="language-sh">alias s='source ~/.ssh/saveagent'
+</code></pre>
+<p>然后，打一个 <code>s</code> 就可以继续穿梭了。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2017-04-23-c++-non-copyable-的传递性.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2017-04-04-c++-GSL-中的-owner.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2017-04-23-c++-non-copyable-的传递性.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2017-04-04-c++-GSL-中的-owner.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

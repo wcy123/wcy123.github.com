@@ -1,0 +1,62 @@
+remove_erase_3.cpp:9: [Foo] v 1 
+remove_erase_3.cpp:9: [Foo] v 2 
+remove_erase_3.cpp:9: [Foo] v 3 
+remove_erase_3.cpp:9: [Foo] v 4 
+remove_erase_3.cpp:9: [Foo] v 6 
+remove_erase_3.cpp:9: [Foo] v 7 
+remove_erase_3.cpp:9: [Foo] v 8 
+remove_erase_3.cpp:14: [Foo] other.value 1 value 1 
+remove_erase_3.cpp:14: [Foo] other.value 2 value 2 
+remove_erase_3.cpp:14: [Foo] other.value 3 value 3 
+remove_erase_3.cpp:14: [Foo] other.value 4 value 4 
+remove_erase_3.cpp:14: [Foo] other.value 6 value 6 
+remove_erase_3.cpp:14: [Foo] other.value 7 value 7 
+remove_erase_3.cpp:14: [Foo] other.value 8 value 8 
+remove_erase_3.cpp:29: [~Foo] value 8 
+remove_erase_3.cpp:29: [~Foo] value 7 
+remove_erase_3.cpp:29: [~Foo] value 6 
+remove_erase_3.cpp:29: [~Foo] value 4 
+remove_erase_3.cpp:29: [~Foo] value 3 
+remove_erase_3.cpp:29: [~Foo] value 2 
+remove_erase_3.cpp:29: [~Foo] value 1 
+remove_erase_3.cpp:20: [operator=] other.value 3 value 2 
+remove_erase_3.cpp:20: [operator=] other.value 7 value 0 
+before erase 
+remove_erase_3.cpp:14: [Foo] other.value 1 value 1 
+i= 1
+remove_erase_3.cpp:29: [~Foo] value 1 
+remove_erase_3.cpp:14: [Foo] other.value 3 value 3 
+i= 3
+remove_erase_3.cpp:29: [~Foo] value 3 
+remove_erase_3.cpp:14: [Foo] other.value 7 value 7 
+i= 7
+remove_erase_3.cpp:29: [~Foo] value 7 
+remove_erase_3.cpp:14: [Foo] other.value 4 value 4 
+i= 4
+remove_erase_3.cpp:29: [~Foo] value 4 
+remove_erase_3.cpp:14: [Foo] other.value 6 value 6 
+i= 6
+remove_erase_3.cpp:29: [~Foo] value 6 
+remove_erase_3.cpp:14: [Foo] other.value 0 value 0 
+i= 0
+remove_erase_3.cpp:29: [~Foo] value 0 
+remove_erase_3.cpp:14: [Foo] other.value 8 value 8 
+i= 8
+remove_erase_3.cpp:29: [~Foo] value 8 
+remove_erase_3.cpp:29: [~Foo] value 8 
+remove_erase_3.cpp:29: [~Foo] value 0 
+remove_erase_3.cpp:29: [~Foo] value 6 
+remove_erase_3.cpp:29: [~Foo] value 4 
+after erase 
+remove_erase_3.cpp:14: [Foo] other.value 1 value 1 
+i= 1
+remove_erase_3.cpp:29: [~Foo] value 1 
+remove_erase_3.cpp:14: [Foo] other.value 3 value 3 
+i= 3
+remove_erase_3.cpp:29: [~Foo] value 3 
+remove_erase_3.cpp:14: [Foo] other.value 7 value 7 
+i= 7
+remove_erase_3.cpp:29: [~Foo] value 7 
+remove_erase_3.cpp:29: [~Foo] value 7 
+remove_erase_3.cpp:29: [~Foo] value 3 
+remove_erase_3.cpp:29: [~Foo] value 1 

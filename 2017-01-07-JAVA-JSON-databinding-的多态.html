@@ -1,0 +1,418 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2017-01-07 JAVA JSON databinding 的多态 - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html" class="active"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#java-json-databinding-的多态" id="java-json-databinding-的多态">JAVA JSON databinding 的多态</a></h1>
+<p>JSON 在 REST API 的调用中越来越多的应用，如何表达多态是经常碰到的一个问题。</p>
+<p>有三种方式解决这个问题</p>
+<ul>
+<li><code>PROPERTY</code> ，<code>EXISTING_PROPERTY</code>， POJO 映射为 JSON Object ，某一个字段表示类型。</li>
+<li><code>WRAPPER_OBJECT</code> POJO 映射为只有一个字段的 JSON Object ，字段名表示类型。</li>
+<li><code>WRAPPER_ARRAY</code> POJO 映射为两个元素的数组 ，前面的表示类型，后面的表示指值。</li>
+</ul>
+<h1><a class="header" href="#背景" id="背景">背景</a></h1>
+<pre><code class="language-java">@Data
+static class  Zoo {
+    private Animal leader;
+    private Animal[] followers;
+}
+</code></pre>
+<p>假设有一个 <code>Zoo</code> 类，里面包含了一个特殊的动物 <code>leader</code>，和一些动物 <code>followers</code>。下面的代码试图转换 JSON</p>
+<pre><code class="language-java">public static void main(String[] args) throws IOException {
+    Zoo zoo = new Zoo();
+    zoo.setLeader(new Dog());
+    zoo.setFollowers(new Animal[]{new Dog(), new Cat()});
+    final ObjectMapper mapper = new ObjectMapper();
+    final String json = mapper.writeValueAsString(zoo);
+    System.out.println(json);
+    final Zoo zoo2 = mapper.readValue(json, Zoo.class);
+    System.out.println(zoo2);
+}
+</code></pre>
+<p>例子 <code>Dog</code> 和  <code>Cat</code> 类</p>
+<pre><code class="language-java">static class Dog implements Animal {
+    private String name = &quot;wangwang&quot;;
+    @Override
+    public String getAnimalType() {
+        return &quot;dog&quot;;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+static class Cat implements Animal {
+    private String name = &quot;miao&quot;;
+
+    @Override
+    public String getAnimalType() {
+        return &quot;cat&quot;;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+</code></pre>
+<h1><a class="header" href="#把-pojo-映射称为-json-object--include--jsontypeinfoasexisting_property" id="把-pojo-映射称为-json-object--include--jsontypeinfoasexisting_property">把 POJO 映射称为 JSON Object , <code>include = JsonTypeInfo.As.EXISTING_PROPERTY</code></a></h1>
+<p><code>include = JsonTypeInfo.As.PROPERTY</code> 也类似，区别不大。</p>
+<p>用字段 <code>animalType</code> 来表示类型信息。</p>
+<pre><code class="language-json">{
+  &quot;leader&quot;: {
+    &quot;name&quot;: &quot;wangwang&quot;,
+    &quot;animalType&quot;: &quot;dog&quot;
+  },
+  &quot;followers&quot;: [
+    {
+      &quot;name&quot;: &quot;wangwang&quot;,
+      &quot;animalType&quot;: &quot;dog&quot;
+    },
+    {
+      &quot;name&quot;: &quot;miao&quot;,
+      &quot;animalType&quot;: &quot;cat&quot;
+    }
+  ]
+}
+</code></pre>
+<pre><code class="language-java">@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = &quot;animalType&quot;)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Dog.class, name = &quot;dog&quot;),
+        @JsonSubTypes.Type(value = Cat.class, name = &quot;cat&quot;)})
+@JsonIgnoreProperties(ignoreUnknown = true)
+public interface Animal {
+    String getAnimalType();
+    String getName();
+    void setName(String name);
+}
+</code></pre>
+<p>这种类型还有很多变种。例如 <code>use</code> 可以选择 <code>JsonTypeInfo.Id.CLASS</code> 之类的。</p>
+<h1><a class="header" href="#把-pojo-映射称为数组--include--jsontypeinfoaswrapper_array" id="把-pojo-映射称为数组--include--jsontypeinfoaswrapper_array">把 POJO 映射称为数组 , <code>include = JsonTypeInfo.As.WRAPPER_ARRAY</code></a></h1>
+<pre><code class="language-json">{
+  &quot;leader&quot;: [
+    &quot;dog&quot;,
+    {
+      &quot;name&quot;: &quot;wangwang&quot;,
+      &quot;animalType&quot;: &quot;dog&quot;
+    }
+  ],
+  &quot;followers&quot;: [
+    [
+      &quot;dog&quot;,
+      {
+        &quot;name&quot;: &quot;wangwang&quot;,
+        &quot;animalType&quot;: &quot;dog&quot;
+      }
+    ],
+    [
+      &quot;cat&quot;,
+      {
+        &quot;name&quot;: &quot;miao&quot;,
+        &quot;animalType&quot;: &quot;cat&quot;
+      }
+    ]
+  ]
+}
+</code></pre>
+<p>每个POJO 映射为一个两个元素的 JSON 数组，第一个元素表示类型，第二个元素表示真正的内容。</p>
+<h1><a class="header" href="#把-pojo-映射称为包装对象-nclude--jsontypeinfoaswrapper_object" id="把-pojo-映射称为包装对象-nclude--jsontypeinfoaswrapper_object">把 POJO 映射称为包装对象 <code>nclude = JsonTypeInfo.As.WRAPPER_OBJECT</code></a></h1>
+<pre><code class="language-json">{
+  &quot;leader&quot;: {
+    &quot;dog&quot;: {
+      &quot;name&quot;: &quot;wangwang&quot;,
+      &quot;animalType&quot;: &quot;dog&quot;
+    }
+  },
+  &quot;followers&quot;: [
+    {
+      &quot;dog&quot;: {
+        &quot;name&quot;: &quot;wangwang&quot;,
+        &quot;animalType&quot;: &quot;dog&quot;
+      }
+    },
+    {
+      &quot;cat&quot;: {
+        &quot;name&quot;: &quot;miao&quot;,
+        &quot;animalType&quot;: &quot;cat&quot;
+      }
+    }
+  ]
+}
+{
+  &quot;leader&quot;: {
+    &quot;dog&quot;: {
+      &quot;name&quot;: &quot;wangwang&quot;,
+      &quot;animalType&quot;: &quot;dog&quot;
+    }
+  },
+  &quot;followers&quot;: [
+    {
+      &quot;dog&quot;: {
+        &quot;name&quot;: &quot;wangwang&quot;,
+        &quot;animalType&quot;: &quot;dog&quot;
+      }
+    },
+    {
+      &quot;cat&quot;: {
+        &quot;name&quot;: &quot;miao&quot;,
+        &quot;animalType&quot;: &quot;cat&quot;
+      }
+    }
+  ]
+}
+</code></pre>
+<p>每个 POJO 映射为一个 只有一个 property 的 POJO Object ，这个 property name 表示类型信息。 property value 是 POJO 真正的内容。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2017-01-07-JAVA8-中的高阶函数.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2017-01-07-rxjava2-有什么新东西.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2017-01-07-JAVA8-中的高阶函数.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2017-01-07-rxjava2-有什么新东西.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

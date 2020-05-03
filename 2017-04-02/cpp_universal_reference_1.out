@@ -1,0 +1,20 @@
+100:
+T = int;
+int&& x;
+sizeof(x) 4
+
+rf:
+T = int&;
+int& x;
+sizeof(x) 4
+
+foo():
+T = int;
+int&& x;
+sizeof(x) 4
+
+x:
+T = int&;
+int& x;
+sizeof(x) 4
+

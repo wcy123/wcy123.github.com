@@ -1,0 +1,309 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2017-01-07 rabbitmq 中的概念 - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html" class="active"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#rabbitmq-中的概念" id="rabbitmq-中的概念">rabbitmq 中的概念</a></h1>
+<p>本文主要是阅读 https://www.rabbitmq.com/tutorials/amqp-concepts.html 之后的笔记</p>
+<h1><a class="header" href="#什么是消息-message" id="什么是消息-message">什么是消息 Message</a></h1>
+<ol>
+<li>Headers ， message meta data, message attributes</li>
+<li>Properties</li>
+<li>Payload</li>
+</ol>
+<p>Headers 和 Properties 都是 KV(Key-Value) 对。Headers 给 AMQP 系统用的，Properties 给应用程序用的。 Payload 就是一大堆字节。</p>
+<h1><a class="header" href="#amqp-中的三种-entity实体" id="amqp-中的三种-entity实体">AMQP 中的三种 Entity(实体)</a></h1>
+<ul>
+<li>Queue (队列） 是一个 FIFO 缓存区。</li>
+<li>Exchange (交换中心）是一个无状态的路由算法。</li>
+<li>Binding (绑定)，是 Exchange 和 Queue 之间的关系，控制 Exchange 如何转发消息到各个 Queue 。</li>
+</ul>
+<h2><a class="header" href="#exchange" id="exchange">Exchange</a></h2>
+<p>有4中 Exchange 的类型</p>
+<ul>
+<li>Direct Exchange (直接转发)</li>
+<li>Fanout Exchange (广播转发)</li>
+<li>Topic Exchange (多播转发)</li>
+<li>Header Exchange (根据包头转发)</li>
+</ul>
+<h3><a class="header" href="#默认-exchange" id="默认-exchange">默认 Exchange</a></h3>
+<p>这是一种特殊的 Exchange，类型是  Direct 。</p>
+<p>每一个 Queue 在创建的时候，就都和默认 Exchange 之间有这个转发规则，即 binding 。所以，如果我们用 queue 的名字作为 routing key 发送一个消息给默认 Exchange ，看起来就像直接发送消息到 queue 里面一样。</p>
+<h3><a class="header" href="#direct-exchange" id="direct-exchange">Direct Exchange</a></h3>
+<p>消息到达 Exchange 之后，检查消息头里面的 routing key ， 然后把消息转发给与 routing key 同名的 queue 。负载均衡是保证在所有 Consumers 负载相同，而不是 queue 的负载相同。</p>
+<h3><a class="header" href="#fanout-exchange" id="fanout-exchange">Fanout Exchange</a></h3>
+<p>routing key 没有用了。到达 Exchange 的消息，被转发给所有绑定的 Queue 。广播。</p>
+<h3><a class="header" href="#topic-exchange" id="topic-exchange">Topic Exchange</a></h3>
+<p>根据 routing key 来多播。只针对满足匹配条件的 queue ，消息才会被转发。</p>
+<h3><a class="header" href="#header-exchange" id="header-exchange">Header Exchange</a></h3>
+<p>不看 routing key ，而是看 Header 里面其他的属性。</p>
+<p>可以有多个匹配条件。&quot;x-match&quot; 是一个 binding 的参数。如果 &quot;x-match=any&quot; ，那么任意条件满足，就认为匹配。如果 &quot;x-match=all&quot; ，那么必须所有条件都满足，才认为匹配。</p>
+<h2><a class="header" href="#queue" id="queue">Queue</a></h2>
+<p>和其他队列的概念类似</p>
+<h2><a class="header" href="#bindings" id="bindings">Bindings</a></h2>
+<p>Bindings 是一组规则。消息到达 Exchange 之后，根据这组规则，决定把消息转发到哪些 Queue 里面。</p>
+<h2><a class="header" href="#consumers" id="consumers">Consumers</a></h2>
+<p>消费者读取队列。有两种方式，“推” 和 “拉”。</p>
+<p>“推”， 消费者先告诉 AMQP 服务器，他対哪些队列感兴趣；然后如果有消息到达队列，AMQP 把消息推送给消费者。同一个 Queue 可以注册多个消费者，也可以注册一个排他的消费者。</p>
+<p>&quot;拉“ 的方式是消费者自己主动询问队列里面是否有消息，有消息就发下来。</p>
+<h3><a class="header" href="#消息确认" id="消息确认">消息确认</a></h3>
+<p>消费者收到消息之后，消息并没有删除，需要消费者发送 ACK ，消息才真正删除。有两种模式</p>
+<ul>
+<li>隐式 ACK ，消费者一旦收到消息，立即自动回复 ACK。</li>
+<li>显式 ACK ，消费者收到消息之后，需要应用程序主动调用回送 ACK 的指令。</li>
+</ul>
+<p>隐式 ACK 有一个风险，如果消费者处理消息的过程中，意外中断，那么消息就丢了。</p>
+<p>显式 ACK 也有一个风险，如果这个消息消费者处理不了，无法回送 ACK ，那么会导致死循环，服务器会不停的发送这个消息到队列中。</p>
+<h3><a class="header" href="#拒绝消息" id="拒绝消息">拒绝消息</a></h3>
+<p>为了避免显式 ACK 的问题，应用程序可以告诉服务器，这个消息处理不了。ACK 可以同时通知服务多个消息应处理了。但是拒绝消息不行，不能告诉服务器说我一次拒绝了多个消息，必须一个一个消息的拒绝，这样效率低。</p>
+<h3><a class="header" href="#消息反向确认" id="消息反向确认">消息反向确认</a></h3>
+<p>为了避免拒绝消息的低效，有一种协议扩展，叫做 Negative ACK ，可以同时拒绝多个消息。</p>
+<h3><a class="header" href="#预获取消息" id="预获取消息">预获取消息</a></h3>
+<p>为了提高效率，消费者可以告诉服务，一下子给个我多个消息。支持 Channel 级别的 prefetch，不支持连接级别的 prefetch 。</p>
+<h2><a class="header" href="#连接" id="连接">连接</a></h2>
+<p>指 TCP 连接。可以是加密过的。</p>
+<h2><a class="header" href="#channel" id="channel">Channel</a></h2>
+<p>为每一个队列建立一个 TCP 连接的话，过于低效。Channel 是共享连接的方式。每一个协议包里面，都带有一个 Channel Id ，那么就可以在同一个 TCP 连接上，虚拟的建立多个 Channel ，Channel 之间完全隔离的。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2017-01-07-使用-Protobuf-设计-REST-API.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2016-12-25-从零开始构造一个微服务.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2017-01-07-使用-Protobuf-设计-REST-API.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2016-12-25-从零开始构造一个微服务.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

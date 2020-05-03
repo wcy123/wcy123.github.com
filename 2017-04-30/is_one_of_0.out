@@ -1,0 +1,4 @@
+is_one_of<int> = 0
+is_one_of<int,int> = 1
+is_one_of<int,float,int> = 1
+is_one_of<int,float,double> = 0

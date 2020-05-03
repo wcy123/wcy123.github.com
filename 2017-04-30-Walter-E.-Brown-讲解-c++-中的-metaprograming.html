@@ -1,0 +1,936 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html" class="active"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#walter-e-brown-讲解-c-中的-metaprograming" id="walter-e-brown-讲解-c-中的-metaprograming">Walter E. Brown 讲解 c++ 中的 metaprograming</a></h1>
+<p>今天看了 Walter E. Brown 的<a href="https://www.youtube.com/watch?v=a0FliKwcwXE">youtube 视频</a>，介绍 c++ 中的 metaprogramming 受益非浅。 这里记录一下学到的内容。</p>
+<p>我已经熟悉如何使用 <code>enable_if</code> , <code>is_same</code> ，<code>conditional</code> 等等。但是从来没有想过的如何自己动手实现这些功能，觉得实现这些功能，一定非常非常难。 Brown 的视频启发我，鼓励我，去实现这些功能，没有想象中的那么难，只是因为我们不熟悉 (unfimiliar)模板编程。</p>
+<h2><a class="header" href="#true_type-和-false_type" id="true_type-和-false_type"><code>true_type</code> 和 <code>false_type</code></a></h2>
+<p>这两个定义十分简单。很多简单的东西，看上去显而易见，第一感觉是这个东西没啥用，后来慢慢体会到，这些东西十分有用。就像阿拉伯数字 <code>0</code> 。</p>
+<pre><code class="language-cpp">struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+</code></pre>
+<h2><a class="header" href="#is_same-判断两个类是否相等" id="is_same-判断两个类是否相等"><code>is_same</code> 判断两个类是否相等</a></h2>
+<p>首先定义主干模板 (primary template)</p>
+<pre><code class="language-cpp">template&lt;class T, class U&gt;
+struct is_same : public false_type {
+};
+</code></pre>
+<p>定义一个模板，<code>is_same&lt;T,U&gt;</code> ，默认情况下，这两个类不相同。</p>
+<p>然后部分特例化 (partial specialization)</p>
+<pre><code class="language-cpp">template&lt;class T&gt;
+struct is_same&lt;T,T&gt; : public true_type {
+};
+</code></pre>
+<p>完整的例子如下 。</p>
+<pre><code class="language-cpp">// is_same_0.cpp
+#include &lt;iostream&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+// primary defination.
+template&lt;class T, class U&gt;
+struct is_same : public false_type {
+};
+
+// partial specialization.
+template&lt;class T&gt;
+struct is_same&lt;T,T&gt; : public true_type {
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_same&lt;int,int&gt; = &quot; &lt;&lt; is_same&lt;int,int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_same&lt;int,float&gt; = &quot; &lt;&lt; is_same&lt;int,float&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_same&lt;int,const int&gt; = &quot; &lt;&lt; is_same&lt;int,const int&gt;::value &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出</p>
+<pre><code class="language-text">is_same&lt;int,int&gt; = 1
+is_same&lt;int,float&gt; = 0
+is_same&lt;int,const int&gt; = 0}
+</code></pre>
+<p>这个例子中，我们看到模板编程的一个编程模式</p>
+<ol>
+<li>定义 primary template 。</li>
+<li>然后 partial specialization 。</li>
+</ol>
+<p>很多时候，我们都是遵循这个模式。 primary template 类似定义接口，表明我们的模板看起来像个什么样子。 有的时候，顺便定义默认实现。 第二步，我们部分特例化，定义和默认定义不一样的案例。</p>
+<h2><a class="header" href="#is_void-查看一个类型是否是-void" id="is_void-查看一个类型是否是-void"><code>is_void</code> 查看一个类型是否是 <code>void</code></a></h2>
+<p><code>is_void&lt;T&gt;::value</code> 是 true ，如果 <code>T</code> 是  <code>void</code> ， <code>void const</code> ，<code>void const volatile</code> 或者是  <code>void const volatile</code> 。</p>
+<p>首先定义 primary template .</p>
+<pre><code class="language-cpp">template&lt;class T&gt;
+struct is_void : public false_type {
+};
+</code></pre>
+<p>默认 <code>T</code> 不是 <code>void</code> 。</p>
+<p>然后，我们做 partial specialization 。</p>
+<pre><code class="language-cpp">// partial specialization.
+template&lt;&gt;
+struct is_void&lt;void&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void const&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void const volatile&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void volatile&gt; : public true_type {
+};
+</code></pre>
+<p>这个看起来有点傻，但是可读性很好，几乎就是把我们的需求重新用 c++ 语言描述一遍。后面会有一个改进版本。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// is_void_0.cpp
+#include &lt;iostream&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+// primary defination.
+template&lt;class T&gt;
+struct is_void : public false_type {
+};
+
+// partial specialization.
+template&lt;&gt;
+struct is_void&lt;void&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void const&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void const volatile&gt; : public true_type {
+};
+template&lt;&gt;
+struct is_void&lt;void volatile&gt; : public true_type {
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_void&lt;int&gt; = &quot; &lt;&lt; is_void&lt;int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void&gt; = &quot; &lt;&lt; is_void&lt;void&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void const&gt; = &quot; &lt;&lt; is_void&lt;void const&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void volatile&gt; = &quot; &lt;&lt; is_void&lt;void volatile&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void const volatile&gt; = &quot; &lt;&lt; is_void&lt;void const volatile&gt;::value &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">is_void&lt;int&gt; = 0
+is_void&lt;void&gt; = 1
+is_void&lt;void const&gt; = 1
+is_void&lt;void volatile&gt; = 1
+is_void&lt;void const volatile&gt; = 1
+</code></pre>
+<h1><a class="header" href="#remove_cv-删除一个类的-const-volatile-修饰" id="remove_cv-删除一个类的-const-volatile-修饰"><code>remove_cv</code> 删除一个类的 const volatile 修饰</a></h1>
+<p><code>remove_cv&lt;void&gt;</code>, <code>remove_cv&lt;void const&gt;</code> ,<code>remove_cv&lt;void volatile&gt;</code> 和 <code>remove_cv&lt;void const volatile&gt;</code> 都是 <code>void</code> 。</p>
+<p>定义 primary template</p>
+<pre><code class="language-cpp">// partial specialization
+template&lt;class T&gt;
+struct remove_cv&lt;T const&gt; {
+    using type = T;
+};
+</code></pre>
+<p>定义 partial specialization</p>
+<pre><code class="language-cpp">// partial specialization
+template&lt;class T&gt;
+struct remove_cv&lt;T const&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile const&gt; {
+    using type = T;
+};
+</code></pre>
+<p>这里通常用 <code>type</code> 来表示应用一个 template 之后的结果。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// remove_cv_0.cpp
+#include &lt;iostream&gt;
+#include &lt;boost/type_index.hpp&gt;
+using boost::typeindex::type_id_with_cvr;
+using std::cout;
+using std::endl;
+
+// primary defination.
+template&lt;class T&gt;
+struct remove_cv {
+    using type = T;
+};
+// partial specialization
+template&lt;class T&gt;
+struct remove_cv&lt;T const&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile const&gt; {
+    using type = T;
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;remove_cv&lt;int&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;const int&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int const&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int volatile&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int const volatile&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">remove_cv&lt;int&gt; = int
+remove_cv&lt;const int&gt; = int
+remove_cv&lt;int const&gt; = int
+remove_cv&lt;int volatile&gt; = int
+remove_cv&lt;int const volatile&gt; = int
+</code></pre>
+<h2><a class="header" href="#重写-remove_cv" id="重写-remove_cv">重写 <code>remove_cv</code></a></h2>
+<p>我们可以写简化一下 <code>remove_cv</code> ，这里的 &quot;简化&quot; ，我理解不是“变得更简单&quot; 的意思。而是让他变得更加 “可组合的”。</p>
+<p>这个比较简单，直接上代码了。这里不停地重复一个模式，就是上面谈到的模式。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// remove_cv_0.cpp
+#include &lt;iostream&gt;
+#include &lt;boost/type_index.hpp&gt;
+using boost::typeindex::type_id_with_cvr;
+using std::cout;
+using std::endl;
+
+// primary defination.
+template&lt;class T&gt;
+struct remove_const {
+    using type = T;
+};
+// partial specialization
+template&lt;class T&gt;
+struct remove_const&lt;T const&gt; {
+    using type = T;
+};
+
+// primary defination
+template&lt;class T&gt;
+struct remove_volatile{
+    using type = T;
+};
+// partial specialization
+template&lt;class T&gt;
+struct remove_volatile&lt;T volatile&gt; {
+    using type = T;
+};
+
+// bang
+template&lt;class T&gt;
+struct remove_cv {
+    using type = typename remove_const&lt;typename remove_volatile&lt;T&gt;::type &gt;::type;
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;remove_cv&lt;int&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;const int&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int const&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int volatile&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    cout &lt;&lt; &quot;remove_cv&lt;int const volatile&gt; = &quot; &lt;&lt; type_id_with_cvr&lt;remove_cv&lt;int&gt;::type &gt;().pretty_name() &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">remove_cv&lt;int&gt; = int
+remove_cv&lt;const int&gt; = int
+remove_cv&lt;int const&gt; = int
+remove_cv&lt;int volatile&gt; = int
+remove_cv&lt;int const volatile&gt; = int
+</code></pre>
+<h2><a class="header" href="#重写-is_void" id="重写-is_void">重写 <code>is_void</code></a></h2>
+<p>有了 <code>is_same</code> 和 <code>remove_cv</code> ，我们可以简化 <code>is_void</code> 的实现。</p>
+<pre><code class="language-cpp">// primary defination.
+template&lt;class T&gt;
+struct is_void : public is_same&lt;typename remove_cv&lt;T&gt;::type, void&gt; {
+};
+</code></pre>
+<p>完整代码</p>
+<pre><code class="language-cpp">// is_void_0.cpp
+#include &lt;iostream&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+// primary defination.
+template&lt;class T, class U&gt;
+struct is_same : public false_type {
+};
+
+// partial specialization.
+template&lt;class T&gt;
+struct is_same&lt;T,T&gt; : public true_type {
+};
+// primary defination.
+template&lt;class T&gt;
+struct remove_cv {
+    using type = T;
+};
+// partial specialization
+template&lt;class T&gt;
+struct remove_cv&lt;T const&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile&gt; {
+    using type = T;
+};
+template&lt;class T&gt;
+struct remove_cv&lt;T volatile const&gt; {
+    using type = T;
+};
+
+
+// primary defination.
+template&lt;class T&gt;
+struct is_void : public is_same&lt;typename remove_cv&lt;T&gt;::type, void&gt; {
+};
+
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_void&lt;int&gt; = &quot; &lt;&lt; is_void&lt;int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void&gt; = &quot; &lt;&lt; is_void&lt;void&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void const&gt; = &quot; &lt;&lt; is_void&lt;void const&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void volatile&gt; = &quot; &lt;&lt; is_void&lt;void volatile&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_void&lt;void const volatile&gt; = &quot; &lt;&lt; is_void&lt;void const volatile&gt;::value &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">is_void&lt;int&gt; = 0
+is_void&lt;void&gt; = 1
+is_void&lt;void const&gt; = 1
+is_void&lt;void volatile&gt; = 1
+is_void&lt;void const volatile&gt; = 1
+</code></pre>
+<h1><a class="header" href="#is_one_of-判断一个类是否是某些类中的一个" id="is_one_of-判断一个类是否是某些类中的一个"><code>is_one_of</code> 判断一个类是否是某些类中的一个</a></h1>
+<ol>
+<li><code>is_one_of&lt;int&gt;::value</code> 是  <code>false</code> 。</li>
+<li><code>is_one_of&lt;int,int&gt;::value</code> 是  <code>true</code> 。</li>
+<li><code>is_one_of&lt;int, float, int&gt;::value</code> 是  <code>true</code> 。</li>
+<li><code>is_one_of&lt;int, float, double&gt;::value</code> 是  <code>false</code> 。</li>
+<li><code>is_one_of&lt;int, float, double, int&gt;::value</code> 是  <code>true</code> 。</li>
+</ol>
+<p>这里使用了 c++11 中的可变长模板的特性，但是基本的模板编程模式是不变的。</p>
+<p>定义  primary template</p>
+<pre><code class="language-cpp">// primary defination.
+template&lt;class T, class... P0toN&gt;
+struct is_one_of : public false_type {
+};
+
+</code></pre>
+<p>定义 partial specialization</p>
+<pre><code class="language-cpp">// partial specialization.
+template&lt;class T, class... P1toN&gt;
+struct is_one_of&lt;T,T, P1toN...&gt; : public true_type {
+};
+</code></pre>
+<p>这个是显而易见的，如果和列表中的第一个类型相同，那么就是 <code>true_type</code> 。</p>
+<p>如果匹配失败呢，那么我们有一种递归消减的模式。</p>
+<pre><code class="language-cpp">template&lt;class T, class U, class... P1toN&gt;
+struct is_one_of&lt;T, U, P1toN...&gt; : public is_one_of&lt;T, P1toN...&gt; {
+};
+</code></pre>
+<p>或者</p>
+<pre><code class="language-cpp">template&lt;class T, class U, class... P1toN&gt;
+struct is_one_of&lt;T, U, P1toN...&gt; {
+    static constexpr bool value = is_one_of&lt;T, P1toN...&gt;::value;
+};
+</code></pre>
+<p>我不确定哪一种风格是好的。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// is_one_of_0.cpp
+#include &lt;iostream&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+// primary defination.
+template&lt;class T, class... P0toN&gt;
+struct is_one_of : public false_type {
+};
+
+// partial specialization.
+template&lt;class T, class... P1toN&gt;
+struct is_one_of&lt;T,T, P1toN...&gt; : public true_type {
+};
+template&lt;class T, class U, class... P1toN&gt;
+struct is_one_of&lt;T, U, P1toN...&gt; : public is_one_of&lt;T, P1toN...&gt; {
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_one_of&lt;int&gt; = &quot; &lt;&lt; is_one_of&lt;int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_one_of&lt;int,int&gt; = &quot; &lt;&lt; is_one_of&lt;int,int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_one_of&lt;int,float,int&gt; = &quot; &lt;&lt; is_one_of&lt;int,float,int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;is_one_of&lt;int,float,double&gt; = &quot; &lt;&lt; is_one_of&lt;int,float,double&gt;::value &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">is_one_of&lt;int&gt; = 0
+is_one_of&lt;int,int&gt; = 1
+is_one_of&lt;int,float,int&gt; = 1
+is_one_of&lt;int,float,double&gt; = 0
+</code></pre>
+<h1><a class="header" href="#is_copy_assignable-判断一个类是否可复制可赋值" id="is_copy_assignable-判断一个类是否可复制可赋值"><code>is_copy_assignable</code> 判断一个类是否可复制，可赋值</a></h1>
+<p>如果 <code>T</code> 定义了拷贝构造函数和赋值操作符重载，那么 <code>is_copy_assignable&lt;T&gt;::value</code> 是 <code>true</code> ，否则就是  <code>false</code> 。举几个 <code>false</code> 的例子</p>
+<ol>
+<li><code>is_copy_assignable&lt;unique_ptr&lt;int&gt; &gt;::value</code></li>
+<li><code>is_copy_assignable&lt;mutex &gt;::value</code></li>
+<li><code>is_copy_assignable&lt;lock_guard&lt;mutex&gt; &gt;::value</code></li>
+</ol>
+<p>这个实现起来是很有难度的。我们从简单的事情做起。第一步，写 primary template 。</p>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+struct is_copy_assignable : true_type {
+}
+</code></pre>
+<p>恩，这个看起来很简单，不是吗？实例化的部分就有难度了。</p>
+<p>首先，我们定义一个简单的东西，<code>declval</code></p>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+T declval();
+</code></pre>
+<p>声明一个模板函数，<code>declval&lt;T&gt;()</code> 的返回值的类型是 <code>T</code> 。这个函数没有定义，我们无法运行期调用这个函数。</p>
+<p>编译期，我们可以使用 <code>decltype(declval&lt;T&gt;())</code> 得到类型 <code>T</code> 。 <code>decltype</code> 是 c++11 的特性。</p>
+<p>如果一个类定义了赋值操作符重载，那么下面的表达式就是成立的。</p>
+<pre><code class="language-cpp">decltype( declval&lt;U&amp;&gt;() = declval&lt;U const&amp;&gt;() )
+</code></pre>
+<p><code>declval&lt;U const&amp;&gt;()</code> 返回一个 <code>U const&amp;</code> 的对象 <code>x</code>，<code>declval&lt;U&amp;&gt;()</code> 返回一个 <code>U&amp;</code> 的对象 <code>y</code> ，然后试图调用赋值语句，<code>y=x</code> 。</p>
+<p>等等，这里我们并没有真正的执行求值(evaluate) 的动作，无论是编译期还是运行期。<code>decltype</code> 就像 <code>sizeof</code>, <code>noexcept</code> 和 <code>typeid</code> 一样，并不真正执行求值的动作。一切发生在想象中。</p>
+<p>无论如何，如果 <code>U</code> 没有定义 <code>=</code> 操作符重载的话，上面的语句就会失败(failure) ，注意，我没有使用出错(error) 这个表达方式。 SFINAE (Substitue Failure Is Not An Error) 。就是说，如果上面的表达式是不合法的 (ill-formed) ，那么编译器不认为是错误，继续尝试匹配其他的表达式。</p>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+struct is_copy_assignable {
+  private:
+    template&lt;class U, class = decltype( declval&lt;U&amp;&gt;() = declval&lt;U const&amp;&gt;() )&gt;
+    static true_type try_assignment(U&amp;&amp; );
+
+    static false_type try_assignment(...);
+  public:
+    using type = decltype( try_assignment(declval&lt;T&gt;()));
+    static constexpr bool value = type::value;
+};
+</code></pre>
+<p>通常，起名字是程序员最头痛的事情，如果你不引用一个东西，就不要给他起名字。例如上面的例子，<code>class = ...</code> 就没有起名字，尽管没有名字，这个模板参数可以有一个默认值。默认值就是那一长串 <code>decltype( declval&lt;U&amp;&gt;() = declval&lt;U const&amp;&gt;()</code> 。</p>
+<pre><code class="language-cpp">static false_type try_assignment(...);
+</code></pre>
+<p>这个是一个十分不常用的语法，<code>...</code> ，来自于 C 语言的历史遗产，<code>printf(...)</code> 。 这个在 C++ 中极力不提倡使用，推荐使用可变长模板。原因是这个没有 type safe ，多少 c 语言的 bug 倒在这个上面。 这 C++ 中，可变长的参数的函数，在函数重载(overload) 中是最后一个选项。也就谁说，函数重载 (overload) 的时候，寻找合适的重载函数时候，只有所有其他匹配都不成功的时候，才会匹配这个可变长参数的同名函数。</p>
+<p>把两个重载的 <code>try_assigment</code> 连起来看，我们理解一下 SFINAE 。如果 <code>U</code> 定义了 <code>=</code> 操作符重载，那么  <code>decltype( declval&lt;U&amp;&gt;() = declval&lt;U const&amp;&gt;()</code> 就是一个合理的表达式，匹配成功，于是 <code>try_assigment()</code> 的返回值的类型是 <code>true_type</code> 。否则，匹配失败，但是失败不是错误，继续匹配，匹配到了第二个可变长参数及的 <code>try_assigment</code>，这时，返回值的类型是  <code>false_type</code> 。</p>
+<p>如果我们在重复利用 <code>delctype</code> 和  <code>declval</code> 的技巧，就可以得到 <code>type</code> 的定义。</p>
+<pre><code class="language-cpp">using type = decltype( try_assignment(declval&lt;T&gt;()));
+</code></pre>
+<p>后面的 <code>static constexpr bool value</code> 就不难理解了。</p>
+<p>这段代码极其不好理解，因为看起来十分的奇怪。这也是为什么 template 让大家觉得陌生。</p>
+<p>这段代码并不是最好的，因为用到太多的小技巧，后面 Walter E. Brown 会试图重写一下。</p>
+<p>有几个技术是值得学习的。 <code>decltype</code> ，这个十分有用。<code>decltype</code> 很独特，因为他的参数是一个表达式，而不是一个 type ，这个表达式即不在运行期求值，也不在编译器求值。 为了配合使用 <code>decltype</code> ，我们才会引入一个 <code>declval&lt;T&gt;()</code> 的傻函数。 <code>decltype</code> + <code>declval</code> 的技术不是很难，十分有用，应该被掌握。</p>
+<p><code>...</code> 的可变参数，还有函数重载的复杂规则，我们应该敬而远之。尤其是函数重载。考虑到默认构造函数，默认类型转换函数，默认参数，模板函数等等语言特性，模板函数的重载规则是十分复杂的。如果大多数人都记不住这些复杂的规则，那么利用这些规则写出来的代码，就可读性很差了。</p>
+<p>这些例子远远没有到达库函数的质量，因为我们没有考虑很多边缘案例，例如，如果 T 有等号操作符重载，但是等号操作符重载函数的返回值不是 <code>T&amp;</code> 。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// is_copy_assignable_0.cpp
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;mutex&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+template&lt;typename T&gt;
+T declval();
+
+
+// primary defination.
+template&lt;typename T&gt;
+struct is_copy_assignable {
+  private:
+    template&lt;class U, class = decltype( declval&lt;U&amp;&gt;() = declval&lt;U const&amp;&gt;() )&gt;
+    static true_type try_assignment(U&amp;&amp; );
+
+    static false_type try_assignment(...);
+  public:
+    using type = decltype( try_assignment(declval&lt;T&gt;()));
+    static constexpr bool value = type::value;
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_copy_assignable&lt;unique_ptr&lt;int&gt; &gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::unique_ptr&lt;int&gt; &gt;::value &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;mutex&gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::mutex&gt;::value &lt;&lt; endl;
+
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;lock_guard&gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::lock_guard&lt;std::mutex&gt; &gt;::value &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;int &gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;int&gt;::value &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">is_copy_assignable&lt;unique_ptr&lt;int&gt; &gt; = 0
+is_copy_assignable&lt;mutex&gt; = 0
+is_copy_assignable&lt;lock_guard&gt; = 0
+is_copy_assignable&lt;int &gt; = 1
+</code></pre>
+<h1><a class="header" href="#void_t-一个奇怪的而有用的模板类" id="void_t-一个奇怪的而有用的模板类"><code>void_t</code> 一个奇怪的，而有用的模板类</a></h1>
+<pre><code class="language-cpp">template&lt;class...&gt;
+using void_t = void;
+</code></pre>
+<p><code>void_t</code> 已经是 c++17 的标准了 <a href="">http://en.cppreference.com/w/cpp/types/void_t</a> 。 但是大神讲这个视频的时候，还没有进去。</p>
+<p>这个类型看起来没啥用，很简单。</p>
+<p>你给他无论啥类型，他都返回一个 void 类型。</p>
+<p>关键点是，你给他的类型必须是有效的类型 (well-formed)，不能是非法的的类型(ill-formed)。</p>
+<p>这里还用的了 c++11 的一个新特性， <code>using</code> ，这个十分有用，让代码看起来十分简洁。</p>
+<p>后面大神讲到应用这个 <code>void_t</code> 重写 <code>is_copy_assignable</code> 的时候，现场一片掌声。</p>
+<h1><a class="header" href="#使用-void_t编写-has_type_member" id="使用-void_t编写-has_type_member">使用 <code>void_t</code>，编写 <code>has_type_member</code></a></h1>
+<p>如果 <code>T::type</code> 是一个合法的表达式，那么 <code>has_type_member&lt;T&gt;::value</code> 是 true ，否则就是  false 。例如</p>
+<ol>
+<li><code>has_type_member&lt;enable_if&lt;true&gt; &gt;::value</code> = true</li>
+<li><code>has_type_member&lt;int&gt;::value</code> = false</li>
+</ol>
+<p>按照模式，我们首先定义 primary template</p>
+<pre><code class="language-cpp">// primary defination.
+template&lt;class T, class = void &gt;
+struct has_type_member : public true_type {
+};
+
+</code></pre>
+<p>很明显，大多数我们自定义的类，都没有 <code>T::type</code> 的定义，于是默认返回 false 。</p>
+<p>注意 <code>class = void</code> 十分关键。 要理解他为什么十分关键，就需要理解 c++ 是如何找到匹配的 template specialization 的。这个比较长，我简单说一下我的理解。</p>
+<ol>
+<li>首先确定模板参数。</li>
+<li>看用户给定的参数，如果有给定参数，那么用用户提供的参数。</li>
+<li>如果用户没有提供模板参数，那么用默认的。</li>
+<li>找到所有模板参数之后，看看哪一个实例化是更加匹配的，找到最匹配的那一个。</li>
+</ol>
+<p>对于 <code>has_type_member&lt;int&gt;</code>来说，<code>has_type_member</code> 的第一个模板参数是  int ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void ，这就是为什么 <code> </code>class = void` 十分关键。</p>
+<p>找到参数之后，这个时候，编译器发现有两个匹配的模板。</p>
+<p>部分特例化的 <code>struct has_type_member&lt;T, void_t&lt;typename T::type&gt; &gt; : public true_type</code> ，这个匹配不上，因为 <code>void_t&lt;int::type&gt;</code> 匹配失败。 匹配失败不是错误，继续匹配。匹配到了 primary template 。于是 <code>has_type_member&lt;int&gt;::value</code> 是 false 。</p>
+<p>对于 <code>has_type_member&lt;enable_if&lt;true,void&gt; &gt;</code>来说，<code>has_type_member</code> 的第一个模板参数是 <code>enable_if&lt;true,void&gt;</code> ，用户提供的，第二个模板参数，用户没有提供，我们用默认的，就是 void 。</p>
+<p>部分特例化的 <code>struct has_type_member&lt;T, void_t&lt;typename T::type&gt; &gt; : public true_type</code> ，这个匹配成功，因为 <code>void_t&lt;int::type&gt;</code> 是合理的表达式。于是 <code> has_type_member&lt;T, void_t&lt;typename T::type&gt;::value</code> 是  true 。</p>
+<p>这个模式十分有用，简单易懂。可以判断一个类是否有成员函数，静态成员变量，成员变量等等。我们就离实现 <code>concept</code> 不远了。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// has_type_member_0.cpp
+#include &lt;iostream&gt;
+#include &lt;type_traits&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+// the imfamous void_t
+template&lt;class...&gt;
+using void_t = void;
+
+
+// primary defination.
+template&lt;class T, class = void &gt;
+struct has_type_member : public false_type {
+};
+
+// partial specialization.
+template&lt;class T&gt;
+struct has_type_member&lt;T, void_t&lt;typename T::type&gt; &gt; : public true_type {
+};
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;has_type_member&lt;int&gt; = &quot; &lt;&lt; has_type_member&lt;int&gt;::value &lt;&lt; endl;
+    cout &lt;&lt; &quot;has_type_member&lt;std::enable_if&lt;true,void&gt; &gt; = &quot; &lt;&lt; has_type_member&lt;std::enable_if&lt;true,void&gt; &gt;::value &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">has_type_member&lt;int&gt; = 0
+has_type_member&lt;std::enable_if&lt;true,void&gt; &gt; = 1
+</code></pre>
+<h1><a class="header" href="#重写-is_copy_assignable" id="重写-is_copy_assignable">重写 <code>is_copy_assignable</code></a></h1>
+<p>应用模式，写出 primary template</p>
+<pre><code class="language-cpp">// primary defination.
+template&lt;typename T, class = void&gt;
+struct is_copy_assignable : public false_type {
+};
+</code></pre>
+<p>默认都不能 copy assignable 。</p>
+<p>然后 partial specialization</p>
+<pre><code class="language-cpp">// partial specialization
+template&lt;typename T&gt;
+struct is_copy_assignable&lt;T, void_t&lt;decltype( declval&lt;T&amp;&gt;() = declval&lt;T const&amp;&gt;() )&gt; &gt;
+        : public true_type {
+};
+</code></pre>
+<p>这里 Brown 赢得的一片掌声。 的确精妙。 他的精妙之处，不在于解决了一个特定的问题，而在于他创造了一种模式，应用这种模式，让人们不再使用那些难懂的技巧，就可以写出可读性很好的模板程序。</p>
+<p>完整代码</p>
+<pre><code class="language-cpp">// is_copy_assignable_1.cpp
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;mutex&gt;
+using std::cout;
+using std::endl;
+
+
+struct true_type {
+    static constexpr bool value = true;
+};
+struct false_type {
+    static constexpr bool value = false;
+};
+
+template&lt;typename T&gt;
+T declval();
+
+// the imfamous void_t
+template&lt;class...&gt;
+using void_t = void;
+
+
+// primary defination.
+template&lt;typename T, class = void&gt;
+struct is_copy_assignable : public false_type {
+};
+
+// partial specialization
+template&lt;typename T&gt;
+struct is_copy_assignable&lt;T, void_t&lt;decltype( declval&lt;T&amp;&gt;() = declval&lt;T const&amp;&gt;() )&gt; &gt;
+        : public true_type {
+};
+
+
+
+int main(int argc, char *argv[])
+{
+    cout &lt;&lt; &quot;is_copy_assignable&lt;unique_ptr&lt;int&gt; &gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::unique_ptr&lt;int&gt; &gt;::value &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;mutex&gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::mutex&gt;::value &lt;&lt; endl;
+
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;lock_guard&gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;std::lock_guard&lt;std::mutex&gt; &gt;::value &lt;&lt; endl;
+
+    cout &lt;&lt; &quot;is_copy_assignable&lt;int &gt; = &quot; &lt;&lt;
+            is_copy_assignable&lt;int&gt;::value &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+<p>程序输出</p>
+<pre><code class="language-text">is_copy_assignable&lt;unique_ptr&lt;int&gt; &gt; = 0
+is_copy_assignable&lt;mutex&gt; = 0
+is_copy_assignable&lt;lock_guard&gt; = 0
+is_copy_assignable&lt;int &gt; = 1
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2017-05-14-c++-中的高维数组-1-.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2017-04-30-c++-中的-remove-erase-俗语.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2017-05-14-c++-中的高维数组-1-.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2017-04-30-c++-中的-remove-erase-俗语.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,1515 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2016-08-27 开发自己的语言 - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html" class="active"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#发自己的语" id="发自己的语">发自己的语</a></h1>
+<!-- toc -->
+<ul>
+<li><a href="#%E5%8E%9F%E5%A7%8B%E7%B1%BB%E5%9E%8B">原始类型</a></li>
+<li><a href="#quote">quote</a></li>
+<li><a href="#if">if</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%9D%97%E6%B1%82%E5%80%BC">代码块求值</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E7%9A%84%E6%B1%82%E5%80%BC">函数的求值</a></li>
+<li><a href="#%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E4%B8%8E%E5%8F%98%E9%87%8F">函数调用与变量</a></li>
+<li><a href="#%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0">内置函数</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8Fdefine-%E5%92%8C%E5%8F%98%E9%87%8F%E8%B5%8B%E5%80%BCset%EF%BC%8C%E8%BF%98%E6%9C%89-cond">定义变量(define) 和变量赋值(set!)，还有 cond</a></li>
+</ul>
+<!-- tocstop -->
+<p>本文大多数参考 <a href="https://mitpress.mit.edu/sicp/full-text/book/book-Z-H-25.html#%_chap_4">SICP</a></p>
+<p>阴阳大法</p>
+<p><img src="https://mitpress.mit.edu/sicp/full-text/book/ch4-Z-G-1.gif" alt="ying-yan" /></p>
+<p>一个语言的解释器，就是一个 eval 函数，就是求值函数：</p>
+<ul>
+<li>输入： 一个表达式 <code>s-exp</code></li>
+<li>输出： 一个表达式 <code>s-exp</code></li>
+</ul>
+<p>这个解释器的核心就是 <code>apply</code> 和 <code>eval</code> 之间的互递归调用。</p>
+<h2><a class="header" href="#原始类型" id="原始类型">原始类型</a></h2>
+<p>原始类型是一个 <code>s-exp</code> ，求值就是 <code>s-exp</code> 本身。包括：整数，浮点数，字符串。例如</p>
+<pre><code class="language-scheme">1  =&gt; 1
+1.2 =&gt; 1.2
+&quot;abc&quot; =&gt; &quot;abc&quot;
+</code></pre>
+<p>这个规则看上去很简单，但是很重要，他是递归求值的终止条件。也就是说，
+<code>eval</code> 函数碰到这些原始类型的 <code>s-exp</code> ，不会递归调用 <code>apply</code> 。</p>
+<p>根据这个规则，我们写一个函数</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+</code></pre>
+<p>我们运行一下这个函数。首先我们需要安装一个 scheme 解释器，参考 <a href="https://github.com/cisco/ChezScheme">https://github.com/cisco/ChezScheme</a>
+语言参考 <a href="http://www.scheme.com/tspl4/">http://www.scheme.com/tspl4/</a></p>
+<pre><code class="language-eval">Chez Scheme Version 9.4
+Copyright 1984-2016 Cisco Systems, Inc.
+
+&gt; (load &quot;eval0.scm&quot;)
+&gt; (eval 1 '())
+1
+&gt; (eval 1.2 '())
+1.2
+&gt; (eval &quot;abc&quot; '())
+&quot;abc&quot;
+&gt; (eval (list 1 2 3) '())
+Exception in error: invalid message argument (1 2 3)
+Type (debug) to enter the debugger.
+</code></pre>
+<p>恭喜你，一个解释器的雏形开始了。这里有一个开发原则，“永远有一个可以工
+作的版本”。我经历过两种开发模式。</p>
+<ol>
+<li>写了一天的代码，从来没有编译运行过。然后花三天去调试。</li>
+<li>写几分钟的代码，然后立即调试。循环往复，每次增加功能一点点。</li>
+</ol>
+<p>第一种模式下，大多数情况是，我自己思路不很清晰，模块还没有分解到足够细
+致，所以一边写代码，一遍划分模块。</p>
+<p>第二种模式下，我已经思路很清晰了，代码模块也很清晰了，尤其是模块划分的
+颗粒度足够细致，脑子里面已经有具体的迭代步骤了。这种模式下，开发效率高
+一些。</p>
+<p>可以看到，<code>(eval (list 1 2 3) '()</code> 的时候，出现错误。这里也有一个开
+发原则，“测试你的每一行代码”。可以看到，这几个简单的测试，覆盖了刚刚写
+的所有代码。</p>
+<p>开发初期，保证代码的测试覆盖率相对容易。这个时候，最好配合自动回归测试，
+保证以后代码的覆盖率。如果开发初期没有把自动化测试做好，到了开后中后期，
+在回过头来想保证代码的测试覆盖率，难度就十分大了。</p>
+<p>好了，我们继续迭代开发我们的解释器。</p>
+<h2><a class="header" href="#quote" id="quote">quote</a></h2>
+<p>这个规则也是一个终止条件。如果一个 <code>s-exp</code> 是一个 <code>list</code> ，第一个元素
+是 <code>quote</code>，第二个元素任何一个 <code>s-exp</code> X，那么求值结果就是 X 。</p>
+<pre><code class="language-scheme">(quote 1) =&gt; 1
+(quote 1.2) =&gt; 1.2
+(quote &quot;abc&quot;) =&gt; &quot;abc
+(quote (1 2 3)) =&gt; (1 2 3)
+(quote a-symbol) =&gt; a-symbol
+(quote quote) =&gt; quote
+</code></pre>
+<p><code>s-exp</code> 中有一个重要的数据类型，就是 symbol 。 quote 可以得到 symbol
+本身。</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (......
+        ((quoted? exp) (text-of-quotation exp))
+         ......
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+</code></pre>
+<p>我们看看 <code>quoted?</code> 和 <code>(text-of-quotation)</code> 怎么实现的？</p>
+<pre><code class="language-scheme">(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+</code></pre>
+<p>看看运行结果</p>
+<pre><code class="language-eval">&gt; (load &quot;eval1.scm&quot;)
+&gt; (eval '(quote 1) '())
+1
+&gt; (eval '(quote 1.2) '())
+1.2
+&gt; (eval '(quote &quot;hello&quot;) '())
+&quot;hello&quot;
+&gt; (eval '(quote a-symbol) '())
+a-symbol
+&gt; (eval '(quote quote) '())
+quote
+</code></pre>
+<p><code>eval1.scm</code> 的完整内容如下</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+</code></pre>
+<p>一个好的程序风格是，多写一些小的函数，然后组合这些函数。函数都有名字，
+可以描述自己的作用。例如 <code>text-of-quotation</code> 。其实这个函数本质上和
+<code>cadr</code> 没有任何区别。但是在逻辑层次上，<code>text-of-quotation</code> 是更加高层
+的函数，<code>cadr</code> 是更加底层的函数。这种逻辑层次的划分，可以提高程序的可
+读性。</p>
+<h2><a class="header" href="#if" id="if">if</a></h2>
+<p>支持条件表达式，输入 <code>s-exp</code> 是一个 list ，有四个元素：</p>
+<ol>
+<li>第一个元素是 <code>if</code> ，表明是一个条件表达式。</li>
+<li>第二个元素是判断条件 <code>&lt;C&gt;</code></li>
+<li>第三个元素是 <code>&lt;T&gt;</code> 为真的时候，<code>s-exp</code> 的求值结果。</li>
+<li>第三个元素是 <code>&lt;F&gt;</code> 为假的时候，<code>s-exp</code> 的求值结果。</li>
+</ol>
+<p>这里有一个语言设计的问题，是否有必要增加一个 boolean 的数据类型？什么
+是真，什么是假？这里有很多让人难以捉摸的小细节。这个问题也是各种语言之
+间争论很久的话题。为了简单，我们不在这个问题上展开讨论，我们不增加新的
+数据类型，认为符号(symbol) <code>true</code> 是真，其他值都是假。</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (......
+        ((if? exp) (eval-if exp env))
+         ......
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+</code></pre>
+<p>先看看 <code>if?</code> 的实现。</p>
+<pre><code class="language-scheme">(define (if? exp) (tagged-list? exp 'if))
+</code></pre>
+<p>感谢逻辑分层的代码风格，<code>if?</code> 的实现的可读性就很好了。</p>
+<p>我们看看关键的 <code>eval-if</code> 怎么实现的。</p>
+<pre><code class="language-scheme">(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+</code></pre>
+<p>这里有两点需要注意</p>
+<ol>
+<li>递归调用， <code>eval-if</code> 递归调用了 <code>eval</code> ，可以看到递归调用的强大之处。</li>
+<li>求值顺序。</li>
+</ol>
+<p>“求值顺序” 是一门语言的一个重大的设计问题。不同的求值顺序，导致完全不同
+的效果。这里我们注意到，如果求值条件为真，那么假的分支是不做求值的。如
+果求值条件为假，那么真的分支是不会求职的。这种设计叫做短路求值
+(short-circuit)。 主流语言都是这么设计的。求值顺序是一个很重要的课题，
+这里不展开讨论。</p>
+<p>看看其他辅助函数如何实现的。这里再次应用了逻辑分层的代码风格。</p>
+<pre><code class="language-scheme">(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+</code></pre>
+<p>我们看看程序的执行效果</p>
+<pre><code class="language-eval">&gt; (eval '(if (quote true) 1 2) '())
+1
+&gt; (eval '(if (quote false) 1 2) '())
+2
+</code></pre>
+<p>非常好。 这里是完整的代码</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        ((if? exp) (eval-if exp env))
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+(define (if? exp) (tagged-list? exp 'if))
+
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+</code></pre>
+<h2><a class="header" href="#代码块求值" id="代码块求值">代码块求值</a></h2>
+<p>这个功能是一个很方便的功能。如果 <code>&lt;s-exp&gt;</code> 是下面的形式</p>
+<pre><code class="language-scheme">(begin &lt;E1&gt; &lt;E2&gt; .... &lt;En&gt;)
+</code></pre>
+<p>那么我们对 E1 , E2 ，.... , En 分别求值，整个表达式的值就是 En 的求值结果。</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (.......
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        ......
+</code></pre>
+<p>看看关键函数 <code>eval-sequence</code> 的实现</p>
+<pre><code class="language-scheme">(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+</code></pre>
+<p>这里注意</p>
+<ol>
+<li>求值顺序</li>
+<li>递归调用 <code>eval</code></li>
+<li>中间的表达式的求值结果被丢弃了</li>
+</ol>
+<p>看看其他几个辅助函数的实现</p>
+<pre><code class="language-scheme">(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+</code></pre>
+<p>看看程序的执行效果</p>
+<pre><code class="language-scheme">&gt; (load &quot;eval3.scm&quot;)
+&gt; (eval '(begin 1 2) '())
+</code></pre>
+<p>下面是完整的程序代码</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        ((if? exp) (eval-if exp env))
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+(define (if? exp) (tagged-list? exp 'if))
+
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+</code></pre>
+<h2><a class="header" href="#函数的求值" id="函数的求值">函数的求值</a></h2>
+<p>什么是函数表达式，其实就是著名的 lambda 表达式。lambda 表达式格式如下</p>
+<pre><code class="language-scheme">(lambda &lt;PARAM-LIST&gt; &lt;FUN-BODY&gt;)
+</code></pre>
+<p><code>PARAM-LIST</code> 是一个变量列表，引入变量的作用域，也叫环境。我们在求值
+<code>FUN-BODY</code> 的时候，就在最内层的环境开始，有里向外的搜索变量。重名的时
+候，内层变量先起作用，就这个就是所谓的阴影效果 (shadow) 。</p>
+<p>求值一个 lambda 表达式的时候，返回值就是一个 “函数” 。</p>
+<p>程序内部，如何表达一个函数呢？这也是一个重大的语言设计问题。编译型还是
+解释型？目标语言的选择，字节码，还是机器码，还是其他的中间语言？</p>
+<p>我们这个简单的语言中，我们就用 list 来表示。</p>
+<pre><code class="language-scheme">(define (make-procedure parameters body env)
+   (list 'procedure parameters body env))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (make-procedure '(a b) 'a '())
+(procedure (a b) a ())
+&gt; (set! p1 (make-procedure '(a b) 'a '()))
+&gt; (procedure-parameters  p1)
+(a b)
+&gt; (procedure-body  p1)
+a
+&gt; (procedure-env  p1)
+&gt; (procedure-environment  p1)
+()
+</code></pre>
+<p>可见一个函数有三个元素，参数列表，函数体，和环境。环境这个概念一直没有
+详细解释，再推到下面解释。</p>
+<p>那么，我们先实现一个 lambda 表达式的解析。</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (.......
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ......
+</code></pre>
+<p>其他几个辅助函数的实现</p>
+<pre><code class="language-scheme">(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (lambda? '(lambda 1))
+#f
+&gt; (lambda-parameters '(lambda (a b) (+ a b)))
+(a b)
+&gt; (lambda-body '(lambda (a b) (+ a b)))
+((+ a b))
+&gt; (make-procedure '(a b) '((+ a b)) '())
+(procedure (a b) ((+ a b)) ())
+&gt; (eval '(lambda (a b) (+ a b)) '())
+(procedure (a b) ((+ a b)) ())
+</code></pre>
+<p>太好了，我们可以解析 lambda 表达式了。</p>
+<p>这里是完整的代码</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        ((if? exp) (eval-if exp env))
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        (else (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+(define (if? exp) (tagged-list? exp 'if))
+
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+</code></pre>
+<h2><a class="header" href="#函数调用与变量" id="函数调用与变量">函数调用与变量</a></h2>
+<p>刚刚我们定义了一个函数，但是并没有什么用处，我们看看什么是函数调用 (apply)。</p>
+<pre><code class="language-scheme">(&lt;L&gt; &lt;A1&gt; &lt;A2&gt; ... &lt;An&gt;)
+</code></pre>
+<p>看看怎么解析这个函数调用型的 <code>s-exp</code> 。</p>
+<ul>
+<li>首先，<code>L</code> 是一个表达式，求值结果是一个函数</li>
+<li>然后，<code>A1</code>  是一个表达式，求值结果是任意值</li>
+<li>之后，依次求值 <code>A2</code> ... <code>An</code></li>
+<li>之后，绑定 (bind) <code>A1</code> ... <code>An</code> 的值，到 <code>L</code> 的环境中。</li>
+<li>最后，对 <code>L</code> 的函数体求值。并返回结果</li>
+</ul>
+<p>这里需要有两个注意的事项</p>
+<ol>
+<li>求值顺序</li>
+<li>递归调用</li>
+<li>变量绑定</li>
+</ol>
+<p>这是一门语言最核心的部分了。求值顺序。我似乎提到求值顺序很多次了。这里
+选择了大多数主流语言的设计。</p>
+<p>参数的求值顺序也很重要，有的语言为了性能，不定义参数的求值顺序。</p>
+<p>第二个问题就是阴阳大法的互递归调用。apply 不停地调用 eval 得到函数对象，
+和参数，绑定参数，然后调用 eval 求值函数体。而 apply 的处理，正式 eval
+函数中的重要组成部分。</p>
+<p>第三个问题就是变量的作用域的问题。变量的作用域也是一个重大的语言设计问
+题。不同的语言有不同的设计，展现了不同语言丰富的表达能力。现在主流语言
+是“词法作用域” (lexical scope) 。我们选择的是一个简单的词法作用域的实
+现。</p>
+<p>这里也需要注意参数的求值环境是在当前环境，而函数体的求值环境，是参数绑
+定之后的新环境。</p>
+<p>什么是求值环境？求值环境就是一个变量名称到变量值的映射关系。</p>
+<p>什么是闭包(closure) ? 闭包也是一个环境，就是在生成一个函数的时候，当时
+的环境。</p>
+<p>什么是帧 (frame) ? 就是函数调用的时候，绑定参数生成的环境。</p>
+<p>这就是说环境是一个动态的数状结构（递归结构）。在求值一个函数的函数体的
+时候，碰到变量求值，会递归搜索闭包，这样除了参数绑定产生的本地环境之外，
+还需要搜索闭包。</p>
+<p>我们先实现 frame 。</p>
+<pre><code class="language-scheme">(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+</code></pre>
+<p>看看运行效果</p>
+<pre><code class="language-scheme">&gt; (set! f1 (make-frame '(a b c) '(1 2 3)))
+&gt; (frame-variables f1)
+(a b c)
+&gt; (frame-values f1)
+(1 2 3)
+</code></pre>
+<p>我们再实现 env 。</p>
+<pre><code class="language-scheme">(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+(define the-empty-environment '())
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (set! e1 (extend-environment '(a b c) '(1 2 3) the-empty-environment)))
+&gt; e1
+(((a b c) 1 2 3))
+&gt; (enclosing-environment e1)
+()
+&gt; (set! e2 (extend-environment '(x y z) '(10 20 30) e1))
+&gt; e2
+(((x y z) 10 20 30) ((a b c) 1 2 3))
+&gt; (enclosing-environment e2)
+(((a b c) 1 2 3))
+</code></pre>
+<p>我们再实现一个变量查找的功能</p>
+<pre><code class="language-scheme">(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error &quot;Unbound variable&quot; var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+</code></pre>
+<p>我们看看执行效果</p>
+<pre><code class="language-scheme">&gt; (lookup-variable-value 'x e2)
+10
+&gt; (lookup-variable-value 'y e2)
+20
+&gt; (lookup-variable-value 'a e1)
+1
+&gt; (lookup-variable-value 'a e2)
+1
+&gt; (lookup-variable-value 'u e2)
+Exception: Unbound variable with irritant u
+Type (debug) to enter the debugger.
+</code></pre>
+<p>有了这些，我们可以实现变量的求值了。</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (.......
+        ((variable? exp) (lookup-variable-value exp env))
+        ......
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (eval 'a e1)
+1
+&gt; (eval 'b e1)
+2
+&gt; (eval 'c e1)
+3
+&gt; (eval 'a e2)
+1
+&gt; (eval 'b e2)
+2
+&gt; (eval 'c e2)
+3
+&gt; (eval 'x e2)
+10
+&gt; (eval 'y e2)
+20
+&gt; (eval 'z e2)
+30
+</code></pre>
+<p>辅助函数的实现</p>
+<pre><code class="language-scheme">(define (variable? exp) (symbol? exp))
+</code></pre>
+<p>我们继续，有了这些，我们可以实现 apply 的解析了</p>
+<pre><code class="language-scheme">(define (eval exp env)
+  (cond (.......
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                   (list-of-values (operands exp) env)))
+        ......
+</code></pre>
+<p>看看一些辅助函数的实现</p>
+<pre><code class="language-scheme">(define (application? exp) (pair? exp))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+(define (no-operands? ops) (null? ops))
+(define (first-operand ops) (car ops))
+(define (rest-operands ops) (cdr ops))
+(define (list-of-values exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (eval (first-operand exps) env)
+            (list-of-values (rest-operands exps) env))))
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (eval '((lambda (a b) a) 1 2) '())
+1
+&gt; (eval '((lambda (a b) b) 1 2) '())
+2
+&gt;
+</code></pre>
+<p>下面是完整的代码</p>
+<pre><code class="language-scheme">(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        ((if? exp) (eval-if exp env))
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ((variable? exp) (lookup-variable-value exp env))
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                   (list-of-values (operands exp) env)))
+        (else (error #f &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+(define (if? exp) (tagged-list? exp 'if))
+
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+
+
+(define (apply procedure arguments)
+  (eval-sequence
+   (procedure-body procedure)
+   (extend-environment
+    (procedure-parameters procedure)
+    arguments
+    (procedure-environment procedure))))
+
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+
+(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+(define the-empty-environment '())
+(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error #f &quot;Unbound variable&quot; var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+
+(define (variable? exp) (symbol? exp))
+(define (application? exp) (pair? exp))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+(define (no-operands? ops) (null? ops))
+(define (first-operand ops) (car ops))
+(define (rest-operands ops) (cdr ops))
+(define (list-of-values exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (eval (first-operand exps) env)
+            (list-of-values (rest-operands exps) env))))
+
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+</code></pre>
+<h2><a class="header" href="#内置函数" id="内置函数">内置函数</a></h2>
+<p>我们有了语言的核心，但是这个语言还没什么用，因为连基本的加减乘除都做不
+了。我们利用宿主语言提供的功能，实现一些基本的内置函数。</p>
+<p>首先我们要区分内置函数和语言自己的函数。我们用 <code>primitive</code> 来标记内置函数。</p>
+<pre><code class="language-scheme">(define (primitive-procedure? proc)
+  (tagged-list? proc 'primitive))
+</code></pre>
+<p>primitive 函数有一个属性，就是底层的函数实现。</p>
+<pre><code class="language-scheme">(define (primitive-implementation proc) (cadr proc))
+</code></pre>
+<p>我们预先定义下面这些内置函数</p>
+<pre><code class="language-scheme">(define primitive-procedures
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?)
+...
+        ))
+</code></pre>
+<p>我们初始化语言的初始环境</p>
+<pre><code class="language-scheme">(define (primitive-procedure-names)
+  (map car
+       primitive-procedures))
+
+(define (primitive-procedure-objects)
+  (map (lambda (proc) (list 'primitive (cadr proc)))
+  primitive-procedures))
+(define (setup-environment)
+  (let ((initial-env
+         (extend-environment (primitive-procedure-names)
+                             (primitive-procedure-objects)
+                             the-empty-environment)))
+    initial-env))
+(define the-global-environment (setup-environment))
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (load &quot;eval6.scm&quot;)
+&gt; the-global-environment
+(((car cdr cons null?)
+   (primitive #&lt;procedure car&gt;)
+   (primitive #&lt;procedure cdr&gt;)
+   (primitive #&lt;procedure cons&gt;)
+   (primitive #&lt;procedure null?&gt;)))
+</code></pre>
+<p>对应的 <code>apply</code> 函数需要修改，这样才能调用内置函数。</p>
+<pre><code class="language-scheme">(define (apply procedure arguments)
+  (cond ((primitive-procedure? procedure)
+         (apply-primitive-procedure procedure arguments))
+        ((compound-procedure? procedure)
+         (eval-sequence
+           (procedure-body procedure)
+           (extend-environment
+             (procedure-parameters procedure)
+             arguments
+             (procedure-environment procedure))))
+        (else
+         (error
+          &quot;Unknown procedure type -- APPLY&quot; procedure))))
+</code></pre>
+<p>看看其他几个辅助函数的实现</p>
+<pre><code class="language-scheme">(define (compound-procedure? p) (tagged-list? p 'procedure))
+(define (apply-primitive-procedure proc args)
+  (apply-in-underlying-scheme
+   (primitive-implementation proc) args))
+(define apply-in-underlying-scheme apply)
+</code></pre>
+<p>看看执行效果</p>
+<pre><code class="language-scheme">&gt; (eval 'car the-global-environment)
+(primitive #&lt;procedure car&gt;)
+&gt; (apply-primitive-procedure (eval 'car the-global-environment) '((1 2)))
+1
+&gt; (eval '(car '(1 2)) the-global-environment)
+1
+&gt; (eval '(display &quot;hello world&quot;) the-global-environment)
+hello world
+&gt;
+</code></pre>
+<p>这里有一个坑，<code>apply</code> 已经在宿主语言中有定义了，所有我们要换一个名字，
+防止名字冲突。并且用 <code>apply-primitive-procedure</code> 强调我们调用的是宿主
+语言的 apply 函数。</p>
+<pre><code class="language-scheme">(define apply-in-underlying-scheme (top-level-value 'apply (scheme-environment)))
+</code></pre>
+<p>我们的语言居然可以输出 &quot;hello world&quot; 了。下面是完整的代码。</p>
+<pre><code class="language-scheme">(define apply-in-underlying-scheme (top-level-value 'apply (scheme-environment)))
+(define true #t)
+(define false #f)
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((quoted? exp) (text-of-quotation exp))
+        ((if? exp) (eval-if exp env))
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ((variable? exp) (lookup-variable-value exp env))
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                   (list-of-values (operands exp) env)))
+        (else (error #f &quot;Unknown expression type -- EVAL&quot; exp))))
+
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+(define (if? exp) (tagged-list? exp 'if))
+
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+(define (compound-procedure? p) (tagged-list? p 'procedure))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+
+(define (apply procedure arguments)
+  (cond ((primitive-procedure? procedure)
+         (apply-primitive-procedure procedure arguments))
+        ((compound-procedure? procedure)
+         (eval-sequence
+           (procedure-body procedure)
+           (extend-environment
+             (procedure-parameters procedure)
+             arguments
+             (procedure-environment procedure))))
+        (else
+         (error
+          &quot;Unknown procedure type -- APPLY&quot; procedure))))
+
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+
+(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+(define the-empty-environment '())
+(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error #f &quot;Unbound variable&quot; var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+(define (primitive-procedure? proc)
+  (tagged-list? proc 'primitive))
+(define primitive-procedures
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?)
+        (list 'display display)
+        ))
+(define (primitive-implementation proc) (cadr proc))
+(define (primitive-procedure-names)
+  (map car
+       primitive-procedures))
+(define (apply-primitive-procedure proc args)
+  (apply-in-underlying-scheme
+   (primitive-implementation proc) args))
+
+
+(define (primitive-procedure-objects)
+  (map (lambda (proc) (list 'primitive (cadr proc)))
+       primitive-procedures))
+(define (setup-environment)
+  (let ((initial-env
+         (extend-environment (primitive-procedure-names)
+                             (primitive-procedure-objects)
+                             the-empty-environment)))
+    initial-env))
+(define the-global-environment (setup-environment))
+
+(define (variable? exp) (symbol? exp))
+(define (application? exp) (pair? exp))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+(define (no-operands? ops) (null? ops))
+(define (first-operand ops) (car ops))
+(define (rest-operands ops) (cdr ops))
+(define (list-of-values exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (eval (first-operand exps) env)
+            (list-of-values (rest-operands exps) env))))
+
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+
+</code></pre>
+<h2><a class="header" href="#定义变量define-和变量赋值set还有-cond" id="定义变量define-和变量赋值set还有-cond">定义变量(define) 和变量赋值(set!)，还有 cond</a></h2>
+<p>这些都不是语言最核心的部分。这里给出完整的代码。</p>
+<p>看看效果</p>
+<pre><code class="language-scheme">&gt; (eval '(begin (define a 10) a) the-global-environment)
+10
+&gt; (eval '(begin (define a 10) (display a)) the-global-environment)
+10
+&gt; (eval '(begin (define a 10) (+ a 100)) the-global-environment)
+110
+&gt; (eval '(begin (define a 10) (set! a 1) (+ a 100)) the-global-environment)
+101
+</code></pre>
+<p>最后完整的代码</p>
+<pre><code class="language-scheme">;; 和宿主语言的交互
+(define apply-in-underlying-scheme (top-level-value 'apply (scheme-environment)))
+(define true #t)
+(define false #f)
+;; 语言的核心入口
+(define (eval exp env)
+  (cond ((self-evaluating? exp) exp)
+        ((variable? exp) (lookup-variable-value exp env))
+        ((quoted? exp) (text-of-quotation exp))
+        ((assignment? exp) (eval-assignment exp env))
+        ((definition? exp) (eval-definition exp env))
+        ((if? exp) (eval-if exp env))
+        ((lambda? exp)
+         (make-procedure (lambda-parameters exp)
+                         (lambda-body exp)
+                         env))
+        ((begin? exp)
+         (eval-sequence (begin-actions exp) env))
+        ((cond? exp) (eval (cond-&gt;if exp) env))
+        ((application? exp)
+         (apply (eval (operator exp) env)
+                (list-of-values (operands exp) env)))
+        (else
+         (error &quot;Unknown expression type -- EVAL&quot; exp))))
+
+;; 简单的类型
+(define (self-evaluating? exp)
+  (cond ((number? exp) true)
+        ((string? exp) true)
+        (else false)))
+;; 关于 quote
+(define (quoted? exp)
+  (tagged-list? exp 'quote))
+(define (text-of-quotation exp) (cadr exp))
+
+;; 关于代码块
+(define (begin? exp) (tagged-list? exp 'begin))
+(define (eval-sequence exps env)
+  (cond ((last-exp? exps) (eval (first-exp exps) env))
+        (else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env))))
+
+(define (begin-actions exp) (cdr exp))
+(define (last-exp? seq) (null? (cdr seq)))
+(define (first-exp seq) (car seq))
+(define (rest-exps seq) (cdr seq))
+
+;; 支持 if 条件判断
+(define (if? exp) (tagged-list? exp 'if))
+(define (eval-if exp env)
+  (if (true? (eval (if-predicate exp) env))
+      (eval (if-consequent exp) env)
+      (eval (if-alternative exp) env)))
+(define (if-predicate exp) (cadr exp))
+(define (if-consequent exp) (caddr exp))
+(define (if-alternative exp)
+  (if (not (null? (cdddr exp)))
+      (cadddr exp)
+      'false))
+(define (true? exp)
+  (eq? exp 'true))
+;; 支持 lambda 函数定义
+(define (lambda? exp) (tagged-list? exp 'lambda))
+(define (lambda-parameters exp) (cadr exp))
+(define (lambda-body exp) (cddr exp))
+(define (make-procedure parameters body env)
+  (list 'procedure parameters body env))
+(define (compound-procedure? p) (tagged-list? p 'procedure))
+(define (procedure-parameters p) (cadr p))
+(define (procedure-body p) (caddr p))
+(define (procedure-environment p) (cadddr p))
+;; 关于环境的定义
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+(define (make-frame variables values)
+  (cons variables values))
+(define (frame-variables frame) (car frame))
+(define (frame-values frame) (cdr frame))
+(define (extend-environment vars vals base-env)
+  (if (= (length vars) (length vals))
+      (cons (make-frame vars vals) base-env)
+      (if (&lt; (length vars) (length vals))
+          (error &quot;Too many arguments supplied&quot; vars vals)
+          (error &quot;Too few arguments supplied&quot; vars vals))))
+(define (add-binding-to-frame! var val frame)
+  (set-car! frame (cons var (car frame)))
+  (set-cdr! frame (cons val (cdr frame))))
+(define (enclosing-environment env) (cdr env))
+(define (first-frame env) (car env))
+
+(define primitive-procedures
+  (list (list 'car car)
+        (list 'cdr cdr)
+        (list 'cons cons)
+        (list 'null? null?)
+        (list '+ +)
+        (list '- -)
+        (list '* *)
+        (list '/ /)
+        (list 'display display)
+        ))
+(define (primitive-procedure-names)
+  (map car
+       primitive-procedures))
+(define (primitive-procedure-objects)
+  (map (lambda (proc) (list 'primitive (cadr proc)))
+       primitive-procedures))
+(define (setup-environment)
+  (let ((initial-env
+         (extend-environment (primitive-procedure-names)
+                             (primitive-procedure-objects)
+                             the-empty-environment)))
+    initial-env))
+(define the-empty-environment '())
+(define the-global-environment (setup-environment))
+
+;; 关于变量
+(define (variable? exp) (symbol? exp))
+(define (lookup-variable-value var env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (car vals))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error #f &quot;Unbound variable&quot; var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+;; 关于 apply 的相关函数
+(define (application? exp) (pair? exp))
+(define (apply procedure arguments)
+  (cond ((primitive-procedure? procedure)
+         (apply-primitive-procedure procedure arguments))
+        ((compound-procedure? procedure)
+         (eval-sequence
+           (procedure-body procedure)
+           (extend-environment
+             (procedure-parameters procedure)
+             arguments
+             (procedure-environment procedure))))
+        (else
+         (error
+          &quot;Unknown procedure type -- APPLY&quot; procedure))))
+(define (primitive-procedure? proc)
+  (tagged-list? proc 'primitive))
+(define (primitive-implementation proc) (cadr proc))
+(define (apply-primitive-procedure proc args)
+  (apply-in-underlying-scheme
+   (primitive-implementation proc) args))
+(define (operator exp) (car exp))
+(define (operands exp) (cdr exp))
+(define (no-operands? ops) (null? ops))
+(define (first-operand ops) (car ops))
+(define (rest-operands ops) (cdr ops))
+(define (list-of-values exps env)
+  (if (no-operands? exps)
+      '()
+      (cons (eval (first-operand exps) env)
+            (list-of-values (rest-operands exps) env))))
+
+;; 关于 define
+(define (definition? exp)
+  (tagged-list? exp 'define))
+(define (definition-variable exp)
+  (if (symbol? (cadr exp))
+      (cadr exp)
+      (caadr exp)))
+(define (definition-value exp)
+  (if (symbol? (cadr exp))
+      (caddr exp)
+      (make-lambda (cdadr exp)   ; formal parameters
+                   (cddr exp)))) ; body
+(define (eval-definition exp env)
+  (define-variable! (definition-variable exp)
+                    (eval (definition-value exp) env)
+                    env)
+  'ok)
+(define (define-variable! var val env)
+  (let ((frame (first-frame env)))
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (add-binding-to-frame! var val frame))
+            ((eq? var (car vars))
+             (set-car! vals val))
+            (else (scan (cdr vars) (cdr vals)))))
+    (scan (frame-variables frame)
+          (frame-values frame))))
+;; 关于 set!
+(define (assignment? exp)
+  (tagged-list? exp 'set!))
+(define (assignment-variable exp) (cadr exp))
+(define (assignment-value exp) (caddr exp))
+(define (eval-assignment exp env)
+  (set-variable-value! (assignment-variable exp)
+                       (eval (assignment-value exp) env)
+                       env)
+  'ok)
+(define (set-variable-value! var val env)
+  (define (env-loop env)
+    (define (scan vars vals)
+      (cond ((null? vars)
+             (env-loop (enclosing-environment env)))
+            ((eq? var (car vars))
+             (set-car! vals val))
+            (else (scan (cdr vars) (cdr vals)))))
+    (if (eq? env the-empty-environment)
+        (error &quot;Unbound variable -- SET!&quot; var)
+        (let ((frame (first-frame env)))
+          (scan (frame-variables frame)
+                (frame-values frame)))))
+  (env-loop env))
+;; 关于 cond!
+(define (cond? exp) (tagged-list? exp 'cond))
+(define (cond-clauses exp) (cdr exp))
+(define (cond-else-clause? clause)
+  (eq? (cond-predicate clause) 'else))
+(define (cond-predicate clause) (car clause))
+(define (cond-actions clause) (cdr clause))
+(define (cond-&gt;if exp)
+  (expand-clauses (cond-clauses exp)))
+
+(define (expand-clauses clauses)
+  (if (null? clauses)
+      'false                          ; no else clause
+      (let ((first (car clauses))
+            (rest (cdr clauses)))
+        (if (cond-else-clause? first)
+            (if (null? rest)
+                (sequence-&gt;exp (cond-actions first))
+                (error &quot;ELSE clause isn't last -- COND-&gt;IF&quot;
+                       clauses))
+            (make-if (cond-predicate first)
+                     (sequence-&gt;exp (cond-actions first))
+                     (expand-clauses rest))))))
+;; 底层函数
+(define (tagged-list? exp tag)
+  (if (pair? exp)
+      (eq? (car exp) tag)
+      false))
+</code></pre>
+<h2><a class="header" href="#其他" id="其他">其他</a></h2>
+<p>这个解释器，看起来简单，其实已经支持了大多数核心功能了，甚至包括闭包的
+实现。一门语言还有其他一些重要的特性需要仔细设计。</p>
+<ul>
+<li>模块系统</li>
+<li>内存管理 gc</li>
+<li>代码生成优化</li>
+<li>调试器</li>
+<li>调优器</li>
+<li>特色功能
+<ul>
+<li>是否支持 continuation</li>
+<li>是否支持 coroutine</li>
+<li>是否支持 thread</li>
+<li>是否支持 macro</li>
+<li>是否支持 类型推导</li>
+<li>是否支持 OO</li>
+<li>是否支持 泛型</li>
+<li>是否支持 generator/iterator</li>
+</ul>
+</li>
+<li>标准库设计
+<ul>
+<li>Network/File IO</li>
+<li>基础数据类型库
+<ul>
+<li>List</li>
+<li>Array</li>
+<li>Map</li>
+<li>Hash</li>
+<li>Set</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2015-07-29-Erlang-application-environment.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2015-07-29-Erlang-application-environment.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

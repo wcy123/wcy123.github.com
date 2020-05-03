@@ -1,0 +1,5 @@
+is_void<int> = 0
+is_void<void> = 1
+is_void<void const> = 1
+is_void<void volatile> = 1
+is_void<void const volatile> = 1

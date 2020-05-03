@@ -1,0 +1,706 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>2017-06-18 用c/c++ 编写一个 list 操作程序  - Wang Chunye</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="SUMMARY.html"><strong aria-hidden="true">1.</strong> Table Of Contents</a></li><li class="chapter-item expanded "><a href="2020-04-09-setup-c-IDE-for-emacs.html"><strong aria-hidden="true">2.</strong> 2020-04-09 setup emacs IDE for C/C++</a></li><li class="chapter-item expanded "><a href="2020-04-05-setup-rust-IDE-for-emacs.html"><strong aria-hidden="true">3.</strong> 2020-04-05 setup emacs IDE for Rust</a></li><li class="chapter-item expanded "><a href="2020-04-05-use-emacs-to-control-tmux.html"><strong aria-hidden="true">4.</strong> 2020-04-05 use emacs to control tmux</a></li><li class="chapter-item expanded "><a href="2020-04-04-start-to-use-mdbook.html"><strong aria-hidden="true">5.</strong> 2020-04-04 start to use mdbook</a></li><li class="chapter-item expanded "><a href="2019-04-22-从一个求和函数谈起.html"><strong aria-hidden="true">6.</strong> 2020-04-22 从一个求和函数谈起</a></li><li class="chapter-item expanded "><a href="2019-02-03-c++-可否同时抛出两个异常.html"><strong aria-hidden="true">7.</strong> 2019-02-03 c++ 可否同时抛出两个异常</a></li><li class="chapter-item expanded "><a href="2019-01-30-c++-中的-converting-constructor.html"><strong aria-hidden="true">8.</strong> 2019-01-30 c++ 中的 converting constructor</a></li><li class="chapter-item expanded "><a href="2019-01-30-深入理解-Return-Value-Optimization.html"><strong aria-hidden="true">9.</strong> 2019-01-30 深入理解 Return Value Optimization</a></li><li class="chapter-item expanded "><a href="2019-01-13-了解-ELF-文件格式.html"><strong aria-hidden="true">10.</strong> 2019-01-13 了解 ELF 文件格式</a></li><li class="chapter-item expanded "><a href="2019-01-01-vector.emplace_back-调用构造函数.html"><strong aria-hidden="true">11.</strong> 2019-01-01 vector.emplace_back 调用构造函数</a></li><li class="chapter-item expanded "><a href="2019-01-01-unique_ptr-的开销有多大.html"><strong aria-hidden="true">12.</strong> 2019-01-01 unique_ptr 的开销有多大</a></li><li class="chapter-item expanded "><a href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html"><strong aria-hidden="true">13.</strong> 2017-07-09 计算一个整数有的二进制表示中多少个 1 </a></li><li class="chapter-item expanded "><a href="2017-06-18-用c_c++-编写一个-list-操作程序-.html" class="active"><strong aria-hidden="true">14.</strong> 2017-06-18 用c/c++ 编写一个 list 操作程序 </a></li><li class="chapter-item expanded "><a href="2017-05-21-c++-中的高维数组-2-.html"><strong aria-hidden="true">15.</strong> 2017-05-21 c++ 中的高维数组(2)</a></li><li class="chapter-item expanded "><a href="2017-05-14-c++-中的高维数组-1-.html"><strong aria-hidden="true">16.</strong> 2017-05-14 c++ 中的高维数组(1)</a></li><li class="chapter-item expanded "><a href="2017-04-30-Walter-E.-Brown-讲解-c++-中的-metaprograming.html"><strong aria-hidden="true">17.</strong> 2017-04-30 Walter E. Brown 讲解 c++ 中的 metaprograming</a></li><li class="chapter-item expanded "><a href="2017-04-30-c++-中的-remove-erase-俗语.html"><strong aria-hidden="true">18.</strong> 2017-04-30 c++ 中的 remove-erase 俗语</a></li><li class="chapter-item expanded "><a href="2017-04-29-c++11-的-extern-template.html"><strong aria-hidden="true">19.</strong> 2017-04-29 c++11 的 extern template</a></li><li class="chapter-item expanded "><a href="2017-04-29-配置-haskell-的开发环境.html"><strong aria-hidden="true">20.</strong> 2017-04-29 配置 haskell 的开发环境</a></li><li class="chapter-item expanded "><a href="2017-04-29-c_c++-的编译和链接的问题.html"><strong aria-hidden="true">21.</strong> 2017-04-29 c/c++ 的编译和链接的问题</a></li><li class="chapter-item expanded "><a href="2017-04-23-c++-non-copyable-的传递性.html"><strong aria-hidden="true">22.</strong> 2017-04-23 c++ non copyable 的传递性</a></li><li class="chapter-item expanded "><a href="2017-04-06-ssh-的无密码登陆.html"><strong aria-hidden="true">23.</strong> 2017-04-06 ssh 的无密码登陆</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-GSL-中的-owner.html"><strong aria-hidden="true">24.</strong> 2017-04-04 c++ GSL 中的 owner</a></li><li class="chapter-item expanded "><a href="2017-04-04-c++-的-const-reference-extend-lifetime-rvalue.html"><strong aria-hidden="true">25.</strong> 2017-04-04 c++ 的 const reference extend lifetime rvalue</a></li><li class="chapter-item expanded "><a href="2017-04-03-有了c++11-的-unique_ptr，也许就不应该再使用-new_delete-关键字了.html"><strong aria-hidden="true">26.</strong> 2017-04-03 有了c++11 的 unique_ptr，也许就不应该再使用 new/delete 关键字了</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-的-universal-reference.html"><strong aria-hidden="true">27.</strong> 2017-04-02 c++ 的 universal reference</a></li><li class="chapter-item expanded "><a href="2017-04-02-c++-lambda-capture-by-value-的实验.html"><strong aria-hidden="true">28.</strong> 2017-04-02 c++ lambda capture by value 的实验</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-中-lambda-的类型和大小.html"><strong aria-hidden="true">29.</strong> 2017-03-26 c++ 中 lambda 的类型和大小</a></li><li class="chapter-item expanded "><a href="2017-03-26-c++-模板的类型推导.html"><strong aria-hidden="true">30.</strong> 2017-03-26 c++ 模板的类型推导</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用--cmake-管理项目.html"><strong aria-hidden="true">31.</strong> 2017-03-16 使用  cmake 管理项目</a></li><li class="chapter-item expanded "><a href="2017-03-16-使用-google-test-framework.html"><strong aria-hidden="true">32.</strong> 2017-03-16 使用 google test framework</a></li><li class="chapter-item expanded "><a href="2017-03-16-google-c++-style-by-examples.html"><strong aria-hidden="true">33.</strong> 2017-03-16 google c++ style by examples</a></li><li class="chapter-item expanded "><a href="2017-03-13-TERMINAL-下的快捷操作.html"><strong aria-hidden="true">34.</strong> 2017-03-13 TERMINAL 下的快捷操作</a></li><li class="chapter-item expanded "><a href="2017-03-12-小叮当效应.html"><strong aria-hidden="true">35.</strong> 2017-03-12 小叮当效应</a></li><li class="chapter-item expanded "><a href="2017-03-12-存款准备金的意义.html"><strong aria-hidden="true">36.</strong> 2017-03-12 存款准备金的意义</a></li><li class="chapter-item expanded "><a href="2017-03-10-过拟合和正则化.html"><strong aria-hidden="true">37.</strong> 2017-03-10 过拟合和正则化</a></li><li class="chapter-item expanded "><a href="2017-03-09-Back-Propagation-算法的向量表示.html"><strong aria-hidden="true">38.</strong> 2017-03-09 Back Propagation 算法的向量表示</a></li><li class="chapter-item expanded "><a href="2017-03-09-成本函数与学习速度-sotfmax-函数与最大似然函数.html"><strong aria-hidden="true">39.</strong> 2017-03-09 成本函数与学习速度 sotfmax 函数与最大似然函数</a></li><li class="chapter-item expanded "><a href="2017-03-08-成本函数与学习速度.html"><strong aria-hidden="true">40.</strong> 2017-03-08 成本函数与学习速度</a></li><li class="chapter-item expanded "><a href="2017-03-08-用-Makefile-+-pandoc-+-markdown-写博客.html"><strong aria-hidden="true">41.</strong> 2017-03-08 用 Makefile + pandoc + markdown 写博客</a></li><li class="chapter-item expanded "><a href="2017-03-05-backpropagation.html"><strong aria-hidden="true">42.</strong> 2017-03-05 backpropagation</a></li><li class="chapter-item expanded "><a href="2017-02-07-理解-java-的-classloader.html"><strong aria-hidden="true">43.</strong> 2017-02-07 理解 java 的 classloader</a></li><li class="chapter-item expanded "><a href="2017-01-25-在-Java-中，我们尽量避免使用-null.html"><strong aria-hidden="true">44.</strong> 2017-01-25 在 Java 中，我们尽量避免使用 null</a></li><li class="chapter-item expanded "><a href="2017-01-14-Java-8-函数式编程例子.html"><strong aria-hidden="true">45.</strong> 2017-01-14 Java 8 函数式编程例子</a></li><li class="chapter-item expanded "><a href="2017-01-08-二分法查找.html"><strong aria-hidden="true">46.</strong> 2017-01-08 二分法查找</a></li><li class="chapter-item expanded "><a href="2017-01-08-最重要的设计原则.html"><strong aria-hidden="true">47.</strong> 2017-01-08 最重要的设计原则</a></li><li class="chapter-item expanded "><a href="2017-01-07-C-语言写的快排程序.html"><strong aria-hidden="true">48.</strong> 2017-01-07 C 语言写的快排程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-编写单链表反转的程序.html"><strong aria-hidden="true">49.</strong> 2017-01-07 编写单链表反转的程序</a></li><li class="chapter-item expanded "><a href="2017-01-07-Feign-client.html"><strong aria-hidden="true">50.</strong> 2017-01-07 Feign client</a></li><li class="chapter-item expanded "><a href="2017-01-07-关于协议设计语言.html"><strong aria-hidden="true">51.</strong> 2017-01-07 关于协议设计语言</a></li><li class="chapter-item expanded "><a href="2017-01-07-简单的多线程并不能提高效率.html"><strong aria-hidden="true">52.</strong> 2017-01-07 简单的多线程并不能提高效率</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA8-中的高阶函数.html"><strong aria-hidden="true">53.</strong> 2017-01-07 JAVA8 中的高阶函数</a></li><li class="chapter-item expanded "><a href="2017-01-07-JAVA-JSON-databinding-的多态.html"><strong aria-hidden="true">54.</strong> 2017-01-07 JAVA JSON databinding 的多态</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava2-有什么新东西.html"><strong aria-hidden="true">55.</strong> 2017-01-07 rxjava2 有什么新东西</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-Subscriber-的实现中关于--backpressure-的部分.html"><strong aria-hidden="true">56.</strong> 2017-01-07 阅读 Subscriber 的实现中关于  backpressure 的部分</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码之----map.html"><strong aria-hidden="true">57.</strong> 2017-01-07 阅读 rxjava 源代码之  - map</a></li><li class="chapter-item expanded "><a href="2017-01-07-rxjava-如何和传统回调函数结合.html"><strong aria-hidden="true">58.</strong> 2017-01-07 rxjava 如何和传统回调函数结合</a></li><li class="chapter-item expanded "><a href="2017-01-07-阅读-rxjava-源代码.html"><strong aria-hidden="true">59.</strong> 2017-01-07 阅读 rxjava 源代码</a></li><li class="chapter-item expanded "><a href="2017-01-07-使用-Protobuf-设计-REST-API.html"><strong aria-hidden="true">60.</strong> 2017-01-07 使用 Protobuf 设计 REST API</a></li><li class="chapter-item expanded "><a href="2017-01-07-rabbitmq-中的概念.html"><strong aria-hidden="true">61.</strong> 2017-01-07 rabbitmq 中的概念</a></li><li class="chapter-item expanded "><a href="2016-12-25-从零开始构造一个微服务.html"><strong aria-hidden="true">62.</strong> 2016-12-25 从零开始构造一个微服务</a></li><li class="chapter-item expanded "><a href="2016-09-21-基于返回值的-java-generic-类型推导.html"><strong aria-hidden="true">63.</strong> 2016-09-21 基于返回值的 java generic 类型推导</a></li><li class="chapter-item expanded "><a href="2016-09-03-使用-Spring-Integration-Framework-写入-redis-队列.html"><strong aria-hidden="true">64.</strong> 2016-09-03 使用 Spring Integration Framework 写入 redis 队列</a></li><li class="chapter-item expanded "><a href="2016-08-27-开发自己的语言.html"><strong aria-hidden="true">65.</strong> 2016-08-27 开发自己的语言</a></li><li class="chapter-item expanded "><a href="2015-07-29-Erlang-application-environment.html"><strong aria-hidden="true">66.</strong> 2015-07-29 Erlang application environment</a></li><li class="chapter-item expanded "><a href="2015-07-10-ZFS-转移数据.html"><strong aria-hidden="true">67.</strong> 2015-07-10 ZFS 转移数据</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的右值引用问题.html"><strong aria-hidden="true">68.</strong> 2015-07-08 C++11 的右值引用问题</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++-vector-调用多少次元素的构造函数.html"><strong aria-hidden="true">69.</strong> 2015-07-08 C++ vector 调用多少次元素的构造函数</a></li><li class="chapter-item expanded "><a href="2015-07-08-C++11-的-feature,-unique_ptr.html"><strong aria-hidden="true">70.</strong> 2015-07-08 C++11 的 feature, unique_ptr</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-中的求值顺序.html"><strong aria-hidden="true">71.</strong> 2015-07-08 C/C++ 中的求值顺序</a></li><li class="chapter-item expanded "><a href="2015-07-08-C_C++-编程风格:-if-else.html"><strong aria-hidden="true">72.</strong> 2015-07-08 C/C++ 编程风格: if-else</a></li><li class="chapter-item expanded "><a href="2015-07-08-编程风格：-C++-类的结构.html"><strong aria-hidden="true">73.</strong> 2015-07-08 编程风格： C++ 类的结构</a></li><li class="chapter-item expanded "><a href="2015-07-08-折腾-FreeBSD.html"><strong aria-hidden="true">74.</strong> 2015-07-08 折腾 FreeBSD</a></li><li class="chapter-item expanded "><a href="2015-06-01-C-Preprocessor-tricks.html"><strong aria-hidden="true">75.</strong> 2015-06-01 C Preprocessor tricks</a></li><li class="chapter-item expanded "><a href="2015-05-26-C++-should-support-C99-designated-initializer.html"><strong aria-hidden="true">76.</strong> 2015-05-26 C++ should support C99 designated initializer</a></li><li class="chapter-item expanded "><a href="2015-05-20-C++-virtual-function.html"><strong aria-hidden="true">77.</strong> 2015-05-20 C++ virtual function</a></li><li class="chapter-item expanded "><a href="2015-05-18-Understand-X86-64-calling-convention.html"><strong aria-hidden="true">78.</strong> 2015-05-18 Understand X86 64 calling convention</a></li><li class="chapter-item expanded "><a href="2015-05-05-Learning-inline-keyword-by-example-in-C.html"><strong aria-hidden="true">79.</strong> 2015-05-05 Learning inline keyword by example in C</a></li><li class="chapter-item expanded "><a href="2015-04-30-Different-key-binding-in-Emacs-transient-mark-mode.html"><strong aria-hidden="true">80.</strong> 2015-04-30 Different key binding in Emacs transient mark mode</a></li><li class="chapter-item expanded "><a href="2014-11-22-hello-world-in-C.html"><strong aria-hidden="true">81.</strong> 2014-11-22 hello world in C</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                        
+                    </div>
+
+                    <h1 class="menu-title">Wang Chunye</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#用cc-编写一个-list-操作程序" id="用cc-编写一个-list-操作程序">用c/c++ 编写一个 list 操作程序</a></h1>
+<h2><a class="header" href="#介绍" id="介绍">介绍</a></h2>
+<p>本文试图通过迭代编程，一点一点改进一个关于 list 操作的程序。</p>
+<h2><a class="header" href="#基本结构" id="基本结构">基本结构</a></h2>
+<pre><code class="language-cpp">struct List {
+    int value;
+    struct List * next;
+};
+</code></pre>
+<p>这是一个单链表结构。</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+struct List {
+    int value;
+    struct List * next;
+};
+
+List * MakeList (int value, List * next) {
+    return new List{value, next};
+}
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List* head) {
+    out &lt;&lt; &quot;(&quot;;
+    for(auto i = head; i ; i = i-&gt;next){
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char *argv[])
+{
+    List * lst = MakeList(1, MakeList(2, MakeList(3, nullptr)));
+    cout &lt;&lt; lst &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 1 2 3)
+</code></pre>
+<h2><a class="header" href="#使用构造函数" id="使用构造函数">使用构造函数</a></h2>
+<p>上面的程序没有使用构造函数，使用构造函数，看起来更加清晰。</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+using namespace std;
+
+class List {
+   public:
+    List(): head_(nullptr) {};
+    void push_front(int value) {
+        head_ = new Cons(value, head_);
+    }
+    bool empty() {
+        return head_ == nullptr;
+    }
+   private:
+    struct Cons{
+        Cons(int value, Cons* next) : value_(value), next_(next) {}
+        int value_;
+        struct Cons* next_;
+    };
+    Cons * head_;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst);
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst) {
+    out &lt;&lt; &quot;(&quot;;
+    for (auto i = lst.head_; i; i = i-&gt;next_) {
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value_;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    List lst;
+    lst.push_front(1);
+    lst.push_front(2);
+    lst.push_front(3);
+    cout &lt;&lt; lst &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 3 2 1)
+</code></pre>
+<p><code>Cons</code> 名字来源于 Lisp 系列语言。</p>
+<h2><a class="header" href="#防止内存泄露" id="防止内存泄露">防止内存泄露</a></h2>
+<p>上面的程序明显有内存泄露，我们使用智能指针，来防止内存泄露。</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+
+class List {
+   public:
+    List() : head_(nullptr){};
+    void push_front(int value) {
+        head_ = make_unique&lt;Cons&gt;(value, std::move(head_));
+    }
+    bool empty() { return head_ == nullptr; }
+
+   private:
+    struct Cons {
+        Cons(int value, unique_ptr&lt;Cons&gt;&amp;&amp; next)
+            : value_(value), next_(std::move(next)) {}
+        int value_;
+        unique_ptr&lt;Cons&gt; next_;
+    };
+    unique_ptr&lt;Cons&gt; head_;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst);
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst) {
+    out &lt;&lt; &quot;(&quot;;
+    for (auto i = lst.head_.get(); i; i = i-&gt;next_.get()) {
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value_;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    List lst;
+    lst.push_front(1);
+    lst.push_front(2);
+    lst.push_front(3);
+    cout &lt;&lt; lst &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 3 2 1)
+</code></pre>
+<p>很遗憾， <code>make_unique</code> 是 c++14 的内容，如果必须使用 c++11 ，那么就需要我们自己实现一下这个函数。</p>
+<pre><code class="language-cpp">#if __cplusplus &lt;= 201103L
+namespace std {
+   template&lt;typename T, typename ...Args&gt;
+   unique_ptr&lt;T&gt; make_unique(Args &amp;&amp;...args) {
+       return std::unique_ptr&lt;T&gt;(new T(std::forward&lt;Args&gt;(args)...));
+   }
+}
+</code></pre>
+<p>使用了 <code>unique_ptr</code> ，我们失去了一个功能，两个 list 不能共享同一段尾巴。也许这是一个好的交换，当两个 list 共享同一段尾巴的时候，需要使用 <code>shared_ptr</code> ，而 <code>unique_ptr</code> 的开销和裸指针一样，效率很高。在大多数情况下，我们不需要这种共享数据。</p>
+<h2><a class="header" href="#从其他-container-构造一个-list" id="从其他-container-构造一个-list">从其他 container 构造一个 list</a></h2>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class List {
+   public:
+    List() : head_(nullptr){};
+
+    template &lt;typename Iter&gt;
+    List(Iter begin, Iter end) : head_() {
+        for (auto it = begin; it != end; ++it) {
+            push_front(*it);
+        }
+    }
+
+    List(const std::initializer_list&lt;int&gt;&amp; c) : List(c.begin(), c.end()) {}
+
+    template &lt;typename Container&gt;
+    List(const Container&amp; c) : List(c.begin(), c.end()) {}
+
+    void push_front(int value) {
+        head_ = make_unique&lt;Cons&gt;(value, std::move(head_));
+    }
+    bool empty() { return head_ == nullptr; }
+
+   private:
+    struct Cons {
+        Cons(int value, unique_ptr&lt;Cons&gt;&amp;&amp; next)
+            : value_(value), next_(std::move(next)) {}
+        int value_;
+        unique_ptr&lt;Cons&gt; next_;
+    };
+    unique_ptr&lt;Cons&gt; head_;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst);
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst) {
+    out &lt;&lt; &quot;(&quot;;
+    for (auto i = lst.head_.get(); i; i = i-&gt;next_.get()) {
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value_;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    auto lst1 = List{1, 2, 3};
+    cout &lt;&lt; lst1 &lt;&lt; endl;
+
+    vector&lt;int&gt; v1 = {4, 5, 6};
+    auto lst2 = List(v1);
+    cout &lt;&lt; lst2 &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 3 2 1)
+( 6 5 4)
+</code></pre>
+<p>这里用到了 c++11 的 delegating constructors, 也就是一个构造函数，调用另一个构造函数。</p>
+<h2><a class="header" href="#高效的-append-操作" id="高效的-append-操作">高效的 append 操作</a></h2>
+<p>上面的例子中，我们看到列表顺序是反的。我们要顺序的追加操作，而不是从 head 插入。</p>
+<p>这个是写本文的出发点。前面都是铺垫。本文参考在 linux 的内核代码代码中的方法。首先我们来一个简单实现。</p>
+<pre><code class="language-cpp">    void push_back(int value) {
+        if (!head_) {
+            head_ = make_unique&lt;Cons&gt;(value, nullptr);
+        } else {
+            Cons* p = nullptr;
+            for (p = head_.get(); p-&gt;next_; p = p-&gt;next_.get()) {
+            }
+            p-&gt;next_ = make_unique&lt;Cons&gt;(value, nullptr);
+        }
+    }
+</code></pre>
+<p>这个方法有两个问题，一个是多了一个 <code>if</code> 判断语句，一个是多了 <code>for</code> 循环语句。好的代码风格是尽量没有<code>if</code> <code>for</code> 这些语句。性能也有一点问题，每插入一个元素，都要遍历一次列表。</p>
+<p>linux kernel 的源代码里面用间接指针，<code>struct Cons ** tail_</code> ，很巧妙的实现了这个功能。我们先简单理解没有智能指针的版本。</p>
+<p>当列表为空的时候</p>
+<pre><code class="language-cpp">tail_ == &amp;head_;
+head_ == NULL;
+</code></pre>
+<p>当有一个元素的时候。</p>
+<pre><code class="language-cpp">Cons e1 = {1, nullptr};
+head_ == &amp;e1;
+tail_ == &amp;head_-&gt;next;
+</code></pre>
+<p>当有两个元素的时候。</p>
+<pre><code class="language-cpp">Cons e2 = {2, nullptr};
+Cons e1 = {1, &amp;e2};
+head_ == &amp;e1;
+tail_ == &amp;head_-&gt;next-&gt;next;
+</code></pre>
+<p>依次类推。增加一个间接指针之后，当我们遍历列表的时候，我们不但知道列表元素，而且还知道我们从哪里过来的。</p>
+<ol>
+<li><code>tail_</code> 永远不会是指向一个无效地址。 <code>assert(*tail_ != nullptr);</code></li>
+<li>当列表为空的时候，<code>*tail_ == &amp;head</code> ，即指向 head_ 的地址。</li>
+<li>当列表不为空的时候， <code>*tail_ == &amp;last.next</code> ，即指向最后一个元素的 <code>next</code> 的地址。</li>
+</ol>
+<p>我们要追加一个元素的时候。</p>
+<pre><code class="language-cpp">(*tail_) = &amp;new_entry;
+tail_ = &amp;new_enty.next_;
+</code></pre>
+<p>就可以了。为什么呢？</p>
+<ol>
+<li>如果列表为空，<code>(*tail_)=&amp;new_entry</code> 导致 <code>head_ = &amp;new_entry</code></li>
+<li>如果列表不为空，<code>(*tail_) = &amp;new_entry</code> 导致 <code>last.next_ = &amp;new_entry</code></li>
+</ol>
+<p>然后，<code>tail_ = &amp;new_entry.next_</code> 保证 <code>tail_</code> 一直指向列表最后一个元素的 <code>next</code> 的地址。</p>
+<p>下面是带有智能指针的代码。</p>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class List {
+   public:
+    List() : head_(nullptr), tail_(&amp;head_){};
+
+    template &lt;typename Iter&gt;
+    List(Iter begin, Iter end) : head_(), tail_(&amp;head_) {
+        for (auto it = begin; it != end; ++it) {
+            push_back(*it);
+        }
+    }
+
+    List(const std::initializer_list&lt;int&gt;&amp; c) : List(c.begin(), c.end()) {}
+
+    template &lt;typename Container&gt;
+    List(const Container&amp; c) : List(c.begin(), c.end()) {}
+
+    void push_front(int value) {
+        head_ = make_unique&lt;Cons&gt;(value, std::move(head_));
+    }
+
+    void push_back(int value) {
+        (*tail_) = make_unique&lt;Cons&gt;(value, nullptr);
+        tail_ = &amp;(*tail_)-&gt;next_;
+    }
+
+    void remove(int value) {
+        (*tail_) = make_unique&lt;Cons&gt;(value, nullptr);
+        tail_ = &amp;(*tail_)-&gt;next_;
+    }
+
+    bool empty() { return head_ == nullptr; }
+
+   private:
+    struct Cons {
+        Cons(int value, unique_ptr&lt;Cons&gt;&amp;&amp; next)
+            : value_(value), next_(std::move(next)) {}
+        int value_;
+        unique_ptr&lt;Cons&gt; next_;
+    };
+    unique_ptr&lt;Cons&gt; head_;
+    unique_ptr&lt;Cons&gt; * tail_;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst);
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst) {
+    out &lt;&lt; &quot;(&quot;;
+    for (auto i = lst.head_.get(); i; i = i-&gt;next_.get()) {
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value_;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    auto lst1 = List{1, 2, 3};
+    cout &lt;&lt; lst1 &lt;&lt; endl;
+
+    vector&lt;int&gt; v1 = {4, 5, 6};
+    auto lst2 = List(v1);
+    cout &lt;&lt; lst2 &lt;&lt; endl;
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 1 2 3)
+( 4 5 6)
+</code></pre>
+<p>其中关键代码是</p>
+<pre><code class="language-cpp">    void push_back(int value) {
+        (*tail_) = make_unique&lt;Cons&gt;(value, nullptr);
+        tail_ = &amp;(*tail_)-&gt;next_;
+    }
+</code></pre>
+<h1><a class="header" href="#删除一个元素" id="删除一个元素">删除一个元素</a></h1>
+<p>先来一个普通版本。</p>
+<pre><code class="language-cpp">    void remove(int value) {
+        Cons * p = nullptr;
+        for (auto i = head_.get(); i; p = i, i = i-&gt;next_.get()) {
+                if (i-&gt;value_ == value) {
+                    p-&gt;next_ = std::move(i-&gt;next_);
+                    break;
+                }
+        }
+    }
+</code></pre>
+<p>这个版本是有 bug 的，如果删除的是第一个元素，就挂了，因为 <code>p</code> 是 nullptr.</p>
+<pre><code class="language-cpp">    void remove(int value) {
+        Cons * p = nullptr;
+        for (auto i = head_.get(); i; p = i, i = i-&gt;next_.get()) {
+            if (i-&gt;value_ == value) {
+                if (p != nullptr) {
+                    p-&gt;next_ = std::move(i-&gt;next_);
+                } else {
+                    head_ = std::move(head_-&gt;next_);
+                }
+                break;
+            }
+        }
+    }
+</code></pre>
+<p>这个版本工作，但是多了一个 <code>if</code> 判断，让代码看起来不是那么的帅气。利用间接指针，我们可以帅气的解决这个问题。</p>
+<pre><code class="language-cpp">    void remove(int value) {
+        for (auto i = &amp;head_; *i; i = &amp;((*i)-&gt;next_)) {
+            if ((*i)-&gt;value_ == value) {
+                (*i) = std::move((*i)-&gt;next_);
+                break;
+            }
+        }
+    }
+</code></pre>
+<p>这个代码为什么能工作？ 和 <code>tail_</code> 类似，在遍历的过程中 <code>i</code> 是一个间接指针。</p>
+<ol>
+<li><code>i</code> 是指向遍历的对象指针的指针。</li>
+<li><code>*i</code> 永远不会为 nullptr</li>
+<li>当列表为空的时候， <code>*i</code> 指向头指针的地址。 <code>assert(i == &amp;head)</code> , <code>assert(*i == nullptr)</code> <code>assert(head == nullptr</code></li>
+<li>当列表不为空的时候，<code>*i</code> 指向前一个元素的 <code>next</code> 的地址。 <code>assert(i == &amp;previous_element.next)</code> ，也就是说， <code>*i</code> 是当前元素的地址， <code>(*i)-&gt;value</code> 是当前元素的值。</li>
+<li>移动到下一个元素的时候，<code>i = &amp;((*i)-&gt;next_</code> ，保证 <code>i</code> 一直指向前一个元素的 <code>next</code> 地址。</li>
+<li>当列表不空的时候，<code>*i = (*i)-&gt;next_</code> ，就是说，修改前一个元素的 <code>next</code> 值，让他指向当前元素的下一个元素，<code>(*i)-&gt;next</code> ，这样就把当前元素给跳过去了。完成了删除的操作。</li>
+<li>当列表为空的时候，循环立即结束。</li>
+</ol>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class List {
+   public:
+    List() : head_(nullptr), tail_(&amp;head_){};
+
+    template &lt;typename Iter&gt;
+    List(Iter begin, Iter end) : head_(), tail_(&amp;head_) {
+        for (auto it = begin; it != end; ++it) {
+            push_back(*it);
+        }
+    }
+
+    List(const std::initializer_list&lt;int&gt;&amp; c) : List(c.begin(), c.end()) {}
+
+    template &lt;typename Container&gt;
+    List(const Container&amp; c) : List(c.begin(), c.end()) {}
+
+    void push_front(int value) {
+        head_ = make_unique&lt;Cons&gt;(value, std::move(head_));
+    }
+
+    void push_back(int value) {
+        (*tail_) = make_unique&lt;Cons&gt;(value, nullptr);
+        tail_ = &amp;(*tail_)-&gt;next_;
+    }
+
+    void remove(int value) {
+        for (auto i = &amp;head_; *i; i = &amp;((*i)-&gt;next_)) {
+            if ((*i)-&gt;value_ == value) {
+                (*i) = std::move((*i)-&gt;next_);
+                break;
+            }
+        }
+    }
+
+    bool empty() { return head_ == nullptr; }
+
+   private:
+    struct Cons {
+        Cons(int value, unique_ptr&lt;Cons&gt;&amp;&amp; next)
+            : value_(value), next_(std::move(next)) {}
+        int value_;
+        unique_ptr&lt;Cons&gt; next_;
+    };
+    unique_ptr&lt;Cons&gt; head_;
+    unique_ptr&lt;Cons&gt; * tail_;
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst);
+};
+
+ostream&amp; operator&lt;&lt;(ostream&amp; out, const List&amp; lst) {
+    out &lt;&lt; &quot;(&quot;;
+    for (auto i = lst.head_.get(); i; i = i-&gt;next_.get()) {
+        out &lt;&lt; &quot; &quot; &lt;&lt; i-&gt;value_;
+    }
+    out &lt;&lt; &quot;)&quot;;
+    return out;
+}
+
+int main(int argc, char* argv[]) {
+    auto lst1 = List{1, 2, 3};
+    lst1.remove(1);
+    cout &lt;&lt; lst1 &lt;&lt; endl;
+
+    auto lst2 = List{1, 2, 3};
+    lst2.remove(3);
+    cout &lt;&lt; lst2 &lt;&lt; endl;
+
+    return 0;
+}
+</code></pre>
+<p>输出结果</p>
+<pre><code class="language-text">( 2 3)
+( 1 2)
+</code></pre>
+<h2><a class="header" href="#todo" id="todo">TODO</a></h2>
+<p>如果 list 十分长，那么在调用析构函数的时候，有可能导致堆栈空间不够，爆栈了。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="2017-05-21-c++-中的高维数组-2-.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a rel="prev" href="2017-07-09-计算一个整数有的二进制表示中多少个-1-.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a rel="next" href="2017-05-21-c++-中的高维数组-2-.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+        <!-- Google Analytics Tag -->
+        <script type="text/javascript">
+            var localAddrs = ["localhost", "127.0.0.1", ""];
+
+            // make sure we don't activate google analytics if the developer is
+            // inspecting the book locally...
+            if (localAddrs.indexOf(document.location.hostname) === -1) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+                ga('create', 'UA-98267158-1', 'auto');
+                ga('send', 'pageview');
+            }
+        </script>
+        
+
+        
+        <script type="text/javascript">
+            window.playpen_line_numbers = true;
+        </script>
+        
+        
+        
+        <script type="text/javascript">
+            window.playpen_copyable = true;
+        </script>
+        
+
+        
+        <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+        <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
